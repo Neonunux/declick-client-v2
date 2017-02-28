@@ -1,24 +1,16 @@
 {
-  "name": "declick-client",
+  "name": "declick-client-v2",
   "authors": [
     {
-      "name": "Benoit PRADY",
-      "email": "benoit.prady@colombbus.org"
-    },
-    {
-      "name": "Regis Leloup",
-      "email": "regis.leloup@colombbus.org"
-    },
-    {
-      "name": "Guillaume MACQUAT",
-      "email": "guillaume.macquat@colombbus.org"
+      "name": "Colombbus",
+      "email": "contact@colombbus.org"
     }
   ],
-  "version": "0.1.0",
+  "version": "2.0.0",
   "license": "GPL v3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/colombbus/declick-client.git"
+    "url": "https://github.com/colombbus/declick-client-v2.git"
   },
   "dependencies": {
     "ace-builds": "^1.2.2",

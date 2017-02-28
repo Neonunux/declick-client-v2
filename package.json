@@ -1,13 +1,11 @@
 {
   "name": "declick-client-v2",
-  "authors": [
-    {
+  "author": {
       "name": "Colombbus",
       "email": "contact@colombbus.org"
-    }
-  ],
+  },
   "version": "2.0.0",
-  "license": "GPL v3.0",
+  "license": "GPL-3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/colombbus/declick-client-v2.git"

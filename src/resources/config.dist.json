@@ -1,9 +1,8 @@
 {
     "debug": false,
-    "backend-path": "/declick-server/web/app.php/",
+    "backend-path": "/declick-server/public/api/v1/",
     "wpaint-path": "/js/libs/wpaint-2.5.0/",
     "slide-url": "http://pages.declick.net/",
-    "document-domain": false,
     "cache": true,
     "log": false,
     "error": true,

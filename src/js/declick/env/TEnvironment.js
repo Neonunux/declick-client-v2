@@ -75,9 +75,6 @@ define(['jquery', 'TResource'], function ($, TResource) {
                 success: function (data) {
                     $.extend(self.config, data);
                     self.debug = self.config.debug;
-                    if (self.config['document-domain']) {
-                        document.domain = self.config['document-domain'];
-                    }
                     TResource.setCacheEnabled(self.isCacheEnabled(), self.config['cache-version']);
                     window.console.log("* Cache revision: " + self.config['cache-version']);
                     TResource.setLog(self.config.log);

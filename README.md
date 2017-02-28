@@ -23,7 +23,7 @@ Go to *src/resources* and copy *config.dist.json* to *config.json* - change para
 * **analytics**: false/path to an optional js script that would be included in every page (for stats). The path is relative to the application root.
 
 
-## To build Declick:
+## Build
 
 Files located under src directory can be used for development. 
 

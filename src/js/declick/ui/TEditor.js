@@ -42,7 +42,7 @@ define(['ui/TComponent', 'jquery', 'ace/ace', 'ace/autocomplete', 'ace/range', '
         /**
          * Initialize Editor.
          */
-        this.displayed = function() {
+        this.mounted = function() {
             aceEditor = ace.edit($editor.attr("id"));
             aceEditor.setShowPrintMargin(false);
             //aceEditor.renderer.setShowGutter(false);

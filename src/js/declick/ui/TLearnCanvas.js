@@ -14,7 +14,7 @@ define(['ui/TComponent', 'jquery', 'TRuntime'], function(TComponent, $, TRuntime
             }
         });
 
-        this.displayed = function() {
+        this.mounted = function() {
             var graphics = TRuntime.getGraphics();
             graphics.setCanvas("tcanvas");
             // resize canvas and its container when window is resized

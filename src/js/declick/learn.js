@@ -88,7 +88,7 @@ function load() {
                     TEnvironment.log("********************");
                     var self = this;
                     $(document).ready(function() {
-                        self.displayed();
+                        self.mounted();
                         TRuntime.init();
                         // trigger resize in order for canvas to update its size (and remove the 5px bottom margin)
                         $(window).resize();

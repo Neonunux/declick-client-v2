@@ -70,7 +70,7 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
             }
         };
 
-        this.displayed = function() {
+        this.mounted = function() {
             // Set UI
             TUI.setFrame(frame);
             TUI.setCanvas(canvas);
@@ -84,40 +84,56 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
             // Plug Runtime with Log
             TRuntime.setLog(log);
 
-            canvas.displayed();
-            editor.displayed();
-            sidebar.displayed();
-            console.displayed();
-            toolbar.displayed();
-            log.displayed();
+            canvas.mounted();
+            editor.mounted();
+            sidebar.mounted();
+            console.mounted();
+            toolbar.mounted();
+            log.mounted();
             $main.on("splitpane:resized", function() {
                 editor.resize();
             });
             // Important to attach handler before calling splitPane
             $separator.on("mousedown", checkSeparatorEnabled);
-            $('.split-pane').splitPane();
-            initialized = true;
-            // init separator position so that toolbar is visible
-            TUI.enableEditor(false);
-            $loading.fadeOut(1000, function() {
-                $(this).remove();
-            });
-            // set init function to be launched whenever frame parameters (ie access token) change
-            TEnvironment.registerParametersHandler(function (parameters, callback) {
-                for (var name in parameters) {
-                    if (name === 'editor') {
-                        var editor = (parameters['editor']=='true');
-                        if (editor) {
-                            TUI.enableEditor(false);
-                        } else {
-                            TUI.disableEditor(false);
+            var initEditor = function() {
+                $(window).off("resize", initEditor);
+                if ($frame.height()>0) {
+                    $('.split-pane').splitPane();
+                    initialized = true;
+                    // init separator position so that toolbar is visible
+                    TUI.enableEditor(false);
+                    $loading.fadeOut(1000, function() {
+                        $(this).remove();
+                    });				
+                    // set init function to be launched whenever frame parameters (ie access token) change
+                    TEnvironment.registerParametersHandler(function (parameters, callback) {
+                        for (var name in parameters) {
+                            if (name === 'editor') {
+                                var editor = (parameters['editor']=='true');
+                                if (editor) {
+                                    TUI.enableEditor(false);
+                                } else {
+                                    TUI.disableEditor(false);
+                                }
+                            }
+                            if (name === 'id') {
+                                TUI.init(id);
+                            }
                         }
-                    }
-                    if (name === 'id') {
-                        TUI.init(id);
-                    }
+                    });
+                } else {
+                    $(window).resize(initEditor);
                 }
-            });
+            };
+            initEditor();
+        };
+
+        this.setSeparatorPosition = function (value) {
+            $top.css('bottom', value);
+            $top.css('color', 'blue');
+            $separator.css('bottom', value);
+            $bottom.css('height', value);
+            $frame.resize();
         };
 
         this.lowerSeparator = function(value) {
@@ -125,10 +141,7 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
                 var totalHeight = $frame.height();
                 var currentBottom = totalHeight - ($separator.position().top + $separator.height());
                 var newBottom = ((currentBottom - value) * 100 / totalHeight) + '%';
-                $top.css('bottom', newBottom);
-                $separator.css('bottom', newBottom);
-                $bottom.css('height', newBottom);
-                $frame.resize();
+                this.setSeparatorPosition(newBottom);
             }
         };
 

@@ -99,9 +99,9 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             }
         };
 
-        this.displayed = function() {
-            canvas.displayed();
-            editor.displayed();
+        this.mounted = function() {
+            canvas.mounted();
+            editor.mounted();
             exercise.setFrame(this);
             $right.on("splitpane:resized", function() {
                 editor.resize();

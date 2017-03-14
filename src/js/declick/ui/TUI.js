@@ -84,7 +84,7 @@ define(['jquery', 'TRuntime', 'TEnvironment', 'ui/THints', 'TError'], function($
                 }
                 console.hide();
                 if (hideLog) {
-                    frame.lowerSeparator(console.getHeight()+log.getHeight());
+                    frame.setSeparatorPosition(toolbar.getHeight()+"px");
                     frame.disableSeparator();
                 } else {
                     frame.lowerSeparator(console.getHeight());

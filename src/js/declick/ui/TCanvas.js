@@ -61,7 +61,7 @@ define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment'], function($, TRun
             }
         };
 
-        this.displayed = function() {
+        this.mounted = function() {
             $popup.hide();
             var graphics = TRuntime.getGraphics();
             graphics.setCanvas("tcanvas");

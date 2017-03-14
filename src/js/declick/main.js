@@ -116,7 +116,7 @@ function load() {
                     currentProject.init(function () {
                         TEnvironment.setProject(currentProject);
                         $(document).ready(function () {
-                            frame.displayed();
+                            frame.mounted();
                             TRuntime.init();
                             if (typeof window.parent !== 'undefined') {
                                 window.parent.postMessage('init', '*');

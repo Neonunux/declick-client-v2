@@ -6,6 +6,8 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
 
         var frame = this;
         var separatorEnabled = true;
+        var currentToken = "";
+        var currentId = null;
 
         TComponent.call(this, "TFrame.html", function(component) {
             waiting = ['canvas', 'editor', 'sidebar', 'toolbar', 'console', 'log', 'message'];
@@ -107,6 +109,7 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
                     });				
                     // set init function to be launched whenever frame parameters (ie access token) change
                     TEnvironment.registerParametersHandler(function (parameters, callback) {
+                        var initRequired = false;
                         for (var name in parameters) {
                             if (name === 'editor') {
                                 var editor = (parameters['editor']=='true');
@@ -117,8 +120,20 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
                                 }
                             }
                             if (name === 'id') {
-                                TUI.init(id);
+                                if (currentId != parameters['id']) {
+                                    currentId = parameters['id'];
+                                    initRequired = true;
+                                }
                             }
+                            if (name === 'token') {
+                                if (currentToken != parameters['token']) {
+                                    currentToken = parameters['token'];
+                                    initRequired = true;
+                                }
+                            }
+                        }
+                        if (initRequired) {
+                            TUI.init(currentId);
                         }
                     });
                 } else {

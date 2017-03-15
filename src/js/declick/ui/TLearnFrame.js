@@ -1,6 +1,6 @@
-define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRuntime', 'TEnvironment', 'TExerciseProject', 'TError', 'prism', 'platform-pr', 'split-pane'], function(TComponent, $, TLearnCanvas, TLearnEditor, TRuntime, TEnvironment, TExerciseProject, TError, Prism) {
+define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRuntime', 'TEnvironment', 'TExerciseProject', 'TError', 'prism', 'TLink', 'platform-pr', 'split-pane'], function(TComponent, $, TLearnCanvas, TLearnEditor, TRuntime, TEnvironment, TExerciseProject, TError, Prism, TLink) {
     function TLearnFrame(callback) {
-        var $text, $message, $textMessage, $textMessageContent, $messageContent, $instruction, $instructions, $solution, $solutionContent, $input, $loading, $right, $success, $successText, $slideFrame;
+        var $text, $message, $textMessage, $textMessageContent, $messageContent, $instruction, $instructions, $solution, $solutionContent, $input, $loading, $right, $success, $successText, $slide, $slideContent;
         var canvas, editor;
 
         var exercise = new TExerciseProject();
@@ -60,6 +60,12 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
                 hideSuccess();
             });
 
+            var $buttonOk = component.find("#tlearnframe-slide-ok");
+            $buttonOk.text(TEnvironment.getMessage('button-slide-ok'));
+            $buttonOk.click(function(e) {
+                platform.validate("nextImmediate");
+            });
+
             $instructions = component.find("#tlearnframe-instructions");
             $instruction = component.find("#tlearnframe-instruction");
             $solution = component.find("#tlearnframe-solution");
@@ -75,7 +81,8 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             $success = component.find("#tlearnframe-success");
             $successText = component.find("#tlearnframe-success-text");
 
-            $slideFrame = component.find("#tlearnframe-slide");
+            $slide = component.find("#tlearnframe-slide");
+            $slideContent = $slide.find("#tlearnframe-slide-content");
 
             var self = this;
             canvas = new TLearnCanvas(function(c) {
@@ -118,7 +125,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             $solution.css('bottom', height + bottomSolution + "px");
             $solution.css('visibility', 'visible');
             $solution.hide();
-            $slideFrame.hide();
+            $slide.hide();
 
             canvas.removeLoading();
             initialized = true;
@@ -158,9 +165,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
                                 self.init();
                             }
                             self.loaded();
-                            window.console.log("sending show view");
                             window.platform.showView({task:{}}, function() {
-                                window.console.log("show view sent");
                                 if (typeof callback !== 'undefined') {
                                     callback.call(self);
                                 }
@@ -195,7 +200,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
        };
 
         this.loading = function() {
-            $slideFrame.hide();
+            $slide.hide();
             $loading.stop().css({opacity:1}).show();
         };
 
@@ -331,8 +336,8 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
         };
 
         var hideSlide = function() {
-            $slideFrame.off("load");
-            $slideFrame.hide();
+            $slide.off("load");
+            $slide.hide();
             slideDisplayed = false;
         };
 
@@ -548,14 +553,18 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
 
 
         this.displaySlide = function(slideId, callback) {
-            $slideFrame.one("load", function(event) {
-                $slideFrame.show();
+            TLink.getSlideContent(slideId, function(data) {
+                if (data instanceof TError) {
+                    $slideContent.html("<div class='tlearnframe-slide-error'>"+data.getMessage()+"</div>");
+                } else {
+                    $slideContent.html(data);
+                }
+                $slide.show();
                 slideDisplayed = true;
                 if (typeof callback !== 'undefined') {
                     callback.call(this);
                 }
-            });
-            $slideFrame.attr("src", TEnvironment.getConfig("slide-url")+slideId);
+            })
         };
 
     }

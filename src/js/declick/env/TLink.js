@@ -534,6 +534,21 @@ function($, TUtils, TEnvironment, TError, TParser) {
       store.renameProjectAsset(name, newBaseName, callback, callback)
     }
 
+    this.getSlideContent = function (id, callback) {
+      var slideUrl = TEnvironment.getConfig("slide-url")+id+'?access_token=jWNoVhWCng6odNLK';
+      $.ajax({
+          type: 'GET',
+          url: slideUrl,
+          dataType: 'json',
+          success: function (data) {
+            callback.call(this, data.content);
+          },
+          error: function (data, status, error) {
+            callback.call(this, new TError(error))
+          }
+        })
+    }
+
     this.deleteResource = this.deleteProgram
   };
 

@@ -131,17 +131,15 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             initialized = true;
         };
 
-        this.update = function(id, callback) {
+        this.update = function(id, slide, callback) {
             hideSuccess(); 
-            if (id.substring(0,1) === "s") {
-                // slide
+            if (slide) {
                 if (!initialized) {
                     this.init();
                 }
                 this.loading();
-                var slideId = id.substring(1);
                 var self = this;
-                this.displaySlide(slideId, function() {
+                this.displaySlide(id, function() {
                     self.loaded();
                     if (typeof callback !== 'undefined') {
                         callback.call(this);
@@ -185,14 +183,18 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             var self = this;
             TEnvironment.registerParametersHandler(function (parameters, callback) {
                 var id = false;
+                var slide = false;
                 for (var name in parameters) {
                     var value = parameters[name];
                     if (name === 'id') {
                         id = value;
+                    } else if (name === 'slide') {
+                        id = value;
+                        slide = true;
                     }
                 }
                 if (id) {
-                    self.update(id, callback);
+                    self.update(id, slide, callback);
                 } else if (callback) {
                     callback.call(self);
                 }

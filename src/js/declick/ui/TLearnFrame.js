@@ -63,6 +63,8 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             var $buttonOk = component.find("#tlearnframe-slide-ok");
             $buttonOk.text(TEnvironment.getMessage('button-slide-ok'));
             $buttonOk.click(function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 platform.validate("nextImmediate");
             });
 

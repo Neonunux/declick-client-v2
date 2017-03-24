@@ -594,3 +594,12 @@ pre[class*="language-"], :not(pre) > code[class*="language-"]{
 #tlearnframe-slide-ok:hover {
     border:solid 2px #480A2A;
 }
+
+#tlearnframe-slide-content pre {
+    background-color: #d7d7d7;
+    max-height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width:500px;
+    padding:28px;
+}

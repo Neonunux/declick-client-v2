@@ -573,6 +573,9 @@ pre[class*="language-"], :not(pre) > code[class*="language-"]{
     font-family: "DejaVu Sans",Helvetica,Arial,sans-serif;
     text-align:justify;
     padding:20px;
+    color:#480A2A;
+    font-size:16px;
+    line-height:22px;
 }
 
 #tlearnframe-slide-ok {
@@ -602,4 +605,9 @@ pre[class*="language-"], :not(pre) > code[class*="language-"]{
     overflow-x: hidden;
     width:500px;
     padding:28px;
+    font-size:1em;
+}
+
+#tlearnframe-slide-content pre {
+    font-size:1em;
 }

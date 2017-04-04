@@ -246,7 +246,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
                         }                        
                         context.validateExercise(message, next);
                     }
-                    else if (output.result === 'faillure')
+                    else if (output.result === 'failure')
                     {
                         context.invalidateExercise(output.message);
                     }

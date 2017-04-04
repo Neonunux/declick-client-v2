@@ -584,7 +584,7 @@ pre[class*="language-"], :not(pre) > code[class*="language-"]{
     background-color:#480a2a;
     color:#cfd617;
     border:none;
-    font-size:16px;
+    font-size:24px;
     cursor:pointer;
     border-radius: 50%;
     border:solid 8px #642d46;

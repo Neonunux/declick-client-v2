@@ -109,6 +109,10 @@ define(['TEnvironment', 'TRuntime', 'TProject', 'TError', 'TParser', 'objects'],
         this.getInstructions = function(callback) {
             if (instructions !== false) {
                 project.getResourceContent("instructions.html", callback);
+            } else {
+                if (typeof callback !== 'undefined') {
+                    callback.call(this);
+                }
             }
         };
 
@@ -119,6 +123,8 @@ define(['TEnvironment', 'TRuntime', 'TProject', 'TError', 'TParser', 'objects'],
         this.getSolution = function() {
             if (solutionCode !== false) {
                 return solutionCode;
+            } else {
+                return "";
             }
         };
 
@@ -129,16 +135,22 @@ define(['TEnvironment', 'TRuntime', 'TProject', 'TError', 'TParser', 'objects'],
         this.getHints = function(callback) {
             if (hints !== false) {
                 project.getResourceContent("hints.html", callback);
+            } else {
+                if (typeof callback !== 'undefined') {
+                    callback.call(this);
+                }
             }
         };
 
         /**
         * Get User code.
-        * @param {function} callback
+        * @returns {String}
         */
-        this.getUserCode = function(callback) {
+        this.getUserCode = function() {
             if (userCode !== false) {
                 return userCode;
+            } else {
+                return "";
             }
         };
 

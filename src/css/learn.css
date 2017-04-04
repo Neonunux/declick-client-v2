@@ -581,12 +581,13 @@ pre[class*="language-"], :not(pre) > code[class*="language-"]{
 #tlearnframe-slide-ok {
     margin-left:auto;
     margin-right:auto;
-    background-color:#CFD617;
-    color:#480A2A;
+    background-color:#480a2a;
+    color:#cfd617;
     border:none;
     font-size:16px;
     cursor:pointer;
     border-radius: 50%;
+    border:solid 8px #642d46;
     width:80px;
     height:80px;
     display:block;
@@ -595,7 +596,7 @@ pre[class*="language-"], :not(pre) > code[class*="language-"]{
 }
 
 #tlearnframe-slide-ok:hover {
-    border:solid 2px #480A2A;
+    border-color:#0fac8d;
 }
 
 #tlearnframe-slide-content pre {

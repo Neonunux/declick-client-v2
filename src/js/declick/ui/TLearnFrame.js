@@ -389,15 +389,16 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             score = 0;
             lastSubmission = "";
             exercise.load(function() {
+                // set user code
+                if (exercise.hasUserCode()) {
+                    editor.setValue(exercise.getUserCode());
+                }
                 // set instruction
                 if (exercise.hasInstructions()) {
                     exercise.getInstructions(function(data) {
                         $instructions.html(data);
                         Prism.highlightAll(false);
                         exercise.init();
-                        if (exercise.hasUserCode()) {
-                            editor.setValue(exercise.getUserCode());
-                        }
                         // TODO: send callback to exercise.init() when interpreter supports callbacks
                         if (typeof callback !== 'undefined') {
                             callback.call(this);

@@ -614,7 +614,9 @@ define(['jquery', 'TEnvironment', 'TUtils', 'CommandManager', 'SynchronousManage
     };
 
     Robot.prototype.deleteObject = function () {
-        this.synchronousManager.end();
+        if (typeof this.synchronousManager !== 'undefined') {
+            this.synchronousManager.end();
+        }
         // remove object from instances list
         Platform.unregister(this);
         Character.prototype.deleteObject.call(this);

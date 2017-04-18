@@ -1,7 +1,7 @@
 define(['ui/TComponent', 'jquery', 'TEnvironment', 'TUI'], function(TComponent, $, TEnvironment, TUI) {
     function TToolbar(callback) {
         var $main, $buttonExecute;
-        var $buttonDesignMode, $buttonConsole, $buttonSaveProgram, $buttonHints;
+        var $buttonDesignMode, $buttonConsole, $buttonSaveProgram, $buttonHints, $buttonWiki;
         var editorMode = false;
         var saveEnabled = false;
         var currentHeight = -1;
@@ -13,20 +13,14 @@ define(['ui/TComponent', 'jquery', 'TEnvironment', 'TUI'], function(TComponent, 
             $buttonConsole = component.find("#ttoolbar-console");
             $buttonSaveProgram = component.find("#ttoolbar-save");
 
-            var $buttonWiki = component.find("#ttoolbar-wiki");
+            $buttonWiki = component.find("#ttoolbar-wiki");
             $buttonWiki.prop("title", TEnvironment.getMessage('button-wiki'));
             $buttonWiki.click(function(e) {
                 $buttonWiki.toggleClass("active");
-                parent.toggleWiki();
+                if (typeof window.parent !== 'undefined') {
+                    window.parent.postMessage("toggleWiki", "*");
+                }
             });
-
-            window.setWikiOpened = function() {
-                $buttonWiki.addClass("active");
-            };
-
-            window.setWikiClosed = function() {
-                $buttonWiki.removeClass("active");
-            };
 
             $buttonHints = component.find("#ttoolbar-hints");
             $buttonHints.prop("title", TEnvironment.getMessage('button-hints'));
@@ -133,6 +127,14 @@ define(['ui/TComponent', 'jquery', 'TEnvironment', 'TUI'], function(TComponent, 
                 currentHeight = $main.outerHeight(false);
             }
             return currentHeight;
+        };
+
+        this.setWikiOpen = function() {
+            $buttonWiki.addClass("active");
+        };
+
+        this.setWikiClosed = function() {
+            $buttonWiki.removeClass("active");
         };
     }
 

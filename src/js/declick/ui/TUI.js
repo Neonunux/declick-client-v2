@@ -652,6 +652,13 @@ define(['jquery', 'TRuntime', 'TEnvironment', 'ui/THints', 'TError'], function($
             toolbar.setHintsDisplayed(THints.visible());
         };
 
+        this.enableWiki = function() {
+            toolbar.setWikiOpen();
+        }
+
+        this.disableWiki = function() {
+            toolbar.setWikiClosed();
+        }
     };
 
     var uiInstance = new TUI();

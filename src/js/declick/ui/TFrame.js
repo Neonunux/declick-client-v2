@@ -131,6 +131,14 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
                                     initRequired = true;
                                 }
                             }
+                            if (name === 'wiki') {
+                                var wiki = (parameters['wiki']=='true');
+                                if (wiki) {
+                                    TUI.enableWiki();
+                                } else {
+                                    TUI.disableWiki();
+                                }
+                            }
                         }
                         if (initRequired) {
                             TUI.init(currentId);

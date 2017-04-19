@@ -385,11 +385,10 @@ function($, TUtils, TEnvironment, TError, TParser) {
             var value = parameters[name];
             switch (name) {
               case 'token':
-                api.authorizationToken = value;
-                store.resetUser();
-                break
-              case 'projectId':
-                store.setProjectId(value);
+                if (api.authorizationToken != value) {
+                  api.authorizationToken = value;
+                  store.resetUser();
+                }
                 break
             }
         }

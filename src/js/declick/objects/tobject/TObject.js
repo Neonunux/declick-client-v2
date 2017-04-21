@@ -1,4 +1,4 @@
-define(['jquery', 'TRuntime', 'TEnvironment'], function($, TRuntime, TEnvironment) {
+define(['jquery', 'TRuntime', 'TEnvironment', 'TResource'], function($, TRuntime, TEnvironment, TResource) {
     /**
      * Defines TObject.
      * This is the main class, all classes inherit from it.
@@ -19,6 +19,14 @@ define(['jquery', 'TRuntime', 'TEnvironment'], function($, TRuntime, TEnvironmen
     TObject.prototype.getResource = function(location) {
         return TEnvironment.getObjectsUrl() + "/" + this.objectPath + "/resources/" + location;
     };
+
+    TObject.prototype.loadJSON = function(location, callback, errorCallback) {
+        TResource.get(location, [], callback, errorCallback);
+    }
+
+    TObject.prototype.loadFile = function(location, callback, errorCallback) {
+        TResource.getPlain(location, [], callback, errorCallback);
+    }
 
     TObject.prototype.getMessage = function(code) {
         if (typeof this.constructor.messages[code] !== 'undefined') {

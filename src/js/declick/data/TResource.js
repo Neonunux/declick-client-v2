@@ -39,8 +39,9 @@ define(['jquery'], function($) {
          * @param {String} name the name of resource file
          * @param {Array} fields the fields to retrieve from resource file. If empty, returns all file content
          * @param {Function} callback
+         * @param {Function} errorCallback
          */
-        this.get = function(name, fields, callback) {
+        this.get = function(name, fields, callback, errorCallback) {
             if (cacheEnabled) {
                 // try to retrieve value from local storage
                 var value = localStorage.getItem(name);
@@ -77,8 +78,12 @@ define(['jquery'], function($) {
                     callback.call(this, value);
                 },
                 error: function(data, status, error) {
-                    self.error("Error loading resource '"+name+"'");
-                    callback.call(this, {});
+                    if (typeof errorCallback !== 'undefined') {
+                        errorCallback.call(this, error);
+                    } else {
+                        self.error("Error loading resource '"+name+"'");
+                        callback.call(this, {});
+                    }
                 }
             });
         };
@@ -88,8 +93,9 @@ define(['jquery'], function($) {
          * Get value from a text resource file
          * @param {String} name the name of resource file
          * @param {Function} callback
+         * @param {Function} errorCallback
          */
-        this.getPlain = function(name, callback) {
+        this.getPlain = function(name, callback, errorCallback) {
             if (cacheEnabled) {
                 // try to retrieve value from local storage
                 var value = localStorage.getItem(name);
@@ -117,8 +123,12 @@ define(['jquery'], function($) {
                     callback.call(this, data);
                 },
                 error: function(data, status, error) {
-                    this.error("Error loading resource '"+name+"'");
-                    callback.call(this, "");
+                    if (typeof errorCallback !== 'undefined') {
+                        errorCallback.call(this, error);
+                    } else {
+                        this.error("Error loading resource '"+name+"'");
+                        callback.call(this, "");
+                    }
                 }
             });
         };

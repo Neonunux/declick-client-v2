@@ -60,9 +60,18 @@ define(['TRuntime'], function(TRuntime) {
      */
     ResourceManager.prototype.add = function(name, asset, callback) {
         if (typeof this.resources[name] !== 'undefined') {
-            // resource already added: call callback right now
+            // resource already added
             if (typeof callback !== 'undefined') {
-                callback.call(this);
+                if (this.resources[name].state === ResourceManager.STATE_READY) {
+                    // resource loaded: call callback right now
+                    callback.call(this);
+                } else {
+                    // resource is loading
+                    if (typeof ResourceManager.waitingForImage[name] !== 'undefined') {
+                        // should always be the case
+                        ResourceManager.waitingForImage[name].push(callback);
+                    }             
+                }
             }
         }
         this.resources[name] = getNewResource();

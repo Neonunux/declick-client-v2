@@ -18,7 +18,6 @@ define(['jquery', 'introjs', 'TEnvironment', 'TResource'], function($, introjs, 
         this.loadHints = function(name, callback) {
             var hintsFile = TEnvironment.getResource(name);
             TResource.get(hintsFile, [], function (data) {
-                window.console.debug(data);
                 introJS.setOptions(data);
                 // check for pages
                 var index = 0;

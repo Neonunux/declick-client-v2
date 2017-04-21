@@ -69,31 +69,27 @@ define(['jquery', 'TResource'], function ($, TResource) {
             window.console.log("* Loading config");
             var configFile = this.getResource("config.json");
             var self = this;
-            $.ajax({
-                dataType: "json",
-                url: configFile,
-                success: function (data) {
-                    $.extend(self.config, data);
-                    self.debug = self.config.debug;
-                    TResource.setCacheEnabled(self.isCacheEnabled(), self.config['cache-version']);
-                    window.console.log("* Cache revision: " + self.config['cache-version']);
-                    TResource.setLog(self.config.log);
-                    TResource.setError(self.config.error);
-                    self.log("* Retrieving translated messages");
-                    var messageFile = self.getResource("messages.json");
-                    var language = self.language;
-                    TResource.get(messageFile, [language], function (data) {
-                        if (typeof data[language] !== 'undefined') {
-                            self.log("found messages in language: " + language);
-                            self.messages = data[language];
-                        } else {
-                            self.log("found no messages for language: " + language);
-                        }
-                        if (typeof callback !== 'undefined') {
-                            callback.call(self);
-                        }
-                    });
-                }
+            TResource.get(configFile, [], function(data) {
+                $.extend(self.config, data);
+                self.debug = self.config.debug;
+                TResource.setCacheEnabled(self.isCacheEnabled(), self.config['cache-version']);
+                window.console.log("* Cache revision: " + self.config['cache-version']);
+                TResource.setLog(self.config.log);
+                TResource.setError(self.config.error);
+                self.log("* Retrieving translated messages");
+                var messageFile = self.getResource("messages.json");
+                var language = self.language;
+                TResource.get(messageFile, [language], function (data) {
+                    if (typeof data[language] !== 'undefined') {
+                        self.log("found messages in language: " + language);
+                        self.messages = data[language];
+                    } else {
+                        self.log("found no messages for language: " + language);
+                    }
+                    if (typeof callback !== 'undefined') {
+                        callback.call(self);
+                    }
+                });
             });
         };
 

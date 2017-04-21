@@ -1,4 +1,4 @@
-define(['jquery', 'introjs', 'TEnvironment'], function($, introjs, TEnvironment) {
+define(['jquery', 'introjs', 'TEnvironment', 'TResource'], function($, introjs, TEnvironment, TResource) {
     function THints() {
         var introJS = introjs();
         var hintsDisplayed = false;
@@ -17,29 +17,26 @@ define(['jquery', 'introjs', 'TEnvironment'], function($, introjs, TEnvironment)
 
         this.loadHints = function(name, callback) {
             var hintsFile = TEnvironment.getResource(name);
-            $.ajax({
-                dataType: "json",
-                url: hintsFile,
-                success: function (data) {
-                    introJS.setOptions(data);
-                    // check for pages
-                    var index = 0;
-                    for (var i = 0; i<data.hints.length; i++) {
-                        var item = data.hints[i];
-                        if (typeof item.pages !== 'undefined') {
-                            for (var j = 0; j< item.pages.length; j++) {
-                                if (typeof pages[item.pages[j]] === 'undefined') {
-                                    pages[item.pages[j]] = [];
-                                }
-                                pages[item.pages[j]].push(index);
+            TResource.get(hintsFile, [], function (data) {
+                window.console.debug(data);
+                introJS.setOptions(data);
+                // check for pages
+                var index = 0;
+                for (var i = 0; i<data.hints.length; i++) {
+                    var item = data.hints[i];
+                    if (typeof item.pages !== 'undefined') {
+                        for (var j = 0; j< item.pages.length; j++) {
+                            if (typeof pages[item.pages[j]] === 'undefined') {
+                                pages[item.pages[j]] = [];
                             }
+                            pages[item.pages[j]].push(index);
                         }
-                        index++;
                     }
-                    hintsCount = index;
-                    if (typeof callback  !== 'undefined') {
-                        callback.call(this);
-                    }
+                    index++;
+                }
+                hintsCount = index;
+                if (typeof callback  !== 'undefined') {
+                    callback.call(this);
                 }
             });
         };

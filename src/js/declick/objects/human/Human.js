@@ -442,20 +442,19 @@ define(['jquery', 'TEnvironment', 'TUtils', 'TGraphicalObject', 'CommandManager'
         var elements = new Array();
         var assets = new Array();
         TEnvironment.log("url : " + skeletonUrl);
-        $.ajax({
-            dataType: "json",
-            url: skeletonUrl,
-            async: false,
-            success: function (data) {
+        this.loadJSON(
+            skeletonUrl, 
+            function (data) {
                 $.each(data['skeleton']['element'], function (key, val) {
                     elements.push(val);
                     assets.push(baseImageUrl + val['image']);
                 });
                 parent.build(baseImageUrl, elements, assets);
+            },
+            function (error) {
+                throw new Error(TUtils.format(parent.getMessage("unknown skeleton"), name));
             }
-        }).fail(function (jqxhr, textStatus, error) {
-            throw new Error(TUtils.format(parent.getMessage("unknown skeleton"), name));
-        });
+        );
     };
 
     /**

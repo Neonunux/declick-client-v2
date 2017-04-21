@@ -86,11 +86,9 @@ define(['jquery', 'TEnvironment', 'TGraphicalObject', 'objects/sprite/Sprite', '
         var baseSceneUrl = this.getResource(name) + "/";
         var configUrl = baseSceneUrl + "config.json";
         var parent = this;
-        $.ajax({
-            dataType: "json",
-            url: configUrl,
-            async: false,
-            success: function (data) {
+        this.loadJSON(
+            configUrl,
+            function (data) {
                 var backImage = data['images']['background'];
                 var blockImage = data['images']['block'];
                 try {
@@ -115,10 +113,11 @@ define(['jquery', 'TEnvironment', 'TGraphicalObject', 'objects/sprite/Sprite', '
                         parent.gObject.setBlock(blockName);
                     }
                 });
+            },
+            function (error) {
+                throw new Error(TUtils.format(parent.getMessage("unknown character"), name));
             }
-        }).fail(function (jqxhr, textStatus, error) {
-            throw new Error(TUtils.format(parent.getMessage("unknown character"), name));
-        });
+        );
     };
 
     /**

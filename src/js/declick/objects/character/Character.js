@@ -562,11 +562,9 @@ define(['jquery', 'TEnvironment', 'TGraphicalObject', 'objects/sprite/Sprite', '
         var baseCharacterUrl = this.getResource(name) + "/";
         var configUrl = baseCharacterUrl + "config.json";
         var parent = this;
-        $.ajax({
-            dataType: "json",
-            url: configUrl,
-            async: false,
-            success: function (data) {
+        this.loadJSON(
+            configUrl,
+            function (data) {
                 parent.gObject.initialized(false);
                 var currentLocation = parent.gObject.getLocation();
                 var frontImages = data['images']['front'];
@@ -644,11 +642,11 @@ define(['jquery', 'TEnvironment', 'TGraphicalObject', 'objects/sprite/Sprite', '
                 //parent.gObject.setLocation(currentLocation.x, currentLocation.y);
                 parent.gObject.setDurations(data['durationMove'], data['durationPause']);
                 parent.custom = false;
+            }, 
+            function (error) {
+                throw new Error(TUtils.format(parent.getMessage("unknown character"), name));
             }
-        }).fail(function (jqxhr, textStatus, error) {
-            throw new Error(TUtils.format(parent.getMessage("unknown character"), name));
-        });
-
+        );
     };
 
     /**

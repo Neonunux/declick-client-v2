@@ -29,14 +29,25 @@ define(['jquery', 'TResource'], function ($, TResource) {
 
         var parameters = {};
         var parametersHandlers = [];
+        var messagesHandlers = [];
 
         this.registerParametersHandler = function (handler, callback) {
             parametersHandlers.push(handler);
             propagateParameters(handler, callback);
         };
 
+        this.registerMessagesHandler = function (handler, callback) {
+            messagesHandlers.push(handler);
+        };
+
         function propagateParameters(handler, callback) {
             handler(parameters, callback);
+        }
+
+        function propagateMessage(event) {
+            for (var index = 0; index < messagesHandlers.length; index++) {
+                messagesHandlers[index](event.data)
+            }
         }
 
         function reloadParameters() {
@@ -57,6 +68,9 @@ define(['jquery', 'TResource'], function ($, TResource) {
             reloadParameters();
             window.addEventListener("hashchange", function() {
                 reloadParameters();
+            }, false);
+            window.addEventListener("message", function(event) {
+                propagateMessage(event);
             }, false);
         });
 

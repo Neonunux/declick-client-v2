@@ -9,12 +9,19 @@ define(['jquery'], function($) {
          * @param {boolean} value
          */
         this.setCacheEnabled = function(value, version) {
+
             var clearCache = function() {
+                var toBeRemoved = [];
+
                 for (var i=0; i<localStorage.length; i++) {
                     var key = localStorage.key(i);
                     if (key.substring(0, 7)=="client.") {
-                        localStorage.removeItem(key);
+                        toBeRemoved.push(key);
                     }
+                }
+
+                for (i=0;i<toBeRemoved.length;i++) {
+                    localStorage.removeItem(toBeRemoved[i]);
                 }
             }
             cacheEnabled = value;

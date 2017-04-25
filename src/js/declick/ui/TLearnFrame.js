@@ -1,6 +1,6 @@
 define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRuntime', 'TEnvironment', 'TExerciseProject', 'TError', 'prism', 'TLink', 'platform-pr', 'split-pane'], function(TComponent, $, TLearnCanvas, TLearnEditor, TRuntime, TEnvironment, TExerciseProject, TError, Prism, TLink) {
     function TLearnFrame(callback) {
-        var $text, $message, $textMessage, $textMessageContent, $messageContent, $instruction, $instructions, $solution, $solutionContent, $input, $loading, $right, $success, $successText, $slide, $slideContent, $buttonNext;
+        var $text, $message, $textMessage, $textMessageContent, $messageContent, $instruction, $instructions, $solution, $solutionContent, $input, $loading, $right, $success, $successText, $slide, $slideContent, $buttonNext, $buttonOk;
         var canvas, editor;
 
         var exercise = new TExerciseProject();
@@ -60,7 +60,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
                 hideSuccess();
             });
 
-            var $buttonOk = component.find("#tlearnframe-slide-ok");
+            $buttonOk = component.find("#tlearnframe-slide-ok");
             $buttonOk.text(TEnvironment.getMessage('button-slide-ok'));
             $buttonOk.click(function(e) {
                 e.preventDefault();
@@ -133,7 +133,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             initialized = true;
         };
 
-        this.update = function(id, slide, callback) {
+        this.update = function(id, slide, ok, callback) {
             hideSuccess(); 
             if (slide) {
                 if (!initialized) {
@@ -141,7 +141,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
                 }
                 this.loading();
                 var self = this;
-                this.displaySlide(id, function() {
+                this.displaySlide(id, ok, function() {
                     self.loaded();
                     if (typeof callback !== 'undefined') {
                         callback.call(this);
@@ -186,6 +186,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             TEnvironment.registerParametersHandler(function (parameters, callback) {
                 var id = false;
                 var slide = false;
+                var ok = true;
                 for (var name in parameters) {
                     var value = parameters[name];
                     if (name === 'id') {
@@ -194,9 +195,12 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
                         id = value;
                         slide = true;
                     }
+                    if (name === 'ok') {
+                        ok = (value == "true" || value ==0);
+                    }
                 }
                 if (id) {
-                    self.update(id, slide, callback);
+                    self.update(id, slide, ok, callback);
                 } else if (callback) {
                     callback.call(self);
                 }
@@ -578,12 +582,17 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
         };
 
 
-        this.displaySlide = function(slideId, callback) {
+        this.displaySlide = function(slideId, ok, callback) {
             TLink.getSlideContent(slideId, function(data) {
                 if (data instanceof TError) {
                     $slideContent.html("<div class='tlearnframe-slide-error'>"+data.getMessage()+"</div>");
                 } else {
                     $slideContent.html(data);
+                }
+                if (ok) {
+                    $buttonOk.show();
+                } else {
+                    $buttonOk.hide();
                 }
                 $slide.show();
                 slideDisplayed = true;

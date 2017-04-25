@@ -110,6 +110,7 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
                     // set init function to be launched whenever frame parameters (ie access token) change
                     TEnvironment.registerParametersHandler(function (parameters, callback) {
                         var initRequired = false;
+                        var idSet = false;
                         for (var name in parameters) {
                             if (name === 'editor') {
                                 var editor = (parameters['editor']=='true');
@@ -120,6 +121,7 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
                                 }
                             }
                             if (name === 'id') {
+                                idSet = true;
                                 if (currentId != parameters['id']) {
                                     currentId = parameters['id'];
                                     initRequired = true;
@@ -139,6 +141,12 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
                                     TUI.disableWiki();
                                 }
                             }
+                        }
+                        if (!idSet) {
+                            if (currentId !== null) {
+                                initRequired = true;
+                            }
+                            currentId = null;
                         }
                         if (initRequired) {
                             TUI.init(currentId);

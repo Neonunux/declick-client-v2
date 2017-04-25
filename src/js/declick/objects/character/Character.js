@@ -569,7 +569,7 @@ define(['jquery', 'TEnvironment', 'TGraphicalObject', 'objects/sprite/Sprite', '
             configUrl,
             function (data) {
                 // check that nothing changed during load
-                if (!self.custom || self.aspectName != name) {
+                if (self.custom || self.aspectName != name) {
                     return;
                 }
                 self.gObject.initialized(false);

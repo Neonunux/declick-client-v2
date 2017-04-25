@@ -468,7 +468,7 @@ function($, TUtils, TEnvironment, TError, TParser) {
 
     this.getProgramStatements = function (name, callback) {
       store.getProjectScriptContent(name, function (content) {
-        var statements = TParser.parse(code, name)
+        var statements = TParser.parse(content, name)
         callback.call(self, statements)
       }, callback)
     }

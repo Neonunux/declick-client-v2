@@ -17,6 +17,7 @@ define(['jquery', 'TEnvironment', 'TGraphicalObject', 'objects/sprite/Sprite', '
         this.translatedBackward = this.getMessage("backward");
         this.translatedFront = this.getMessage("front");
         this.custom = false;
+        this.aspectName = "";
         this._setAspect(name);
 
     };
@@ -559,92 +560,97 @@ define(['jquery', 'TEnvironment', 'TGraphicalObject', 'objects/sprite/Sprite', '
     Character.prototype._setAspect = function (name) {
         name = TUtils.getString(name);
         name = this.getMessage(name);
+        this.aspectName = name;
+        this.custom = false;
         var baseCharacterUrl = this.getResource(name) + "/";
         var configUrl = baseCharacterUrl + "config.json";
-        var parent = this;
+        var self = this;
         this.loadJSON(
             configUrl,
             function (data) {
-                parent.gObject.initialized(false);
-                var currentLocation = parent.gObject.getLocation();
+                // check that nothing changed during load
+                if (!this.custom || this.aspectName != name) {
+                    return;
+                }
+                self.gObject.initialized(false);
+                var currentLocation = self.gObject.getLocation();
                 var frontImages = data['images']['front'];
                 //var frontAssets = [];
                 try {
-                    parent._removeImageSet(parent.translatedFront);
-                } catch (e) {
-                }
+                    self._removeImageSet(self.translatedFront);
+                } catch (e) { }
                 for (var i = 0; i < frontImages.length; i++) {
                     var imageName = name + "/" + frontImages[i];
                     //frontAssets.push(imageName);
-                    parent.gObject.addFrontAsset(imageName);
-                    parent.addImage(imageName, parent.translatedFront, false);
+                    self.gObject.addFrontAsset(imageName);
+                    self.addImage(imageName, self.translatedFront, false);
                 }
-                //parent.gObject.setFrontAssets(frontAssets);
+                //self.gObject.setFrontAssets(frontAssets);
                 var downwardImages = data['images']['downward'];
                 if (downwardImages) {
                     var downwardAssets = [];
                     try {
-                        parent._removeImageSet(parent.translatedDownward);
+                        self._removeImageSet(self.translatedDownward);
                     } catch (e) {
                     }
                     for (var i = 0; i < downwardImages.length; i++) {
                         var imageName = name + "/" + downwardImages[i];
                         downwardAssets.push(imageName);
-                        parent.addImage(imageName, parent.translatedDownward, false);
+                        self.addImage(imageName, self.translatedDownward, false);
                     }
-                    parent.gObject.setDownwardAssets(downwardAssets);
+                    self.gObject.setDownwardAssets(downwardAssets);
                 }
                 var upwardImages = data['images']['upward'];
                 if (upwardImages) {
                     var upwardAssets = [];
                     try {
-                        parent._removeImageSet(parent.translatedUpward);
+                        self._removeImageSet(self.translatedUpward);
                     } catch (e) {
                     }
                     for (var i = 0; i < upwardImages.length; i++) {
                         var imageName = name + "/" + upwardImages[i];
                         upwardAssets.push(imageName);
-                        parent.addImage(imageName, parent.translatedUpward, false);
+                        self.addImage(imageName, self.translatedUpward, false);
                     }
-                    parent.gObject.setUpwardAssets(upwardAssets);
+                    self.gObject.setUpwardAssets(upwardAssets);
                 }
                 var forwardImages = data['images']['forward'];
                 var forwardAssets = [];
                 try {
-                    parent._removeImageSet(parent.translatedForward);
+                    self._removeImageSet(self.translatedForward);
                 } catch (e) {
                 }
                 for (var i = 0; i < forwardImages.length; i++) {
                     var imageName = name + "/" + forwardImages[i];
                     forwardAssets.push(imageName);
-                    parent.addImage(imageName, parent.translatedForward, false);
+                    self.addImage(imageName, self.translatedForward, false);
                 }
-                parent.gObject.setForwardAssets(forwardAssets);
+                self.gObject.setForwardAssets(forwardAssets);
                 var backwardImages = data['images']['backward'];
                 var backwardAssets = [];
                 try {
-                    parent._removeImageSet(parent.translatedBackward);
+                    self._removeImageSet(self.translatedBackward);
                 } catch (e) {
                 }
                 for (var i = 0; i < backwardImages.length; i++) {
                     var imageName = name + "/" + backwardImages[i];
                     backwardAssets.push(imageName);
-                    parent.addImage(imageName, parent.translatedBackward, false);
+                    self.addImage(imageName, self.translatedBackward, false);
                 }
-                parent.gObject.setBackwardAssets(backwardAssets);
+                self.gObject.setBackwardAssets(backwardAssets);
                 // remove default imageSet
                 try {
-                    parent._removeImageSet("");
+                    self._removeImageSet("");
                 } catch (e) {
                 }
-                parent.gObject.removeDefaultAssets();
-                parent._displayNextImage(parent.translatedFront);
-                //parent.gObject.setLocation(currentLocation.x, currentLocation.y);
-                parent.gObject.setDurations(data['durationMove'], data['durationPause']);
-                parent.custom = false;
+                self.gObject.removeDefaultAssets();
+                self._displayNextImage(self.translatedFront);
+                //self.gObject.setLocation(currentLocation.x, currentLocation.y);
+                self.gObject.setDurations(data['durationMove'], data['durationPause']);
+                self.custom = false;
             }, 
             function (error) {
-                throw new Error(TUtils.format(parent.getMessage("unknown character"), name));
+                throw new Error(TUtils.format(self.getMessage("unknown character"), name));
             }
         );
     };

@@ -17,36 +17,46 @@ define(['TRuntime', 'TUtils', 'TParser', 'TLink', 'TEnvironment'], function(TRun
      */
     CommandManager.prototype.addCommand = function(command, field) {
         var i;
+
+        var self = this;
+
+        var pushCommand = function(command,field) {
+            if (typeof field === 'undefined') {
+                // simple command provided
+                for (i = 0; i < command.length; i++) {
+                    self.commands.push(command[i]);
+                }
+            } else {
+                // command with associated field
+                if (typeof self.commands[field] === 'undefined') {
+                    self.commands[field] = [];
+                    self.enabled[field] = true;
+                }
+                for (i = 0; i < command.length; i++) {
+                    self.commands[field].push(command[i]);
+                }
+            }
+        }
+
         if (TUtils.checkString(command)) {
             // command is a string: we check if it is the name of a program
             var project = TEnvironment.getProject();
             var statements;
             if (project.hasProgram(command)){
                 TLink.getProgramStatements(command, function(value) {
-                    statements = value;
+                    var command = TRuntime.createCallStatement(TRuntime.createFunctionStatement(value.body));
+                    pushCommand(command, field);
                 }, false);
-                command = TRuntime.createCallStatement(TRuntime.createFunctionStatement(statements.body));
             } else {
                 // Not the name of a program: we parse it
                 command = TParser.parse(command).body;
+                pushCommand(command, field);
             }
         } else if (TUtils.checkFunction(command)) {
             command = TRuntime.createCallStatement(command);
-        }
-        if (typeof field === 'undefined') {
-            // simple command provided
-            for (i = 0; i < command.length; i++) {
-                this.commands.push(command[i]);
-            }
+            pushCommand(command, field);
         } else {
-            // command with associated field
-            if (typeof this.commands[field] === 'undefined') {
-                this.commands[field] = [];
-                this.enabled[field] = true;
-            }
-            for (i = 0; i < command.length; i++) {
-                this.commands[field].push(command[i]);
-            }
+            pushCommand(command, field);
         }
     };
 

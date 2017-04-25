@@ -144,6 +144,11 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
                             TUI.init(currentId);
                         }
                     });
+                    TEnvironment.registerMessagesHandler(function(message) {
+                        if (message=="init") {
+                            TUI.init(currentId);
+                        }
+                    });
                 } else {
                     $(window).resize(initEditor);
                 }

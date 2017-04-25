@@ -357,7 +357,13 @@ define(['TLink', 'TProgram', 'TEnvironment', 'TUtils', 'TError', 'TRuntime'], fu
                 if (arg instanceof TError) {
                     // error sent: stop there
                     TEnvironment.setProjectAvailable(false);
-                    TEnvironment.error(arg.getMessage());
+                    var message = arg.getMessage();
+                    if (message == "not connected") {
+                        // just log it
+                        TEnvironment.log(message);
+                    } else {
+                        TEnvironment.error(message);
+                    }
                     callback.call(this);
                 } else {
                     self.setId(id);

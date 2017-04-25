@@ -9,22 +9,30 @@ define(['jquery'], function($) {
          * @param {boolean} value
          */
         this.setCacheEnabled = function(value, version) {
+            var clearCache = function() {
+                for (var i=0; i<localStorage.length; i++) {
+                    var key = localStorage.key(i);
+                    if (key.substring(0, 7)=="client.") {
+                        localStorage.removeItem(key);
+                    }
+                }
+            }
             cacheEnabled = value;
             if (cacheEnabled) {
                 // check validity of data
-                var oldVersion = localStorage.getItem("version");
+                var oldVersion = localStorage.getItem("client.version");
                 if (oldVersion) {
                     oldVersion = parseInt(oldVersion);
                     if (version !== oldVersion) {
                         // Versions differ: clear cache
-                        localStorage.clear();
+                        clearCache();
                     }
                 } else {
                     // cache does not contain version: clear it
-                    localStorage.clear();
+                    clearCache();
                 }
                 try {
-                    localStorage.setItem("version", version);
+                    localStorage.setItem("client.version", version);
                 } catch (e) {
                     // in case setItem throws an exception (e.g. private mode)
                     // set cacheEnabled to false
@@ -44,7 +52,7 @@ define(['jquery'], function($) {
         this.get = function(name, fields, callback, errorCallback) {
             if (cacheEnabled) {
                 // try to retrieve value from local storage
-                var value = localStorage.getItem(name);
+                var value = localStorage.getItem("client."+name);
                 if (value) {
                     // value is available from local storage
                     callback.call(this,JSON.parse(value));
@@ -70,7 +78,7 @@ define(['jquery'], function($) {
                     }
                     if (cacheEnabled) {
                         try  {
-                            localStorage.setItem(name,JSON.stringify(value));
+                            localStorage.setItem("client."+name,JSON.stringify(value));
                         } catch (e) {
                             this.error("Error trying to cache value "+value+": "+e);
                         }
@@ -98,7 +106,7 @@ define(['jquery'], function($) {
         this.getPlain = function(name, callback, errorCallback) {
             if (cacheEnabled) {
                 // try to retrieve value from local storage
-                var value = localStorage.getItem(name);
+                var value = localStorage.getItem("client."+name);
                 if (value) {
                     // value is available from local storage
                     // postpone callback execution
@@ -114,7 +122,7 @@ define(['jquery'], function($) {
                 success: function(data) {
                     if (cacheEnabled) {
                         try {
-                            localStorage.setItem(name,data);
+                            localStorage.setItem("client."+name,data);
                         } catch (e) {
                             this.error("Error trying to cache value "+data+": "+e);
                         }

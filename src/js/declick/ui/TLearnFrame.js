@@ -52,7 +52,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             $buttonNext = component.find(".ttoolbar-button-next");
             $buttonNext.prepend(TEnvironment.getMessage('button-next-step'));
             $buttonNext.click(function(e) {
-                platform.validate("nextImmediate");
+                platform.validate("nextOnly");
             });
 
             var $buttonClose = component.find(".ttoolbar-button-close");

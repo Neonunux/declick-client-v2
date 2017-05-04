@@ -8,5 +8,6 @@
     "error": true,
     "cache-version": 0,
     "optimized":false,
-    "analytics":false
+    "analytics":false,
+    "offline":false
 }

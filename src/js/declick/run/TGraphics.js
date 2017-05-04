@@ -224,6 +224,21 @@ define(['jquery', 'quintus'], function($, Quintus) {
             return Q;
         };
 
+        Q.assetUrl = function(base,url) {
+            window.console.log("asset url: "+url);
+            var timestamp = "";
+            if(Q.options.development) {
+                timestamp = (/\?/.test(url) ? "&" : "?") + "_t=" +new Date().getTime();
+            }
+            return url + timestamp;
+            /*if(/^https?:\/\//.test(url) || url[0] === "/") {
+                return url + timestamp;
+            } else {
+                return base + url + timestamp;
+            }*/
+  };
+
+
         this.getInstance = function() {
             return Q;
         };

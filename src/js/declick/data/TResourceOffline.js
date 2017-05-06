@@ -71,10 +71,10 @@ define(['jquery'], function($) {
             }
             var self = this;
             try {
-                // remove "file:///" from url
-                var newName = name.substr(8);
+                // remove "file://" from url
+                var newName = name.substr(7);
                 var newName = path.normalize(newName);
-                var content = fs.readFileSync(newName);
+                var content = fs.readFileSync(newName, {encoding: 'utf8'});
                 var data = JSON.parse(content);
                 var value;
                 if (fields.length>0) {
@@ -130,20 +130,21 @@ define(['jquery'], function($) {
             }
             var self = this;
             try {
-                // remove "file:///" from url
-                var newName = name.substr(8);
+                // remove "file://" from url
+                var newName = name.substr(7);
                 var newName = path.normalize(newName);
-                var content = fs.readFileSync(newName);
+                var content = fs.readFileSync(newName, {encoding: 'utf8'});
                 if (cacheEnabled) {
                     try {
-                        localStorage.setItem("client."+name,data);
+                        localStorage.setItem("client."+name,content);
                     } catch (e) {
-                        this.error("Error trying to cache value "+data+": "+e);
+                        this.error("Error trying to cache value "+content+": "+e);
                     }
                 }
-                callback.call(this, data);
+                callback.call(this, content);
             }
             catch (error) {
+                window.console.log("error while reading file: "+error);
                 if (typeof errorCallback !== 'undefined') {
                     errorCallback.call(this, error);
                 } else {

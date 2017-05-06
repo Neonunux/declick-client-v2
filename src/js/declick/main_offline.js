@@ -108,7 +108,7 @@ function load() {
                 TEnvironment.log("* Building User Interface *");
                 TEnvironment.log("***************************");
                 frame = new TFrame(function (component) {
-                    $("body").append(component);
+                    $(document.body).append(component);
                     TEnvironment.log("*******************");
                     TEnvironment.log("* Initiating link *");
                     TEnvironment.log("*******************");
@@ -116,11 +116,13 @@ function load() {
                     currentProject.init(function () {
                         TEnvironment.setProject(currentProject);
                         $(document).ready(function () {
-                            frame.mounted();
-                            TRuntime.init();
-                            if (typeof window.parent !== 'undefined') {
-                                window.parent.postMessage('init', '*');
-                            }
+                            window.setTimeout(function() {
+                                frame.mounted();
+                                TRuntime.init();
+                                if (typeof window.parent !== 'undefined') {
+                                    window.parent.postMessage('init', '*');
+                                }
+                            }, 0);
                         });
                     });
                 });

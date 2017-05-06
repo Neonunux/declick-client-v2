@@ -6,12 +6,12 @@ define(['ui/TComponent', 'TUI', 'jquery'], function(TComponent, TUI, $) {
             var $buttonClose = component.find("#tmessage-close");
             $main = component;
             $content = component.find("#tmessage-content");
-            if (typeof callback !== 'undefined') {
-                callback.call(this, component);
-            }
             $buttonClose.click(function(e) {
                 hide(true);
             });
+            if (typeof callback !== 'undefined') {
+                callback.call(this, component);
+            }
         });
 
         var hide = function(fade) {

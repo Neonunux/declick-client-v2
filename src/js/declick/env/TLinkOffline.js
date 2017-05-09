@@ -6,6 +6,22 @@ function($, TUtils, TEnvironment, TError, TParser) {
    * @exports TLink
    */
 
+    var remote = nodeRequire('electron').remote
+    var app = remote.app
+    var fs = remote.require('fs-extra')
+    var path = remote.require('path')
+
+    const dataFolder = "declick-data"
+    const appDataFolder = "data"
+    const coursesFolder = "courses"
+    const assessmentsFolder = "assessments"
+    const coursesFile = "courses.json"
+    const assessmentsFile = "assessments.json"
+    const slidesFolder = "slides"
+    const resourcesFile = "resources.json"
+    const courseImageFile = "course.png"
+    const slideFile = "index.html"
+
     var TLink = function () {
 
     /*
@@ -23,106 +39,14 @@ function($, TUtils, TEnvironment, TError, TParser) {
 
     var self = this
 
-    /*var api = {
-
-      authorizationToken: null,
-
-      makeRequest: function (parameters, successCallback, errorCallback) {
-        var defaultParameters = {
-          global: false,
-          beforeSend: function (request) {
-            if (api.authorizationToken) {
-              request.setRequestHeader(
-                'Authorization',
-                'Token ' + api.authorizationToken
-              )
-            }
-          },
-          success: function (data) {
-            successCallback.call(this, data)
-          },
-          error: function (data, status, error) {
-            errorCallback.call(this, new TError(error))
-          }
-        }
-        $.ajax($.extend(defaultParameters, parameters))
-      },
-
-      createResource: function (target, data, successCallback, errorCallback) {
-        this.makeRequest({
-          type: 'POST',
-          url: TEnvironment.getBackendUrl(target),
-          contentType: 'application/json',
-          data: JSON.stringify(data)
-        }, successCallback, errorCallback)
-      },
-
-      modifyResource: function (target, modifications, successCallback,
-        errorCallback
-      ) {
-        this.makeRequest({
-          type: 'PATCH',
-          url: TEnvironment.getBackendUrl(target),
-          contentType: 'application/json',
-          data: JSON.stringify(modifications)
-        }, successCallback, errorCallback)
-      },
-
-      getResource: function (target, successCallback, errorCallback) {
-        this.makeRequest({
-          type: 'GET',
-          url: TEnvironment.getBackendUrl(target),
-          dataType: 'json'
-        }, successCallback, errorCallback)
-      },
-
-      deleteResource: function (target, successCallback, errorCallback) {
-        this.makeRequest({
-          type: 'DELETE',
-          url: TEnvironment.getBackendUrl(target)
-        }, successCallback, errorCallback)
-      },
-
-      getTextFile: function (target, successCallback, errorCallback) {
-        this.makeRequest({
-          type: 'GET',
-          url: TEnvironment.getBackendUrl(target),
-          dataType: 'text'
-        }, successCallback, errorCallback)
-      },
-
-      setTextFile: function (target, code, successCallback, errorCallback) {
-        this.makeRequest({
-          type: 'POST',
-          url: TEnvironment.getBackendUrl(target),
-          contentType: 'text/plain',
-          data: code
-        }, successCallback, errorCallback)
-      },
-
-      getBinaryFile: function (target, successCallback, errorCallback) {
-        this.makeRequest({
-          type: 'GET',
-          url: TEnvironment.getBackendUrl(target),
-          dataType: 'text'
-        }, successCallback, errorCallback)
-      },
-
-      setBinaryFile: function (target, data, successCallback, errorCallback) {
-        this.makeRequest({
-          type: 'POST',
-          url: TEnvironment.getBackendUrl(target),
-          contentType: 'text/plain',
-          data: data
-        }, successCallback, errorCallback)
-      }
-    }*/
-
     var store = {
 
       userId: null,
       projectId: null,
       projectResources: null,
+
+      appFolder: path.format({dir: app.getAppPath(), base: appDataFolder}),
+      assessmentsFolder: path.format({dir: path.join(app.getAppPath(), appDataFolder), base: assessmentsFolder}),
 
       resetUser: function() {
         store.userId = null;
@@ -136,30 +60,14 @@ function($, TUtils, TEnvironment, TError, TParser) {
       },
 
       getUserId: function (successCallback, errorCallback) {
-        errorCallback.call(new TError('user not connected'));
-        /*if (store.userId) {
-          return successCallback.call(self, store.userId)
+        if (store.userId === null) {
+          errorCallback.call(new TError('user not connected'));
         }
-        api.getResource('authorizations', function (authorizations) {
-          if (authorizations.length >= 1) {
-            store.userId = authorizations[0].owner_id
-            successCallback.call(self, store.userId)
-          } else {
-            errorCallback.call(new TError('user not connected'))
-          }
-        }, errorCallback)*/
+        return successCallback.call(self, store.userId);
       },
 
       getDefaultProjectId: function (successCallback, errorCallback) {
-        this.getUserId(function (userId) {
-          api.getResource(
-            'users/' + userId + '/projects/default',
-            function (project) {
-              successCallback.call(self, project.id);
-            },
-            errorCallback
-          )
-        }, errorCallback)
+        successCallback.call(self, 0);
       },
 
       getProjectId: function (successCallback, errorCallback) {
@@ -173,21 +81,23 @@ function($, TUtils, TEnvironment, TError, TParser) {
             , errorCallback);
         }
       },
-
+      getAssessmentFolder (id) {
+        return path.format({dir: store.assessmentsFolder, base: id})
+      },
+      getResourcesFile (id) {
+        return path.format({dir: store.getAssessmentFolder(id), base: resourcesFile})
+      },
       getProjectResources: function (successCallback, errorCallback) {
         if (store.projectId && store.projectResources) {
           return successCallback.call(self, store.projectResources,
             store.projectId);
         }
         this.getProjectId(function (projectId) {
-          api.getResource(
-            'projects/' + projectId + '/resources',
-            function (resources) {
-              store.projectResources = resources;
-              successCallback.call(self, store.projectResources, projectId);
-            },
-            errorCallback
-          )
+          if (store.projectId < 0) {
+            var resources = JSON.parse(fs.readFileSync(store.getResourcesFile(-projectId), {encoding: 'utf8'}));
+            store.projectResources = resources;
+            successCallback.call(self, store.projectResources, projectId);
+          }
         }, errorCallback)
       },
 
@@ -258,11 +168,10 @@ function($, TUtils, TEnvironment, TError, TParser) {
         errorCallback
       ) {
         this.getProjectResource(name, function (resource, projectId) {
-          api.getTextFile(
-            'projects/' + projectId + '/resources/' + resource.id + '/content',
-            successCallback,
-            errorCallback
-          )
+          if (projectId < 0) {
+            var content = fs.readFileSync(path.format({dir: store.getAssessmentFolder(-projectId), base: resource.id}), {encoding: 'utf8'});
+            successCallback(content);
+          }
         }, errorCallback);
       },
 
@@ -355,10 +264,9 @@ function($, TUtils, TEnvironment, TError, TParser) {
         var resource = this.projectResources.filter(function (resource) {
           return resource.file_name === name;
         })[0];
-        var target =
-          'projects/' + (this.projectId || this.defaultProjectId) +
-          '/resources/' + resource.id +
-          '/content';
+        if (this.projectId < 0) {
+          var target = appDataFolder + "/" + assessmentsFolder + "/" + (-this.projectId) + "/" + resource.id;
+        }
         if (withExtension) {
           for (var extension in IMAGE_MEDIA_TYPES) {
             if (resource.media_type === IMAGE_MEDIA_TYPES[extension]) {
@@ -372,11 +280,10 @@ function($, TUtils, TEnvironment, TError, TParser) {
 
       getProjectAssetContent: function (name, successCallback, errorCallback) {
         this.getProjectResource(name, function (resource, projectId) {
-          api.getBinaryFile(
-            'projects/' + projectId + '/resources/' + resource.id + '/content',
-            successCallback,
-            errorCallback
-          );
+          if (projectId < 0) {
+            var content = fs.readFileSync(path.format({dir: store.getAssessmentFolder(-projectId), base: resource.id}), {encoding: 'utf8'});
+            successCallback(content);
+          }
         }, errorCallback)
       }
     }
@@ -386,10 +293,10 @@ function($, TUtils, TEnvironment, TError, TParser) {
             var value = parameters[name];
             switch (name) {
               case 'token':
-                /*if (api.authorizationToken != value) {
-                  api.authorizationToken = value;
+                if (store.userId !== value) {
                   store.resetUser();
-                }*/
+                  store.userId = value;
+                }
                 break
             }
         }

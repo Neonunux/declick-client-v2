@@ -47,6 +47,7 @@ function($, TUtils, TEnvironment, TError, TParser) {
 
       appFolder: path.format({dir: app.getAppPath(), base: appDataFolder}),
       assessmentsFolder: path.format({dir: path.join(app.getAppPath(), appDataFolder), base: assessmentsFolder}),
+      slidesFolder: path.format({dir: path.join(app.getAppPath(), appDataFolder), base: slidesFolder}),
 
       resetUser: function() {
         store.userId = null;
@@ -442,18 +443,8 @@ function($, TUtils, TEnvironment, TError, TParser) {
     }
 
     this.getSlideContent = function (id, callback) {
-      var slideUrl = TEnvironment.getConfig("slide-url")+id+'?access_token=jWNoVhWCng6odNLK';
-      $.ajax({
-          type: 'GET',
-          url: slideUrl,
-          dataType: 'json',
-          success: function (data) {
-            callback.call(this, data.content);
-          },
-          error: function (data, status, error) {
-            callback.call(this, new TError(error))
-          }
-        })
+      var content = fs.readFileSync(path.format({dir: path.join(store.slidesFolder, id), base: 'index.html'}), {encoding: 'utf8'});
+      callback.call(this, content);
     }
 
     this.deleteResource = this.deleteProgram

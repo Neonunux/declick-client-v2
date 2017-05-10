@@ -1,4 +1,4 @@
-define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRuntime', 'TEnvironment', 'TExerciseProject', 'TError', 'prism', 'TLink', 'platform-pr', 'split-pane'], function(TComponent, $, TLearnCanvas, TLearnEditor, TRuntime, TEnvironment, TExerciseProject, TError, Prism, TLink) {
+define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRuntime', 'TEnvironment', 'TExerciseProject', 'TError', 'prism', 'TLink', 'TPlatform', 'split-pane'], function(TComponent, $, TLearnCanvas, TLearnEditor, TRuntime, TEnvironment, TExerciseProject, TError, Prism, TLink, platform) {
     function TLearnFrame(callback) {
         var $text, $message, $textMessage, $textMessageContent, $messageContent, $instruction, $instructions, $solution, $solutionContent, $input, $loading, $right, $success, $successText, $slide, $slideContent, $buttonNext, $buttonOk;
         var canvas, editor;
@@ -118,7 +118,11 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             initSplitPane();
             // declare itself as log
             TRuntime.setLog(this);
-            window.platform.initWithTask(window.task);
+            if (!TEnvironment.isOffline()) {
+                platform.initWithTask(window.task);
+            } else {
+                platform.setFrame(this);
+            }
         };
 
         this.init = function() {
@@ -165,10 +169,10 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
                                 self.init();
                             }
                             self.loaded();
-                            window.platform.showView({task:{}}, function() {
-                                if (typeof callback !== 'undefined') {
-                                    callback.call(self);
-                                }
+                            platform.showView({task:{}}, function() {
+                            if (typeof callback !== 'undefined') {
+                                callback.call(self);
+                            }
                             }, function() {
                                 window.console.error("error while sending show View to platform");
                             });

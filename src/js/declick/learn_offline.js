@@ -30,6 +30,7 @@ require.config({
         "TUtils": "utils/TUtils",
         /*"platform-pr": "http://algorea-beta.eroux.fr/platform-pr",*/
         "platform-pr": "../libs/pem-task/platform-pr",
+        "TPlatform": "env/TPlatformOffline",
         "json": "../libs/pem-task/json2.min",
         "Task": "env/Task",
         "Grader": "env/Grader",
@@ -63,7 +64,7 @@ require.config({
 });
 
 function load() {
-    require(['jquery', 'TEnvironment', 'TRuntime', 'ui/TLearnFrame', 'Task', 'Grader'], function($, TEnvironment, TRuntime, TLearnFrame, Task, Grader) {
+    require(['jquery', 'TEnvironment', 'TRuntime', 'ui/TLearnFrame'], function($, TEnvironment, TRuntime, TLearnFrame) {
         window.console.log("*******************");
         window.console.log("* Loading Environment *");
         window.console.log("*******************");
@@ -81,8 +82,6 @@ function load() {
                     TEnvironment.log("* Initiating link *");
                     TEnvironment.log("*******************");
                     // Create task and grader
-                    window.task = new Task(this);
-                    window.grader = new Grader();
                     TEnvironment.log("********************");
                     TEnvironment.log("* Loading exercise *");
                     TEnvironment.log("********************");

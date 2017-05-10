@@ -294,6 +294,10 @@ define(['jquery', 'TResource'], function ($, TResource) {
             return this.config.log;
         };
 
+        this.isOffline = function () {
+            return this.config.offline;
+        };
+
         this.getFirstBrowserLanguage = function () {
             var nav = window.navigator;
             var browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];

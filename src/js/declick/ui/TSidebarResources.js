@@ -9,16 +9,45 @@ function(TLink, TComponent, TUI, TEnvironment, TError, TViewer, TTextEditor, $) 
         var empty = true;
         var uploadingDivs = {};
 
+        function copyFiles(files) {
+            var project = TEnvironment.getProject();
+            var div;
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                div = getResourceDiv(file.name, 'uploading', false);
+                $files.append(div);
+                TLink.createResource(file.name, function () {
+                    TLink.copyResourceContent(file.name, file.path, function(resource) {
+                        $div = $(div);
+                        $div.removeClass('tsidebar-type-uploading');
+                        if (typeof resource.type !== 'undefined') {
+                            $div.addClass('tsidebar-type-' + resource.type);
+                        }
+                        project.resourceUploaded(file.name, resource);
+                    })
+                })
+            }
+            if (empty) {
+                $emptyMedia.hide();
+                empty = false;
+            }            
+        }
 
         TComponent.call(this, "TSidebarResources.html", function(component) {
             $resources = component;
             $resources.addClass("loading");
             $upload = component.find("#tsidebar-upload");
+            var $fileInput = component.find("#tsidebar-upload-input");
             var $uploadButton = component.find("#tsidebar-upload-button");
             $uploadButton.append(TEnvironment.getMessage("resource_upload_files"));
             $uploadButton.click(function(e) {
-                $("#tsidebar-upload-input").click();
+                $fileInput.click();
             });
+            if (TEnvironment.isOffline()) {
+                $fileInput.change(function() {
+                    copyFiles($fileInput[0].files);
+                })
+            }
 
             var $buttonNewResource = component.find("#tsidebar-new-resource");
             $buttonNewResource.attr("title", TEnvironment.getMessage('option-new-resource'));
@@ -39,8 +68,6 @@ function(TLink, TComponent, TUI, TEnvironment, TError, TViewer, TTextEditor, $) 
 
             $files = component.find("#tsidebar-files");
             $emptyMedia = component.find("#tsidebar-resources-empty");
-
-
 
             $resources.on("keydown", function(event) {
                 switch (event.which) {
@@ -93,157 +120,172 @@ function(TLink, TComponent, TUI, TEnvironment, TError, TViewer, TTextEditor, $) 
                 return name;
             });
 
-            // Set up blueimp fileupload plugin
-            // TODO: make use of acceptFileTypes and maxFileSize
-            $upload.fileupload({
-                dataType: 'json',
-                type: 'POST',
-                url: null,
-                singleFileUploads: true,
-                paramName: 'data',
-                dropZone: $resources,
-                add: function(e, data) {
-                    var newDivs = [];
-                    var newNames = [];
-                    try {
-                        // Insert div corresponding to loading files
-                        var files = data.files;
-                        var project = TEnvironment.getProject();
-                        var div;
-                        for (var i = 0; i < files.length; i++) {
-                            var file = files[i];
-                            div = getResourceDiv(file.name, 'uploading', false);
-                            // add progress bar
-                            var domProgress = document.createElement("div");
-                            domProgress.className = "progress-bar-wrapper";
-                            var domBar = document.createElement("div");
-                            domBar.className = "progress-bar";
-                            domProgress.appendChild(domBar);
-                            div.appendChild(domProgress);
-                            var index = project.uploadingResource(file.name);
-                            var where = $files.find('.tsidebar-file:eq(' + index + ')');
-                            if (where.length > 0)
-                                where.before(div);
-                            else
-                                $files.append(div);
-                            newDivs.push(div);
-                            uploadingDivs[file.name] = $(div);
-                        }
-                        if (empty) {
-                            $emptyMedia.hide();
-                            empty = false;
-                        }
-                        $resources.stop().animate({scrollTop: $resources.scrollTop() + $(div).position().top}, 1000);
-
-                        var file = files[0]
-                        TLink.createResource(file.name, function () {
-                            data.url = TLink.getResourceUploadLocation(file.name)
-                            data.name = file.name
-                            data.submit()
-                        })
-                    } catch (error) {
-                        // error
-                        // 1st remove loading resources
-                        for (var i = 0; i < newNames.length; i++) {
-                            project.removeUploadingResource(newNames[i]);
-                            delete uploadingDivs[newNames[i]];
-                        }
-                        // 2nd remove loading resources div
-                        for (var i = 0; i < newDivs.length; i++) {
-                            $files.get(0).removeChild(newDivs[i]);
-                        }
-                        // 3rd check if there is some file left, otherwise add "empty" message
-                        if ($files.children().length === 0 && !empty) {
-                            $emptyMedia.show();
-                            empty = true;
-                        }
-
-                        // 4th display error
-                        TUI.addLogError(error);
+            if (TEnvironment.isOffline()) {
+                window.addEventListener("dragover",function(e){
+                    e.preventDefault();
+                    },false);
+                window.addEventListener("drop",function(e){
+                    e.preventDefault();
+                },false);
+                $upload.on('drop', function(e) {
+                    var dt = e.originalEvent.dataTransfer;
+                    if (dt.types && (dt.types.indexOf ? dt.types.indexOf('Files') != -1 : dt.types.contains('Files'))) {
+                        copyFiles(dt.files);
                     }
-                },
-                beforeSend: function(xhr, data) {
-                    xhr.setRequestHeader(
-                        'Authorization',
-                        'Token ' + TLink.getAuthorizationToken()
-                    )
-                },
-                done: function(e, data) {
-                    var project = TEnvironment.getProject();
-                    TLink.getResource(data.name, function (resource) {
-                        var name = data.name
-                        var $div = uploadingDivs[name];
-                        if (typeof $div !== 'undefined') {
-                            $div.find(".progress-bar-wrapper").fadeOut(2000, function() {
-                                $(this).remove();
-                            });
-                        }
-                        $div.removeClass('tsidebar-type-uploading');
-                        var type = '';
-                        if (typeof resource.type !== 'undefined') {
-                            $div.addClass('tsidebar-type-' + resource.type);
-                        }
-                        delete uploadingDivs[name];
-                        project.resourceUploaded(name, resource);
-                    })
-                    /*
-                    var result = data.result;
-                    if (typeof result !== 'undefined') {
-                        if (typeof result.error !== 'undefined') {
-                            // an error occured
-                            // First remove corresponding divs
+                });
+            } else {
+                // Set up blueimp fileupload plugin
+                // TODO: make use of acceptFileTypes and maxFileSize
+                $upload.fileupload({
+                    dataType: 'json',
+                    type: 'POST',
+                    url: null,
+                    singleFileUploads: true,
+                    paramName: 'data',
+                    dropZone: $resources,
+                    add: function(e, data) {
+                        var newDivs = [];
+                        var newNames = [];
+                        try {
+                            // Insert div corresponding to loading files
+                            var files = data.files;
                             var project = TEnvironment.getProject();
-                            for (var i = 0; i < data.files.length; i++) {
-                                var name = data.files[i].name;
-                                var $div = uploadingDivs[name];
-                                $div.remove();
-                                project.removeUploadingResource(name);
-                                delete uploadingDivs[name];
+                            var div;
+                            for (var i = 0; i < files.length; i++) {
+                                var file = files[i];
+                                div = getResourceDiv(file.name, 'uploading', false);
+                                // add progress bar
+                                var domProgress = document.createElement("div");
+                                domProgress.className = "progress-bar-wrapper";
+                                var domBar = document.createElement("div");
+                                domBar.className = "progress-bar";
+                                domProgress.appendChild(domBar);
+                                div.appendChild(domProgress);
+                                var index = project.uploadingResource(file.name);
+                                var where = $files.find('.tsidebar-file:eq(' + index + ')');
+                                if (where.length > 0)
+                                    where.before(div);
+                                else
+                                    $files.append(div);
+                                newDivs.push(div);
+                                uploadingDivs[file.name] = $(div);
                             }
-                            // Then display error
-                            var message;
-                            if (typeof result.error.message !== 'undefined' && typeof result.error.name !== 'undefined') {
-                                message = TEnvironment.getMessage(result.error.message, result.error.name);
-                            } else {
-                                message = TEnvironment.getMessage("backend-error-" + result.error);
+                            if (empty) {
+                                $emptyMedia.hide();
+                                empty = false;
                             }
-                            var error = new TError(message);
+                            $resources.stop().animate({scrollTop: $resources.scrollTop() + $(div).position().top}, 1000);
+
+                            var file = files[0]
+                            TLink.createResource(file.name, function () {
+                                data.url = TLink.getResourceUploadLocation(file.name)
+                                data.name = file.name
+                                data.submit()
+                            })
+                        } catch (error) {
+                            // error
+                            // 1st remove loading resources
+                            for (var i = 0; i < newNames.length; i++) {
+                                project.removeUploadingResource(newNames[i]);
+                                delete uploadingDivs[newNames[i]];
+                            }
+                            // 2nd remove loading resources div
+                            for (var i = 0; i < newDivs.length; i++) {
+                                $files.get(0).removeChild(newDivs[i]);
+                            }
+                            // 3rd check if there is some file left, otherwise add "empty" message
+                            if ($files.children().length === 0 && !empty) {
+                                $emptyMedia.show();
+                                empty = true;
+                            }
+
+                            // 4th display error
                             TUI.addLogError(error);
-                        } else if (typeof result.created !== 'undefined') {
-                            // files were created
-                            var project = TEnvironment.getProject();
-                            for (var i = 0; i < result.created.length; i++) {
-                                var name = result.created[i].name;
-                                var data = result.created[i].data;
-                                var $div = uploadingDivs[name];
-                                if (typeof $div !== 'undefined') {
-                                    $div.find(".progress-bar-wrapper").fadeOut(2000, function() {
-                                        $(this).remove();
-                                    });
+                        }
+                    },
+                    beforeSend: function(xhr, data) {
+                        xhr.setRequestHeader(
+                            'Authorization',
+                            'Token ' + TLink.getAuthorizationToken()
+                        )
+                    },
+                    done: function(e, data) {
+                        var project = TEnvironment.getProject();
+                        TLink.getResource(data.name, function (resource) {
+                            var name = data.name
+                            var $div = uploadingDivs[name];
+                            if (typeof $div !== 'undefined') {
+                                $div.find(".progress-bar-wrapper").fadeOut(2000, function() {
+                                    $(this).remove();
+                                });
+                            }
+                            $div.removeClass('tsidebar-type-uploading');
+                            var type = '';
+                            if (typeof resource.type !== 'undefined') {
+                                $div.addClass('tsidebar-type-' + resource.type);
+                            }
+                            delete uploadingDivs[name];
+                            project.resourceUploaded(name, resource);
+                        })
+                        /*
+                        var result = data.result;
+                        if (typeof result !== 'undefined') {
+                            if (typeof result.error !== 'undefined') {
+                                // an error occured
+                                // First remove corresponding divs
+                                var project = TEnvironment.getProject();
+                                for (var i = 0; i < data.files.length; i++) {
+                                    var name = data.files[i].name;
+                                    var $div = uploadingDivs[name];
+                                    $div.remove();
+                                    project.removeUploadingResource(name);
+                                    delete uploadingDivs[name];
                                 }
-                                $div.removeClass('tsidebar-type-uploading');
-                                var type = '';
-                                if (typeof data.type !== 'undefined') {
-                                    $div.addClass('tsidebar-type-' + data.type);
+                                // Then display error
+                                var message;
+                                if (typeof result.error.message !== 'undefined' && typeof result.error.name !== 'undefined') {
+                                    message = TEnvironment.getMessage(result.error.message, result.error.name);
+                                } else {
+                                    message = TEnvironment.getMessage("backend-error-" + result.error);
                                 }
-                                delete uploadingDivs[name];
-                                project.resourceUploaded(name, data);
+                                var error = new TError(message);
+                                TUI.addLogError(error);
+                            } else if (typeof result.created !== 'undefined') {
+                                // files were created
+                                var project = TEnvironment.getProject();
+                                for (var i = 0; i < result.created.length; i++) {
+                                    var name = result.created[i].name;
+                                    var data = result.created[i].data;
+                                    var $div = uploadingDivs[name];
+                                    if (typeof $div !== 'undefined') {
+                                        $div.find(".progress-bar-wrapper").fadeOut(2000, function() {
+                                            $(this).remove();
+                                        });
+                                    }
+                                    $div.removeClass('tsidebar-type-uploading');
+                                    var type = '';
+                                    if (typeof data.type !== 'undefined') {
+                                        $div.addClass('tsidebar-type-' + data.type);
+                                    }
+                                    delete uploadingDivs[name];
+                                    project.resourceUploaded(name, data);
+                                }
+                            }
+                        }
+                        */
+                    },
+                    progress: function(e, data) {
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        for (var i = 0; i < data.files.length; i++) {
+                            var name = data.files[i].name;
+                            var $div = uploadingDivs[name];
+                            if (typeof $div !== 'undefined') {
+                                $div.find(".progress-bar").css('width', progress + '%');
                             }
                         }
                     }
-                    */
-                },
-                progress: function(e, data) {
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
-                    for (var i = 0; i < data.files.length; i++) {
-                        var name = data.files[i].name;
-                        var $div = uploadingDivs[name];
-                        if (typeof $div !== 'undefined') {
-                            $div.find(".progress-bar").css('width', progress + '%');
-                        }
-                    }
-                }
-            });
+                });
+            }
             this.update();
             viewer.init();
             textEditor.init();

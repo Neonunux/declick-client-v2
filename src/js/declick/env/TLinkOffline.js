@@ -274,6 +274,25 @@ function($, TUtils, TEnvironment, TError, TParser) {
         }, errorCallback);
       },
 
+      copyProjectAssetContent: function (
+        name,
+        srcPath,
+        successCallback,
+        errorCallback
+      ) {
+        this.getProjectResource(name, function (resource, projectId) {
+          var base = resource.id.toString();
+          for (var extension in IMAGE_MEDIA_TYPES) {
+            if (resource.media_type === IMAGE_MEDIA_TYPES[extension]) {
+              base += '.' + extension;
+              break;
+            }
+          }          
+          fs.copySync(srcPath, path.format({dir: store.getProjectFolder(store.userId, projectId), base: base}));
+          successCallback(resource);
+        }, errorCallback);
+      },
+
       renameProjectAsset: function (name, newBaseName, successCallback,
         errorCallback
       ) {
@@ -297,20 +316,21 @@ function($, TUtils, TEnvironment, TError, TParser) {
           return resource.file_name === name;
         })[0];
         var target = "";
-        if (this.projectId < 0) {
-          target = appDataFolder + "/" + assessmentsFolder + "/" + (-this.projectId) + "/" + resource.id;
-        } else {
-          target = "file://"+this.getProjectFolder(this.userId, this.projectId);
-        }
         if (withExtension) {
           for (var extension in IMAGE_MEDIA_TYPES) {
             if (resource.media_type === IMAGE_MEDIA_TYPES[extension]) {
-              target += '.' + extension
-              break
+              target = '.' + extension;
+              break;
             }
           }
         }
-        return TEnvironment.getBackendUrl(target);
+        if (this.projectId < 0) {
+          target = appDataFolder + "/" + assessmentsFolder + "/" + (-this.projectId) + "/" + resource.id.toString() + target;
+          return TEnvironment.getBackendUrl(target);
+        } else {
+          target = "file://"+encodeURI(this.getProjectFolder(this.userId, this.projectId)+ "/" + resource.id.toString() + target);
+          return target;
+        }
       },
 
       getProjectAssetContent: function (name, successCallback, errorCallback) {
@@ -372,31 +392,40 @@ function($, TUtils, TEnvironment, TError, TParser) {
 
     var HTML_MEDIA_TYPE = 'text/html'
 
+    this.getFormattedResource = function(resource) {
+        var isImage = false
+        var isHtml = false
+        for (var extension in IMAGE_MEDIA_TYPES) {
+          if (resource.media_type === IMAGE_MEDIA_TYPES[extension]) {
+            isImage = true
+            break
+          }
+        }
+        if (resource.media_type === HTML_MEDIA_TYPE) {
+          isHtml = true
+        }
+        if (isImage || isHtml) {
+          var parts = resource.file_name.split('.')
+          var extension = (parts.length >= 2) ? parts.pop() : ''
+          var baseName = parts.join('.')
+          return {
+            type: (isImage && 'image') || (isHtml && 'text'),
+            version: 0,
+            extension: extension,
+            'base-name': baseName
+          }
+        }
+        return false;
+    }
+
     this.getResources = function (callback) {
+      var self = this;
       store.getProjectResources(function (resources, projectId) {
         var formattedResources = {}
         resources.forEach(function (resource) {
-          var isImage = false
-          var isHtml = false
-          for (var extension in IMAGE_MEDIA_TYPES) {
-            if (resource.media_type === IMAGE_MEDIA_TYPES[extension]) {
-              isImage = true
-              break
-            }
-          }
-          if (resource.media_type === HTML_MEDIA_TYPE) {
-            isHtml = true
-          }
-          if (isImage || isHtml) {
-            var parts = resource.file_name.split('.')
-            var extension = (parts.length >= 2) ? parts.pop() : ''
-            var baseName = parts.join('.')
-            formattedResources[resource.file_name] = {
-              type: (isImage && 'image') || (isHtml && 'text'),
-              version: 0,
-              extension: extension,
-              'base-name': baseName
-            }
+          var fResource = self.getFormattedResource(resource);
+          if (fResource !== false) {
+            formattedResources[resource.file_name] = fResource;
           }
         })
         callback.call(self, formattedResources, projectId)
@@ -431,6 +460,7 @@ function($, TUtils, TEnvironment, TError, TParser) {
     }
 
     this.createProgram = function (name, callback) {
+      // TODO: check that name doesn't exist already
       store.createProjectScript(name, function () {
         callback.call(self)
       }, callback)
@@ -449,6 +479,7 @@ function($, TUtils, TEnvironment, TError, TParser) {
     }
 
     this.createResource = function (name, callback) {
+      // TODO: check that name doesn't exist already
       store.createProjectAsset(name, function () {
         callback.call(self, name)
       }, callback)
@@ -468,6 +499,13 @@ function($, TUtils, TEnvironment, TError, TParser) {
 
     this.setResourceContent = function (name, data, callback) {
       this.saveResource(name, data, callback)
+    }
+
+    this.copyResourceContent = function (name, path, callback) {
+      var self = this;
+      store.copyProjectAssetContent(name, path, function (resource) {
+        callback.call(self, self.getFormattedResource(resource));
+      });
     }
 
     this.getResourceLocation = function (name) {

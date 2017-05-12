@@ -192,7 +192,10 @@ define(['jquery', 'TRuntime', 'TEnvironment', 'ui/THints', 'TError'], function($
                 THints.setPage("editor");
                 editorEnabled = true;
                 if (typeof updateServer === 'undefined' || updateServer) {
-                    if (typeof window.parent !== 'undefined') {
+                    if (TEnvironment.isOffline()) {
+                        var ipcRenderer = nodeRequire('electron').ipcRenderer;                        
+                        ipcRenderer.sendToHost("switchEditor");
+                    } else if (typeof window.parent !== 'undefined') {
                         window.parent.postMessage("switchEditor", "*");
                     }
                 }
@@ -210,7 +213,10 @@ define(['jquery', 'TRuntime', 'TEnvironment', 'ui/THints', 'TError'], function($
                 THints.setPage("preview");
                 editorEnabled = false;
                 if (typeof updateServer === 'undefined' || updateServer) {
-                    if (typeof window.parent !== 'undefined') {
+                    if (TEnvironment.isOffline()) {
+                        var ipcRenderer = nodeRequire('electron').ipcRenderer;
+                        ipcRenderer.sendToHost("switchView");
+                    } else if (typeof window.parent !== 'undefined') {
                         window.parent.postMessage("switchView", "*");
                     }
                 }

@@ -330,7 +330,6 @@ function($, TUtils, TEnvironment, TError, TParser) {
           return TEnvironment.getBackendUrl(target);
         } else {
           var uri = fileUrl(this.getProjectFolder(this.userId, this.projectId)+ "/" + resource.id.toString() + target);
-          uri = encodeURI(uri);
           return uri;
         }
       },

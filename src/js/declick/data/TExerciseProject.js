@@ -21,6 +21,8 @@ define(['TEnvironment', 'TRuntime', 'TProject', 'TError', 'TParser', 'objects'],
         var name = "exercise_123456";
         var frame = false;
 
+        const checkImgs = /(<img\s[^>]*?src\s*=\s*['"])([^'"]*?)(['"][^>]*?>)/g
+
         /**
         * Set Project's ID.
         * @param {String} value
@@ -108,7 +110,22 @@ define(['TEnvironment', 'TRuntime', 'TProject', 'TError', 'TParser', 'objects'],
         */
         this.getInstructions = function(callback) {
             if (instructions !== false) {
-                project.getResourceContent("instructions.html", callback);
+                if (TEnvironment.isOffline()) {
+                    var self = this;
+                    var resources = project.getResources();
+                    project.getResourceContent("instructions.html", function(content) {
+                        content = content.replace(checkImgs, (match, start, value, end) => {
+                            if (typeof resources[value] !== 'undefined') {
+                                return start + project.getResourceLocation(value) + end;
+                            } else {
+                                return start + value + end;
+                            }
+                        });
+                        callback.call(this, content)                        
+                    });
+                } else {
+                    project.getResourceContent("instructions.html", callback);
+                }
             } else {
                 if (typeof callback !== 'undefined') {
                     callback.call(this);

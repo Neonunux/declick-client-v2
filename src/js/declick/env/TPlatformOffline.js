@@ -47,12 +47,16 @@ define([], function() {
         }
 
         this.showView = function(data, callback) {
-            window.console.log("sending show view")
             callbacks[callbackCount]= callback;
             send({type:"showView", data: data, callback:callbackCount});
             callbackCount++;
         }
 
+        this.openUrl = function(url, callback) {
+            callbacks[callbackCount]= callback;
+            send({type:"openUrl", url: url, callback:callbackCount});
+            callbackCount++;
+        }
     }
 
     var instance = new TPlatformOffline();

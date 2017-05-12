@@ -123,6 +123,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             } else {
                 platform.setFrame(this);
             }
+            window.platform = platform;
         };
 
         this.init = function() {

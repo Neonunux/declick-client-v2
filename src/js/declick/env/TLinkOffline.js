@@ -21,6 +21,11 @@ function($, TUtils, TEnvironment, TError, TParser) {
     const resourcesFile = "resources.json"
     const courseImageFile = "course.png"
     const slideFile = "index.html"
+    const userFile = "user.json"
+    const resultsFolder = "results"
+    const projectsFolder = "projects"
+    const resultsFile = "results.json"
+    const projectFile = "project.json"
 
     var TLink = function () {
 
@@ -48,6 +53,7 @@ function($, TUtils, TEnvironment, TError, TParser) {
       appFolder: path.format({dir: app.getAppPath(), base: appDataFolder}),
       assessmentsFolder: path.format({dir: path.join(app.getAppPath(), appDataFolder), base: assessmentsFolder}),
       slidesFolder: path.format({dir: path.join(app.getAppPath(), appDataFolder), base: slidesFolder}),
+      usersFolder : path.format({dir: app.getPath("userData"), base: dataFolder}),
 
       resetUser: function() {
         store.userId = null;
@@ -56,7 +62,11 @@ function($, TUtils, TEnvironment, TError, TParser) {
       },
 
       setProjectId: function(value) {
-        store.projectId = value;
+        if (value === false) {
+          store.projectId = null;
+        } else {
+          store.projectId = value;
+        }
         store.projectResources = null;
       },
 
@@ -72,7 +82,7 @@ function($, TUtils, TEnvironment, TError, TParser) {
       },
 
       getProjectId: function (successCallback, errorCallback) {
-        if (store.projectId) {
+        if (store.projectId !== null) {
           successCallback.call(self, store.projectId);
         } else {
           this.getDefaultProjectId(function(projectId) {
@@ -83,22 +93,40 @@ function($, TUtils, TEnvironment, TError, TParser) {
         }
       },
       getAssessmentFolder (id) {
-        return path.format({dir: store.assessmentsFolder, base: id})
+        return path.format({dir: store.assessmentsFolder, base: id.toString()})
       },
-      getResourcesFile (id) {
+      getUserFolder (id) {
+        return path.format({dir: store.usersFolder, base: id.toString()})
+      },      
+      getProjectsFolder (userId) {
+        return path.format({dir: store.getUserFolder(userId), base: projectsFolder})
+      },
+      getProjectFolder (userId, projectId) {
+        return path.format({dir: store.getProjectsFolder(userId), base: projectId.toString()})
+      },
+      getProjectFile (userId, projectId) {
+        return path.format({dir: store.getProjectFolder(userId, projectId), base: projectFile})
+      },
+      getAssessmentResourcesFile (id) {
         return path.format({dir: store.getAssessmentFolder(id), base: resourcesFile})
       },
+      getProjectResourcesFile (id) {
+        return path.format({dir: store.getProjectFolder(this.userId, id), base: resourcesFile})
+      },
       getProjectResources: function (successCallback, errorCallback) {
-        if (store.projectId && store.projectResources) {
+        if (store.projectId!==null && store.projectResources) {
           return successCallback.call(self, store.projectResources,
             store.projectId);
         }
         this.getProjectId(function (projectId) {
+          var resources;
           if (store.projectId < 0) {
-            var resources = JSON.parse(fs.readFileSync(store.getResourcesFile(-projectId), {encoding: 'utf8'}));
-            store.projectResources = resources;
-            successCallback.call(self, store.projectResources, projectId);
+            resources = JSON.parse(fs.readFileSync(store.getAssessmentResourcesFile(-projectId), {encoding: 'utf8'}));
+          } else {
+            resources = JSON.parse(fs.readFileSync(store.getProjectResourcesFile(projectId), {encoding: 'utf8'}));
           }
+          store.projectResources = resources;
+          successCallback.call(self, store.projectResources, projectId);
         }, errorCallback)
       },
 
@@ -115,64 +143,80 @@ function($, TUtils, TEnvironment, TError, TParser) {
         }, errorCallback);
       },
 
-      deleteProjectResource: function (name, successCallback, errorCallback) {
-        this.getProjectResource(name, function (resource, projectId) {
-          api.deleteResource(
-            'projects/' + projectId + '/resources/' + resource.id,
-            function () {
-              var index = store.projectResources.indexOf(resource);
-              store.projectResources.splice(index, 1);
-              successCallback.call(self, resource, projectId);
-            },
-            errorCallback
-          )
-        }, errorCallback);
+      saveProjectResources: function() {
+        fs.writeFileSync(this.getProjectResourcesFile(this.projectId), JSON.stringify(this.projectResources), {encoding: 'utf8'})
       },
 
       createProjectScript: function (name, successCallback, errorCallback) {
         this.getProjectResources(function (resources, projectId) {
           var script = {
               file_name: name,
-              media_type: SCRIPT_MEDIA_TYPE
+              media_type: SCRIPT_MEDIA_TYPE,
+              project_id: projectId
           }
-          api.createResource(
-            'projects/' + projectId + '/resources',
-            script,
-            function (resource) {
-              resources.push(resource);
-              successCallback.call(self, resources, projectId);
-            },
-            errorCallback
-          )
+          var id = 0;
+          for (var i=0; i<resources.length;i++) {
+            var resource = resources[i];
+            if (resource.id>=id) {
+              id = resource.id+1;
+            }
+          }
+          script.id = id;
+          resources.push(script);
+          store.saveProjectResources();
+          successCallback.call(self, resources, projectId);
         }, errorCallback)
       },
 
       renameProjectScript: function (name, newName, successCallback,
         errorCallback
       ) {
-        this.getProjectResource(name, function (resource, projectId) {
-          api.modifyResource(
-            'projects/' + projectId + '/resources/' + resource.id,
-            modifications = {
-              file_name: newName
-            },
-            function (resources) {
+        this.getProjectResources(function (resources, projectId) {
+          var id = 0;
+          for (var i=0; i<resources.length;i++) {
+            var resource = resources[i];
+            if (resource.file_name === name) {
               resource.file_name = newName;
-              successCallback.call(self, resources, projectId);
-            },
-            errorCallback
-          )
-        })
+              break;
+            }
+          }
+          store.saveProjectResources();
+          successCallback.call(self, resources, projectId);
+        }, errorCallback)
+      },
+
+      deleteProjectResource: function (name, successCallback, errorCallback) {
+        this.getProjectResources(function (resources, projectId) {
+          for (var i=0; i<resources.length;i++) {
+            var resource = resources[i];
+            if (resource.file_name == name) {
+              resources.splice(i, 1);
+              store.saveProjectResources();
+              var resourceFile = path.format({dir: store.getProjectFolder(store.userId, projectId), base: resource.id.toString()});
+              if (fs.existsSync(resourceFile)) {
+                fs.removeSync(resourceFile);
+              }
+              break;
+            }
+          }
+          successCallback.call(self, resources, projectId);
+        }, errorCallback)
       },
 
       getProjectScriptContent: function (name, successCallback,
         errorCallback
       ) {
         this.getProjectResource(name, function (resource, projectId) {
+          var content = ""
           if (projectId < 0) {
-            var content = fs.readFileSync(path.format({dir: store.getAssessmentFolder(-projectId), base: resource.id}), {encoding: 'utf8'});
-            successCallback(content);
+            content = fs.readFileSync(path.format({dir: store.getAssessmentFolder(-projectId), base: resource.id.toString()}), {encoding: 'utf8'});
+          } else {
+            var resourceFile = path.format({dir: store.getProjectFolder(store.userId, projectId), base: resource.id.toString()});
+            if (fs.existsSync(resourceFile)) {
+              content = fs.readFileSync(resourceFile, {encoding: 'utf8'});
+            }
           }
+          successCallback(content);
         }, errorCallback);
       },
 
@@ -180,12 +224,8 @@ function($, TUtils, TEnvironment, TError, TParser) {
         errorCallback
       ) {
         this.getProjectResource(name, function (resource, projectId) {
-          api.setTextFile(
-            'projects/' + projectId + '/resources/' + resource.id + '/content',
-            code,
-            successCallback,
-            errorCallback
-          )
+          fs.writeFileSync(path.format({dir: store.getProjectFolder(store.userId, projectId), base: resource.id.toString()}), code, {encoding: 'utf8'});
+          successCallback();
         }, errorCallback);
       },
 
@@ -205,17 +245,20 @@ function($, TUtils, TEnvironment, TError, TParser) {
           }
           var asset = {
               file_name: name,
-              media_type: media_type
+              media_type: media_type,
+              project_id: projectId              
           }
-          api.createResource(
-            'projects/' + projectId + '/resources',
-            asset,
-            function (resource) {
-              resources.push(resource);
-              successCallback.call(self, resources, projectId);
-            },
-            errorCallback
-          )
+          var id = 0;
+          for (var i=0; i<resources.length;i++) {
+            var resource = resources[i];
+            if (resource.id>=id) {
+              id = resource.id+1;
+            }
+          }
+          asset.id = id;
+          resources.push(asset);
+          store.saveProjectResources();
+          successCallback.call(self, resources, projectId);
         }, errorCallback);
       },
 
@@ -226,38 +269,26 @@ function($, TUtils, TEnvironment, TError, TParser) {
         errorCallback
       ) {
         this.getProjectResource(name, function (resource, projectId) {
-          api.setBinaryFile(
-            'projects/' + projectId + '/resources/' + resource.id + '/content',
-            content,
-            function () {
-              successCallback.call(this, resource);
-            },
-            errorCallback
-          )
+          fs.writeFileSync(path.format({dir: store.getProjectFolder(store.userId, projectId), base: resource.id.toString()}), content);
+          successCallback();
         }, errorCallback);
       },
 
       renameProjectAsset: function (name, newBaseName, successCallback,
         errorCallback
       ) {
-        this.getProjectResource(name, function (resource, projectId) {
-          var newName = newBaseName;
-          var extension = name.split('.').pop();
-          if (extension) {
-            newName += '.' + extension;
+        this.getProjectResources(function (resources, projectId) {
+          var id = 0;
+          for (var i=0; i<resources.length;i++) {
+            var resource = resources[i];
+            if (resource.file_name === name) {
+              resource.file_name = newBaseName;
+              break;
+            }
           }
-          api.modifyResource(
-            'projects/' + projectId + '/resources/' + resource.id,
-            modifications = {
-              file_name: newName
-            },
-            function (resources) {
-              resource.file_name = newName;
-              successCallback.call(self, newName);
-            },
-            errorCallback
-          )
-        }, errorCallback);
+          store.saveProjectResources();
+          successCallback.call(self, resources, projectId);
+        }, errorCallback)
       },
 
       getProjectAssetContentLocation: function (name, withExtension) {
@@ -265,8 +296,11 @@ function($, TUtils, TEnvironment, TError, TParser) {
         var resource = this.projectResources.filter(function (resource) {
           return resource.file_name === name;
         })[0];
+        var target = "";
         if (this.projectId < 0) {
-          var target = appDataFolder + "/" + assessmentsFolder + "/" + (-this.projectId) + "/" + resource.id;
+          target = appDataFolder + "/" + assessmentsFolder + "/" + (-this.projectId) + "/" + resource.id;
+        } else {
+          target = "file://"+this.getProjectFolder(this.userId, this.projectId);
         }
         if (withExtension) {
           for (var extension in IMAGE_MEDIA_TYPES) {
@@ -281,10 +315,16 @@ function($, TUtils, TEnvironment, TError, TParser) {
 
       getProjectAssetContent: function (name, successCallback, errorCallback) {
         this.getProjectResource(name, function (resource, projectId) {
+          var content = "";
           if (projectId < 0) {
-            var content = fs.readFileSync(path.format({dir: store.getAssessmentFolder(-projectId), base: resource.id}), {encoding: 'utf8'});
-            successCallback(content);
+            content = fs.readFileSync(path.format({dir: store.getAssessmentFolder(-projectId), base: resource.id}), {encoding: 'utf8'});
+          } else {
+            var resourceFile = path.format({dir: store.getProjectFolder(this.userId, projectId), base: resource.id.toString()});
+            if (fs.existsSync(resourceFile)) {
+              content = fs.readFileSync(resourceFile, {encoding: 'utf8'});
+            }
           }
+          successCallback(content);
         }, errorCallback)
       }
     }
@@ -304,7 +344,7 @@ function($, TUtils, TEnvironment, TError, TParser) {
     })
 
     this.getAuthorizationToken = function () {
-      return api.authorizationToken
+      return 0;
     }
 
     var SCRIPT_MEDIA_TYPE = 'text/vnd.colombbus.declick.script'

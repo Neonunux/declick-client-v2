@@ -73,6 +73,10 @@ define(['jquery'], function($) {
             try {
                 // remove "file://" from url
                 var newName = name.substr(7);
+                if (process.platform === "win32") {
+                    // remove extra "/" in beginning of url
+                    newName = newName.substr(1);
+                } 
                 var newName = path.normalize(newName);
                 var content = fs.readFileSync(newName, {encoding: 'utf8'});
                 var data = JSON.parse(content);
@@ -132,6 +136,10 @@ define(['jquery'], function($) {
             try {
                 // remove "file://" from url
                 var newName = name.substr(7);
+                if (process.platform === "win32") {
+                    // remove extra "/" in beginning of url
+                    newName = newName.substr(1);
+                } 
                 var newName = path.normalize(newName);
                 var content = fs.readFileSync(newName, {encoding: 'utf8'});
                 if (cacheEnabled) {

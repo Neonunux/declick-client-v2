@@ -10,6 +10,7 @@ function($, TUtils, TEnvironment, TError, TParser) {
     var app = remote.app
     var fs = remote.require('fs-extra')
     var path = remote.require('path')
+    var fileUrl = remote.require('file-url')
 
     const dataFolder = "declick-data"
     const appDataFolder = "data"
@@ -328,8 +329,9 @@ function($, TUtils, TEnvironment, TError, TParser) {
           target = appDataFolder + "/" + assessmentsFolder + "/" + (-this.projectId) + "/" + resource.id.toString() + target;
           return TEnvironment.getBackendUrl(target);
         } else {
-          target = "file://"+encodeURI(this.getProjectFolder(this.userId, this.projectId)+ "/" + resource.id.toString() + target);
-          return target;
+          var uri = fileUrl(this.getProjectFolder(this.userId, this.projectId)+ "/" + resource.id.toString() + target);
+          uri = encodeURI(uri);
+          return uri;
         }
       },
 

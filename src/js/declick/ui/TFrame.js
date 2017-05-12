@@ -144,11 +144,18 @@ define(['ui/TComponent', 'jquery', 'split-pane', 'ui/TCanvas', 'ui/TEditor', 'ui
                             TUI.init(currentId);
                         }
                     });
-                    TEnvironment.registerMessagesHandler(function(message) {
-                        if (message=="init") {
+                    if (TEnvironment.isOffline()) {
+                        var ipcRenderer = nodeRequire('electron').ipcRenderer;
+                        ipcRenderer.on('init', (event, message) => {
                             TUI.init(currentId);
-                        }
-                    });
+                        });
+                    } else {
+                        TEnvironment.registerMessagesHandler(function(message) {
+                            if (message=="init") {
+                                TUI.init(currentId);
+                            }
+                        });
+                    }
                 } else {
                     $(window).resize(initEditor);
                 }

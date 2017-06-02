@@ -113,7 +113,7 @@ define(['TEnvironment', 'TRuntime', 'TProject', 'TError', 'TParser', 'objects'],
                 var self = this;
                 var resources = project.getResources();
                 project.getResourceContent("instructions.html", function(content) {
-                    content = content.replace(checkImgs, (match, start, value, end) => {
+                    content = content.replace(checkImgs, function(match, start, value, end) {
                         if (typeof resources[value] !== 'undefined') {
                             return start + project.getResourceLocation(value) + end;
                         } else {

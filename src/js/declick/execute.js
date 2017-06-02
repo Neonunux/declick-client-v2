@@ -42,27 +42,42 @@ function load() {
                 var canvas = new TCanvas(function(component) {
                     $("body").append(component);
                     $(document).ready(function() {
-                        canvas.displayed();
+                        canvas.mounted();
                         // trigger resize in order for canvas to update its size (and remove the 5px bottom margin)
                         $(window).resize();
                         canvas.showLoading();
                         TRuntime.init();
                         var currentProject = new TProject();
-                        currentProject.init(function() {
-                            TEnvironment.setProject(currentProject);
-                            currentProject.getProgramStatements(init_programName, function(statements) {
-                                if (statements instanceof TError) {
-                                    TEnvironment.error(statements.getMessage());
+                        TEnvironment.registerParametersHandler(function (parameters, callback) {
+                            var id = false;
+                            var init = false;
+                            for (var name in parameters) {
+                                if (name === 'id') {
+                                    id = parameters['id'];
                                 }
-                                currentProject.preloadResources(function(count, total) {
-                                        canvas.setLoadingValue(count, total);
-                                    }, function() {
-                                    canvas.removeLoading();
-                                    canvas.giveFocus();
-                                    TRuntime.executeStatements(statements, init_programName);
-                                });
-                            });
-                        }, init_projectId);
+                                if (name === 'init') {
+                                    init = decodeURI(parameters['init']);
+                                }
+                            }
+                            if (id !== false && init !== false) {
+                                currentProject.init(function() {
+                                    TEnvironment.setProject(currentProject);
+                                    currentProject.getProgramStatements(init, function(statements) {
+                                        if (statements instanceof TError) {
+                                            TEnvironment.error(statements.getMessage());
+                                        }
+                                        currentProject.preloadResources(function(count, total) {
+                                                canvas.setLoadingValue(count, total);
+                                            }, function() {
+                                            canvas.removeLoading();
+                                            canvas.giveFocus();
+                                            TRuntime.executeStatements(statements, init);
+                                        });
+                                    });
+                                }, id);
+
+                            }
+                        });
                     });
                 });
             });

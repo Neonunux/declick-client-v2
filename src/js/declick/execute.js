@@ -60,6 +60,9 @@ function load() {
                                 }
                             }
                             if (id !== false && init !== false) {
+                                canvas.showLoading();
+                                TRuntime.clear();
+                                canvas.clear();
                                 currentProject.init(function() {
                                     TEnvironment.setProject(currentProject);
                                     currentProject.getProgramStatements(init, function(statements) {

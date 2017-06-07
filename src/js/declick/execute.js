@@ -51,6 +51,8 @@ function load() {
                         TEnvironment.registerParametersHandler(function (parameters, callback) {
                             var id = false;
                             var init = false;
+                            TRuntime.clear();
+                            canvas.clear();
                             for (var name in parameters) {
                                 if (name === 'id') {
                                     id = parameters['id'];
@@ -61,8 +63,6 @@ function load() {
                             }
                             if (id !== false && init !== false) {
                                 canvas.showLoading();
-                                TRuntime.clear();
-                                canvas.clear();
                                 currentProject.init(function() {
                                     TEnvironment.setProject(currentProject);
                                     currentProject.getProgramStatements(init, function(statements) {

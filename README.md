@@ -7,6 +7,7 @@ This component is part of [Declick v2 platform](https://github.com/colombbus/dec
 1. Install [node.js](https://nodejs.org/)
 2. Install [grunt](http://gruntjs.com)
 3. Run `npm run install_declick`
+   - On Win system, `npm` can stop install on `fsevents` can cause an error; `fsevents` is needed by `chokidar` on MacOs, himself needed by `webpack`. No needed on win. A dirty way to pass through is to delete this dependency on `package.json` of `chokidar` in your `node_modules`
 
 ## Configuration
 

@@ -7,6 +7,10 @@
         "balle":"ball.gif",
         "coffre":"safe.png",
         "panneau":"sign.png",
+        "haut":"up.png",
+        "bas":"down.png",
+        "gauche":"left.png",
+        "droite":"right.png",
         "default":"pièce"
     },
     "en": {

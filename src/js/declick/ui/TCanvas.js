@@ -1,7 +1,7 @@
-define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment'], function($, TRuntime, TComponent, TEnvironment) {
+define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment', 'ui/TFloatingController'], function($, TRuntime, TComponent, TEnvironment, TFloatingController) {
 
     function TCanvas(callback) {
-        var $main, $canvas, $canvasDesign, $canvasDesignMouse, $canvasLoading, $canvasLoadingValue, $popup, $popupContent;
+        var $main, $canvas, $canvasDesign, $canvasDesignMouse, $canvasLoading, $canvasLoadingValue, $popup, $popupContent, $floatingController;
         var popupCallback = null;
         var cursorX, cursorY;
 
@@ -12,6 +12,13 @@ define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment'], function($, TRun
             $canvasDesignMouse = component.find("#tcanvas-design-mouse");
             $canvasLoading = component.find("#tcanvas-loading");
             $canvasLoadingValue = component.find("#tcanvas-loading-value");
+
+            floatingController = new TFloatingController(function (content) {
+                component.find("#TFloatingController").replaceWith(content);
+                $floatingController = component.find('#tfloatingcontroller');
+                $floatingController.draggable({containment: "#tcanvas-outer"});
+                $floatingController.hide();
+            });
 
             $canvasDesign.hide();
             $canvasLoading.hide();
@@ -100,6 +107,14 @@ define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment'], function($, TRun
             }
         };
 
+        this.enableFloatingController = function () {
+            $floatingController.show();
+        };
+
+        this.disableFloatingController = function () {
+            $floatingController.hide();
+        };
+
         this.showLoading = function() {
             $canvasLoading.show();
         };
@@ -112,17 +127,17 @@ define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment'], function($, TRun
         this.removeLoading = function() {
             $canvasLoading.hide();
         };
-        
+
         this.giveFocus = function() {
             $canvas.get(0).focus();
         };
-        
+
         this.resize = function() {
             var width = $main.width();
             var height = $main.height();
             TRuntime.getGraphics().resize(width, height);
         };
-        
+
         this.popup = function(text, callback) {
             $popupContent.text(text);
             if (typeof callback !== "undefined") {
@@ -132,7 +147,7 @@ define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment'], function($, TRun
             }
             $popup.show();
         };
-        
+
         this.clear = function() {
             $popup.hide();
         };

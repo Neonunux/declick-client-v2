@@ -181,6 +181,65 @@ body, html {
     padding: 0 20px;
 }
 
+/* TFloatingController */
+
+#tfloatingcontroller {
+    height: 105px;
+    width: 220px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.tfloatingcontroller-button {
+    position: absolute;
+    border:none;
+    height:50px;
+    width:50px;
+    background-color:transparent;
+    cursor:pointer;
+    background-size:cover;
+    background-repeat:no-repeat;
+    padding:0;
+    margin:0;
+}
+
+#tfloatingcontroller-button-up {
+    top: 0px;
+    left: 55px;
+    background-image:url('../images/button_up.png');
+}
+
+#tfloatingcontroller-button-down {
+    top: 55px;
+    left: 55px;
+    background-image:url('../images/button_down.png');
+}
+
+#tfloatingcontroller-button-left {
+    top: 55px;
+    left: 0px;
+    background-image:url('../images/button_left.png');
+}
+
+#tfloatingcontroller-button-right {
+    top: 55px;
+    left: 110px;
+    background-image:url('../images/button_right.png');
+}
+
+#tfloatingcontroller-button-a {
+    top: 0px;
+    left: 170px;
+    background-image:url('../images/button_a.png');
+}
+
+#tfloatingcontroller-button-b {
+    top: 55px;
+    left: 170px;
+    background-image:url('../images/button_b.png');
+}
+
 /* TEditor */
 
 #teditor {
@@ -259,11 +318,11 @@ body, html {
 }
 
 #tsidebar-switch-programs.active, #tsidebar-switch-programs:hover {
-    background-image:url('../images/programs_on.png');    
+    background-image:url('../images/programs_on.png');
 }
 
 #tsidebar-switch-resources.active, #tsidebar-switch-resources:hover {
-    background-image:url('../images/resources_on.png');    
+    background-image:url('../images/resources_on.png');
 }
 
 
@@ -511,11 +570,11 @@ textarea.tsidebar-rename {
 }
 
 .tsidebar-type-image  .tsidebar-file-icon {
-    background-image:url('../images/picture.png');    
-} 
+    background-image:url('../images/picture.png');
+}
 
 .tsidebar-type-image.tsidebar-current  .tsidebar-file-icon {
-    background-image:url('../images/picture_white.png');    
+    background-image:url('../images/picture_white.png');
 }
 
 .tsidebar-type-image .tsidebar-file-icon:hover {
@@ -523,15 +582,15 @@ textarea.tsidebar-rename {
 }
 
 .tsidebar-type-audio .tsidebar-file-icon {
-    background-image:url('../images/music.png');    
+    background-image:url('../images/music.png');
 }
 
 .tsidebar-type-audio.tsidebar-current  .tsidebar-file-icon {
-    background-image:url('../images/music_white.png');    
+    background-image:url('../images/music_white.png');
 }
 
 .tsidebar-type-video  .tsidebar-file-icon {
-    background-image:url('../images/video.png');    
+    background-image:url('../images/video.png');
 }
 
 .tsidebar-type-video.tsidebar-current  .tsidebar-file-icon {
@@ -539,11 +598,11 @@ textarea.tsidebar-rename {
 }
 
 .tsidebar-type-text  .tsidebar-file-icon {
-    background-image:url('../images/text.png');    
+    background-image:url('../images/text.png');
 }
 
 .tsidebar-type-text  .tsidebar-file-icon:hover {
-    background-image:url('../images/text_red.png');    
+    background-image:url('../images/text_red.png');
 }
 
 .tsidebar-type-text.tsidebar-current  .tsidebar-file-icon {
@@ -579,7 +638,7 @@ textarea.tsidebar-rename {
     background-image:url('../images/spin.gif');
 }
 
-.tangara_error {    
+.tangara_error {
     background: rgba(255, 0, 0, 0.1);
     position: absolute;
     width: 100% !important;
@@ -671,6 +730,15 @@ textarea.tsidebar-rename {
     background-image:url('../images/design_mode_on.png');
 }
 
+#ttoolbar-floating-controller {
+    background-image:url('../images/floating_controller.png');
+}
+
+#ttoolbar-floating-controller:hover,
+#ttoolbar-floating-controller.active {
+    background-image:url('../images/floating_controller_on.png');
+}
+
 #ttoolbar-console {
     background-image:url('../images/console.png');
 }
@@ -699,7 +767,7 @@ textarea.tsidebar-rename {
 
 #tlog-outer {
     position:relative;
-    z-index:1;  
+    z-index:1;
     width:100%;
     background-color:#FFFFFF;
     overflow:hidden;
@@ -724,16 +792,16 @@ textarea.tsidebar-rename {
     height:100%;
     overflow:auto;
 }
-            
+
 .tlog-row, .tdesign-log-row {
     font-family:'Monaco','Menlo','Ubuntu Mono','Consolas','source-code-pro',monospace;
     font-size:20px;
 }
-            
+
 .tlog-success {
     color:#470A2B;
 }
-            
+
 .tlog-failure {
     color:#FF0000;
     cursor:pointer;
@@ -902,7 +970,7 @@ textarea.tsidebar-rename {
 }
 
 .tviewer-button-close:hover{
-    background-image:url(../images/close_orange.png);    
+    background-image:url(../images/close_orange.png);
 }
 
 .tviewer-button-left {
@@ -932,7 +1000,7 @@ textarea.tsidebar-rename {
 }
 
 .tviewer-button-right:hover {
-    background-image:url(../images/next_orange.png);    
+    background-image:url(../images/next_orange.png);
 }
 
 .tviewer-button-edit {
@@ -948,7 +1016,7 @@ textarea.tsidebar-rename {
 }
 
 .tviewer-button-edit:hover {
-    background-image:url(../images/edit_orange.png);    
+    background-image:url(../images/edit_orange.png);
 }
 
 .tviewer-button-duplicate {
@@ -964,7 +1032,7 @@ textarea.tsidebar-rename {
 }
 
 .tviewer-button-duplicate:hover {
-    background-image:url(../images/duplicate_orange.png);    
+    background-image:url(../images/duplicate_orange.png);
 }
 
 
@@ -1141,8 +1209,8 @@ textarea.tsidebar-rename {
     cursor:pointer;
     border:none;
     background-color:transparent;
-    
-   font-family:Comfortaa, "Helvetica Neue",Helvetica,Arial,sans-serif;     
+
+   font-family:Comfortaa, "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 

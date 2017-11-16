@@ -10,6 +10,8 @@ define(['ui/TComponent', 'jquery', 'TEnvironment', 'TUI'], function(TComponent, 
             $main = component;
             $buttonExecute = component.find("#ttoolbar-play");
             $buttonDesignMode = component.find("#ttoolbar-design-mode");
+            $buttonFloatingController =
+                component.find("#ttoolbar-floating-controller");
             $buttonConsole = component.find("#ttoolbar-console");
             $buttonSaveProgram = component.find("#ttoolbar-save");
 
@@ -38,6 +40,11 @@ define(['ui/TComponent', 'jquery', 'TEnvironment', 'TUI'], function(TComponent, 
             $buttonDesignMode.attr("title", TEnvironment.getMessage('option-design-mode'));
             $buttonDesignMode.click(function(e) {
                 TUI.toggleDesignMode();
+            });
+
+            $buttonFloatingController.attr("title", TEnvironment.getMessage('option-floating-controller'));
+            $buttonFloatingController.click(function(e) {
+                TUI.toggleFloatingController();
             });
 
             $buttonConsole.attr("title", TEnvironment.getMessage('option-console'));
@@ -69,6 +76,14 @@ define(['ui/TComponent', 'jquery', 'TEnvironment', 'TUI'], function(TComponent, 
             $buttonConsole.removeClass("active");
         };
 
+        this.enableControllerMode = function() {
+            $buttonControllerMode.addClass("active");
+        };
+
+        this.disableControllerMode = function() {
+            $buttonControllerMode.removeClass("active");
+        };
+
         this.enableDesignMode = function() {
             $buttonDesignMode.addClass("active");
         };
@@ -77,9 +92,18 @@ define(['ui/TComponent', 'jquery', 'TEnvironment', 'TUI'], function(TComponent, 
             $buttonDesignMode.removeClass("active");
         };
 
+        this.enableFloatingController = function() {
+            $buttonFloatingController.addClass("active");
+        };
+
+        this.disableFloatingController = function() {
+            $buttonFloatingController.removeClass("active");
+        };
+
         this.enableEditor = function() {
             if (!editorMode) {
                 $buttonDesignMode.hide();
+                $buttonFloatingController.hide();
                 $buttonConsole.hide();
                 $buttonExecute.show();
                 $buttonSaveProgram.show();
@@ -90,6 +114,7 @@ define(['ui/TComponent', 'jquery', 'TEnvironment', 'TUI'], function(TComponent, 
         this.disableEditor = function() {
             if (editorMode) {
                 $buttonDesignMode.show();
+                $buttonFloatingController.show();
                 $buttonConsole.show();
                 $buttonExecute.hide();
                 $buttonSaveProgram.hide();

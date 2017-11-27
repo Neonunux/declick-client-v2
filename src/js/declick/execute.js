@@ -2,6 +2,7 @@ require.config({
     "baseUrl": 'js/declick',
     paths: {
         "jquery": '../libs/jquery/jquery.min',
+        "jquery-ui": '../libs/jquery.ui-1.11.2',
         "quintus": '../libs/quintus-0.2.0/quintus-all.min',
         "acorn": '../libs/acorn/acorn',
         "TObject": 'objects/tobject/TObject',
@@ -25,7 +26,13 @@ require.config({
         "TUtils": "utils/TUtils",
         "TResource": "data/TResource",
         "js-interpreter":"../libs/js-interpreter/interpreter",
-        "introjs": "../libs/introjs/intro.min"        
+        "introjs": "../libs/introjs/intro.min"
+    },
+    shim: {
+        "jquery-ui": {
+            exports: "$",
+            deps: ['jquery']
+        }
     }
 });
 

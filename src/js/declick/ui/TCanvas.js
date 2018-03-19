@@ -1,4 +1,4 @@
-define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment', 'ui/TFloatingController'], function($, TRuntime, TComponent, TEnvironment, TFloatingController) {
+define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment', 'ui/TFloatingController', 'jquery-ui/draggable'], function($, TRuntime, TComponent, TEnvironment, TFloatingController) {
 
     function TCanvas(callback) {
         var $main, $canvas, $canvasDesign, $canvasDesignMouse, $canvasLoading, $canvasLoadingValue, $popup, $popupContent, $floatingController;
@@ -15,8 +15,7 @@ define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment', 'ui/TFloatingCont
 
             floatingController = new TFloatingController(function (content) {
                 component.find("#TFloatingController").replaceWith(content);
-                $floatingController = component.find('#tfloatingcontroller');
-                $floatingController.draggable({containment: "#tcanvas-outer"});
+                $floatingController = component.find('#tfloatingcontroller')
                 $floatingController.hide();
             });
 
@@ -108,6 +107,7 @@ define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment', 'ui/TFloatingCont
         };
 
         this.enableFloatingController = function () {
+            $floatingController.draggable({ containment: 'parent' });
             $floatingController.show();
         };
 

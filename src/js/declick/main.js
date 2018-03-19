@@ -54,6 +54,10 @@ require.config({
         }
     },
     shim: {
+        "jquery-ui": {
+            exports: "$",
+            deps: ['jquery']
+        },
         'wPaint': {
             deps: ['jquery', 'jquery-ui/core', 'jquery-ui/widget', 'jquery-ui/draggable', 'jquery-ui/mouse']
         },

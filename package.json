@@ -1,14 +1,17 @@
 {
   "name": "declick-client-v2",
-  "author": {
-      "name": "Colombbus",
-      "email": "contact@colombbus.org"
-  },
+  "author": "Colombbus <contact@colombbus.org>",
   "version": "2.0.0",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/colombbus/declick-client-v2.git"
+  },
+  "scripts": {
+    "install_declick": "npm install && grunt install_declick",
+    "dev": "webpack --mode development --module-bind js=babel-loader",
+    "dev2": "webpack-dev-server --mode=development",
+    "build:main": "babel-node build main"
   },
   "dependencies": {
     "ace-builds": "^1.2.2",
@@ -18,15 +21,23 @@
     "requirejs": "2.1.15"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.46",
+    "@babel/node": "^7.0.0-beta.46",
+    "@babel/preset-env": "^7.0.0-beta.46",
+    "babel-loader": "^8.0.0-beta.2",
     "grunt": "^0.4.5",
     "grunt-cleanempty": "^1.0.4",
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-requirejs": "^1.0.0",
     "grunt-contrib-uglify": "~0.5.0",
     "grunt-front-end-modules": "^1.2.2",
-    "grunt-html-build": "^0.6.1"
-  },
-  "scripts": {
-    "install_declick": "npm install && grunt install_declick"
+    "grunt-html-build": "^0.6.1",
+    "html-webpack-plugin": "^3.2.0",
+    "htmllint-loader": "^2.1.4",
+    "raw-loader": "^0.5.1",
+    "url-loader": "^1.0.1",
+    "webpack-cli": "^2.1.3",
+    "webpack-config-options": "^1.0.2",
+    "webpack-dev-server": "^3.1.4"
   }
 }

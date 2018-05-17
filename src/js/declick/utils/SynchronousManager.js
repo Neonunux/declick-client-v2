@@ -1,35 +1,35 @@
-define(['TRuntime'], function(TRuntime) {
-    /**
-     * SynchronousManager runs the synchronicity between objects in TRuntime.
-     * @exports SynchronousManager  
-     */
-    var SynchronousManager = function() {
-        this.running = false;
-    };
+import TRuntime from '@/run/TRuntime'
 
-    /**
-     * Suspend the execution of the interpreter and set running to true.
-     */
-    SynchronousManager.prototype.begin = function() {
-        TRuntime.suspend();
-        this.running = true;
-    };
+/**
+ * SynchronousManager runs the synchronicity between objects in TRuntime.
+ * @exports SynchronousManager  
+ */
+var SynchronousManager = function() {
+    this.running = false;
+};
 
-    /**
-     * Resume the execution of the interpreter and set running to false.
-     */
-    SynchronousManager.prototype.end = function() {
-        TRuntime.resume();
-        this.running = false;
-    };
+/**
+ * Suspend the execution of the interpreter and set running to true.
+ */
+SynchronousManager.prototype.begin = function() {
+    TRuntime.suspend();
+    this.running = true;
+};
 
-    /**
-     * Check the value of running.
-     * @returns {Boolean}
-     */
-    SynchronousManager.prototype.isRunning = function() {
-        return this.running;
-    };
+/**
+ * Resume the execution of the interpreter and set running to false.
+ */
+SynchronousManager.prototype.end = function() {
+    TRuntime.resume();
+    this.running = false
+}
 
-    return SynchronousManager;
-});
+/**
+ * Check the value of running.
+ * @returns {Boolean}
+ */
+SynchronousManager.prototype.isRunning = function() {
+    return this.running
+}
+
+export default SynchronousManager

@@ -1,4 +1,5 @@
-(function ($) {
+import $ from 'jquery'
+
 var img= '../../declick/plugins/flip.png';
 // extend menu
 $.extend(true, $.fn.wPaint.menus.main.items, {
@@ -51,5 +52,4 @@ $.fn.wPaint.extend({
         context.drawImage(operationCanvas,0,0);
         this._addUndo();
     }
-});
-})(jQuery);
+})

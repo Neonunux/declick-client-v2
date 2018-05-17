@@ -1,54 +1,56 @@
-define(['ui/TComponent', 'jquery', 'TRuntime'], function(TComponent, $, TRuntime) {
+import $ from 'jquery'
 
-    function TLearnCanvas(callback) {
-        var $main, $canvas, $canvasLoading, $canvasLoadingValue;
+import TComponent from '@/ui/TComponent'
+import TRuntime from '@/ui/TRuntime'
 
-        TComponent.call(this, "TLearnCanvas.html", function(component) {
-            $main = component;
-            $canvas = component.find("#tcanvas");
-            $canvasLoading = component.find("#tcanvas-loading");
-            $canvasLoadingValue = component.find("#tcanvas-loading-value");
+function TLearnCanvas(callback) {
+    var $main, $canvas, $canvasLoading, $canvasLoadingValue;
 
-            if (typeof callback !== 'undefined') {
-                callback.call(this, component);
-            }
+    TComponent.call(this, "TLearnCanvas.html", function(component) {
+        $main = component;
+        $canvas = component.find("#tcanvas");
+        $canvasLoading = component.find("#tcanvas-loading");
+        $canvasLoadingValue = component.find("#tcanvas-loading-value");
+
+        if (typeof callback !== 'undefined') {
+            callback.call(this, component);
+        }
+    });
+
+    this.mounted = function() {
+        var graphics = TRuntime.getGraphics();
+        graphics.setCanvas("tcanvas");
+        // resize canvas and its container when window is resized
+        $(window).resize(function(e) {
+            var width = $main.width();
+            var height = $main.height();
+            graphics.resize(width, height);
         });
+    };
 
-        this.mounted = function() {
-            var graphics = TRuntime.getGraphics();
-            graphics.setCanvas("tcanvas");
-            // resize canvas and its container when window is resized
-            $(window).resize(function(e) {
-                var width = $main.width();
-                var height = $main.height();
-                graphics.resize(width, height);
-            });
-        };
+    this.show = function() {
+        $main.show();
+    };
 
-        this.show = function() {
-            $main.show();
-        };
+    this.hide = function() {
+        $main.hide();
+    };
+    this.showLoading = function() {
+        $canvasLoading.show();
+    };
+    this.setLoadingValue = function(count, total) {
+        var value = Math.round(count * 100 / total);
+        $canvasLoadingValue.text(value + "%");
+    };
+    this.removeLoading = function() {
+        $canvasLoading.hide();
+    };
+    this.giveFocus = function() {
+        $canvas.get(0).focus();
+    };
+}
 
-        this.hide = function() {
-            $main.hide();
-        };
-        this.showLoading = function() {
-            $canvasLoading.show();
-        };
-        this.setLoadingValue = function(count, total) {
-            var value = Math.round(count * 100 / total);
-            $canvasLoadingValue.text(value + "%");
-        };
-        this.removeLoading = function() {
-            $canvasLoading.hide();
-        };
-        this.giveFocus = function() {
-            $canvas.get(0).focus();
-        };
-    }
+TLearnCanvas.prototype = Object.create(TComponent.prototype)
+TLearnCanvas.prototype.constructor = TLearnCanvas
 
-    TLearnCanvas.prototype = Object.create(TComponent.prototype);
-    TLearnCanvas.prototype.constructor = TLearnCanvas;
-
-    return TLearnCanvas;
-});
+export default TLearnCanvas

@@ -1,168 +1,173 @@
-define(['jquery', 'TRuntime', 'ui/TComponent', 'TEnvironment', 'ui/TFloatingController', 'jquery-ui/draggable'], function($, TRuntime, TComponent, TEnvironment, TFloatingController) {
+import $ from 'jquery'
+require('jquery.ui.draggable')
 
-    function TCanvas(callback) {
-        var $main, $canvas, $canvasDesign, $canvasDesignMouse, $canvasLoading, $canvasLoadingValue, $popup, $popupContent, $floatingController;
-        var popupCallback = null;
-        var cursorX, cursorY;
+import TEnvironment from '@/env/TEnvironment'
+import TRuntime from '@/run/TRuntime'
+import TComponent from '@/ui/TComponent'
+import TFloatingController from '@/ui/TFloatingController'
 
-        TComponent.call(this, "TCanvas.html", function(component) {
-            $main = component;
-            $canvas = component.find("#tcanvas");
-            $canvasDesign = component.find("#tcanvas-design");
-            $canvasDesignMouse = component.find("#tcanvas-design-mouse");
-            $canvasLoading = component.find("#tcanvas-loading");
-            $canvasLoadingValue = component.find("#tcanvas-loading-value");
+function TCanvas(callback) {
+    var $main, $canvas, $canvasDesign, $canvasDesignMouse, $canvasLoading, $canvasLoadingValue, $popup, $popupContent, $floatingController;
+    var popupCallback = null;
+    var cursorX, cursorY;
 
-            floatingController = new TFloatingController(function (content) {
-                component.find("#TFloatingController").replaceWith(content);
-                $floatingController = component.find('#tfloatingcontroller')
-                $floatingController.hide();
-            });
+    TComponent.call(this, "TCanvas.html", function(component) {
+        $main = component;
+        $canvas = component.find("#tcanvas");
+        $canvasDesign = component.find("#tcanvas-design");
+        $canvasDesignMouse = component.find("#tcanvas-design-mouse");
+        $canvasLoading = component.find("#tcanvas-loading");
+        $canvasLoadingValue = component.find("#tcanvas-loading-value");
 
-            $canvasDesign.hide();
-            $canvasLoading.hide();
+        var floatingController = new TFloatingController(function (content) {
+            component.find("#TFloatingController").replaceWith(content);
+            $floatingController = component.find('#tfloatingcontroller')
+            $floatingController.hide();
+        });
 
-            $canvas.on("mousemove", cursorHandler);
-            $canvas.on("touchmove", cursorHandler);
+        $canvasDesign.hide();
+        $canvasLoading.hide();
 
-            $canvasLoadingValue = component.find("#tcanvas-loading-value");
+        $canvas.on("mousemove", cursorHandler);
+        $canvas.on("touchmove", cursorHandler);
 
-            $popup = component.find("#tcanvas-popup");
-            $popupContent = component.find("#tcanvas-popup-content");
-            var $buttonPopup = component.find("#tcanvas-popup-button");
-            $buttonPopup.text(TEnvironment.getMessage('popup-ok'));
-            $buttonPopup.click(function() {
-                $popup.hide();
-                if (popupCallback !== null) {
-                    popupCallback.call(this);
-                }
-            });
+        $canvasLoadingValue = component.find("#tcanvas-loading-value");
 
-            if (typeof callback !== 'undefined') {
-                callback.call(this, component);
+        $popup = component.find("#tcanvas-popup");
+        $popupContent = component.find("#tcanvas-popup-content");
+        var $buttonPopup = component.find("#tcanvas-popup-button");
+        $buttonPopup.text(TEnvironment.getMessage('popup-ok'));
+        $buttonPopup.click(function() {
+            $popup.hide();
+            if (popupCallback !== null) {
+                popupCallback.call(this);
             }
         });
 
-        var cursorHandler = function (event) {
-            cursorX = event.clientX + $main.scrollLeft();
-            cursorY = event.clientY + $main.scrollTop();
-        };
-        var designMouseHandler = function (event) {
-            $canvasDesignMouse.text(cursorX + "," + cursorY);
-        };
+        if (typeof callback !== 'undefined') {
+            callback.call(this, component);
+        }
+    });
 
-        /**
-         *
-         * @param event
-         */
-        var designMouseSideHandler = function(event) {
-            if ($canvasDesignMouse.hasClass("left-design")) {
-                $canvasDesignMouse.removeClass("left-design");
-                $canvasDesignMouse.addClass("right-design");
-                return;
-            }
-            else {
-                $canvasDesignMouse.removeClass("right-design");
-                $canvasDesignMouse.addClass("left-design");
-            }
-        };
+    var cursorHandler = function (event) {
+        cursorX = event.clientX + $main.scrollLeft();
+        cursorY = event.clientY + $main.scrollTop();
+    };
+    var designMouseHandler = function (event) {
+        $canvasDesignMouse.text(cursorX + "," + cursorY);
+    };
 
-        this.mounted = function() {
-            $popup.hide();
-            var graphics = TRuntime.getGraphics();
-            graphics.setCanvas("tcanvas");
-            // resize canvas and its container when window is resized
-            var self = this;
-            $(window).resize(function(e) {
-                self.resize();
-            });
-        };
+    /**
+     *
+     * @param event
+     */
+    var designMouseSideHandler = function(event) {
+        if ($canvasDesignMouse.hasClass("left-design")) {
+            $canvasDesignMouse.removeClass("left-design");
+            $canvasDesignMouse.addClass("right-design");
+            return;
+        }
+        else {
+            $canvasDesignMouse.removeClass("right-design");
+            $canvasDesignMouse.addClass("left-design");
+        }
+    };
 
-        this.show = function() {
-            $main.show();
-        };
+    this.mounted = function() {
+        $popup.hide();
+        var graphics = TRuntime.getGraphics();
+        graphics.setCanvas("tcanvas");
+        // resize canvas and its container when window is resized
+        var self = this;
+        $(window).resize(function(e) {
+            self.resize();
+        });
+    };
 
-        this.hide = function() {
-            $main.hide();
-        };
+    this.show = function() {
+        $main.show();
+    };
 
-        this.setDesignMode = function(value) {
-            if (value) {
-                $canvasDesign.show();
-                $canvas.on("mousemove", designMouseHandler);
-                $canvasDesignMouse.on("mouseover", designMouseSideHandler);
+    this.hide = function() {
+        $main.hide();
+    };
 
-                //                $domCanvas3d.on("click", function(e) {
-                //                    console.log("c3D clicked");
-                //                    if (e.clientY > $(this).outerHeight() - 14) {
-                //                        alert('clicked on the bottom border!');
-                //                    }
-                //                });
-            } else {
-                $canvasDesign.hide();
-                $canvasDesignMouse.empty();
-                $canvas.off("mousemove", designMouseHandler);
-                $canvasDesignMouse.off("mouseover", designMouseSideHandler);
-            }
-        };
+    this.setDesignMode = function(value) {
+        if (value) {
+            $canvasDesign.show();
+            $canvas.on("mousemove", designMouseHandler);
+            $canvasDesignMouse.on("mouseover", designMouseSideHandler);
 
-        this.enableFloatingController = function () {
-            $floatingController.draggable({ containment: 'parent' });
-            $floatingController.show();
-        };
+            //                $domCanvas3d.on("click", function(e) {
+            //                    console.log("c3D clicked");
+            //                    if (e.clientY > $(this).outerHeight() - 14) {
+            //                        alert('clicked on the bottom border!');
+            //                    }
+            //                });
+        } else {
+            $canvasDesign.hide();
+            $canvasDesignMouse.empty();
+            $canvas.off("mousemove", designMouseHandler);
+            $canvasDesignMouse.off("mouseover", designMouseSideHandler);
+        }
+    };
 
-        this.disableFloatingController = function () {
-            $floatingController.hide();
-        };
+    this.enableFloatingController = function () {
+        $floatingController.draggable({ containment: 'parent' });
+        $floatingController.show();
+    };
 
-        this.showLoading = function() {
-            $canvasLoading.show();
-        };
+    this.disableFloatingController = function () {
+        $floatingController.hide();
+    };
 
-        this.setLoadingValue = function(count, total) {
-            var value = Math.round(count * 100 / total);
-            $canvasLoadingValue.text(value + "%");
-        };
+    this.showLoading = function() {
+        $canvasLoading.show();
+    };
 
-        this.removeLoading = function() {
-            $canvasLoading.hide();
-        };
+    this.setLoadingValue = function(count, total) {
+        var value = Math.round(count * 100 / total);
+        $canvasLoadingValue.text(value + "%");
+    };
 
-        this.giveFocus = function() {
-            $canvas.get(0).focus();
-        };
+    this.removeLoading = function() {
+        $canvasLoading.hide();
+    };
 
-        this.resize = function() {
-            var width = $main.width();
-            var height = $main.height();
-            TRuntime.getGraphics().resize(width, height);
-        };
+    this.giveFocus = function() {
+        $canvas.get(0).focus();
+    };
 
-        this.popup = function(text, callback) {
-            $popupContent.text(text);
-            if (typeof callback !== "undefined") {
-                popupCallback = callback;
-            } else {
-                popupCallback = null;
-            }
-            $popup.show();
-        };
+    this.resize = function() {
+        var width = $main.width();
+        var height = $main.height();
+        TRuntime.getGraphics().resize(width, height);
+    };
 
-        this.clear = function() {
-            $popup.hide();
-        };
+    this.popup = function(text, callback) {
+        $popupContent.text(text);
+        if (typeof callback !== "undefined") {
+            popupCallback = callback;
+        } else {
+            popupCallback = null;
+        }
+        $popup.show();
+    };
 
-        this.getCursorX = function () {
-            return cursorX;
-        };
-        this.getCursorY = function () {
-            return cursorY;
-        };
-    }
-    ;
+    this.clear = function() {
+        $popup.hide();
+    };
 
-    TCanvas.prototype = Object.create(TComponent.prototype);
-    TCanvas.prototype.constructor = TCanvas;
+    this.getCursorX = function () {
+        return cursorX;
+    };
+    this.getCursorY = function () {
+        return cursorY;
+    };
+}
+;
 
-    return TCanvas;
-});
+TCanvas.prototype = Object.create(TComponent.prototype);
+TCanvas.prototype.constructor = TCanvas;
+
+export default TCanvas

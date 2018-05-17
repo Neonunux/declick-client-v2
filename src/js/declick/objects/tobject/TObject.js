@@ -1,72 +1,76 @@
-define(['jquery', 'TRuntime', 'TEnvironment', 'TResource'], function($, TRuntime, TEnvironment, TResource) {
-    /**
-     * Defines TObject.
-     * This is the main class, all classes inherit from it.
-     * @exports TObject
-     */
-    function TObject() {
-        TRuntime.addObject(this);
-    }
+import $ from 'jquery'
 
-    TObject.prototype.objectName = "";
-    TObject.prototype.className = "TObject";
-    TObject.prototype.objectPath = "tobject";
+import TResource from '@/data/TResource'
+import TEnvironment from '@/env/TEnvironment'
+import TRuntime from '@/run/TRuntime'
 
-    TObject.prototype.deleteObject = function() {
-        TRuntime.removeObject(this);
-    };
+/**
+ * Defines TObject.
+ * This is the main class, all classes inherit from it.
+ * @exports TObject
+ */
+function TObject() {
+    TRuntime.addObject(this);
+}
 
-    TObject.prototype.getResource = function(location) {
-        return TEnvironment.getObjectsUrl() + "/" + this.objectPath + "/resources/" + location;
-    };
+TObject.prototype.objectName = "";
+TObject.prototype.className = "TObject";
+TObject.prototype.objectPath = "tobject";
 
-    TObject.prototype.loadJSON = function(location, callback, errorCallback) {
-        TResource.get(location, [], callback, errorCallback);
-    }
+TObject.prototype.deleteObject = function() {
+    TRuntime.removeObject(this);
+};
 
-    TObject.prototype.loadFile = function(location, callback, errorCallback) {
-        TResource.getPlain(location, [], callback, errorCallback);
-    }
+TObject.prototype.getResource = function(location) {
+    return this.objectPath + "/resources/" + location;
+};
 
-    TObject.prototype.getMessage = function(code) {
-        if (typeof this.constructor.messages[code] !== 'undefined') {
-            var message = this.constructor.messages[code];
-            if (arguments.length > 1) {
-                // message has to be parsed
-                var elements = arguments;
-                message = message.replace(/{(\d+)}/g, function(match, number) {
-                    number = parseInt(number) + 1;
-                    return typeof elements[number] !== 'undefined' ? elements[number] : match;
-                });
-            }
-            return message;
-        } else {
-            return code;
+TObject.prototype.loadJSON = function(location, callback, errorCallback) {
+    TResource.get(location, [], callback, errorCallback);
+}
+
+TObject.prototype.loadFile = function(location, callback, errorCallback) {
+    TResource.getPlain(location, [], callback, errorCallback);
+}
+
+TObject.prototype.getMessage = function(code) {
+    if (typeof this.constructor.messages[code] !== 'undefined') {
+        var message = this.constructor.messages[code];
+        if (arguments.length > 1) {
+            // message has to be parsed
+            var elements = arguments;
+            message = message.replace(/{(\d+)}/g, function(match, number) {
+                number = parseInt(number) + 1;
+                return typeof elements[number] !== 'undefined' ? elements[number] : match;
+            });
         }
-    };
+        return message;
+    } else {
+        return code;
+    }
+};
 
-    /**
-     * Delete TObject.
-     */
-    TObject.prototype._delete = function() {
-        this.deleteObject();
-    };
+/**
+ * Delete TObject.
+ */
+TObject.prototype._delete = function() {
+    this.deleteObject();
+};
 
-    /**
-     * To be defined in sub-objects, so they can have actions to freeze.
-     * @param {Boolean} value
-     */
-    TObject.prototype.freeze = function(value) {
-        // every object may add actions to take to freeze
-    };
+/**
+ * To be defined in sub-objects, so they can have actions to freeze.
+ * @param {Boolean} value
+ */
+TObject.prototype.freeze = function(value) {
+    // every object may add actions to take to freeze
+};
 
-    /**
-     * Get a String containing "TObject " and the class of the object.
-     * @returns {String}
-     */
-    TObject.prototype.toString = function() {
-        return "TObject " + this.className;
-    };
+/**
+ * Get a String containing "TObject " and the class of the object.
+ * @returns {String}
+ */
+TObject.prototype.toString = function() {
+    return "TObject " + this.className;
+};
 
-    return TObject;
-});
+export default TObject

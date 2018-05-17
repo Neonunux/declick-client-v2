@@ -5,168 +5,168 @@ import TEnvironment from '@/env/TEnvironment'
 import TUI from '@/ui/TUI'
 
 function TToolbar(callback) {
-    var $main, $buttonExecute;
-    var $buttonFloatingController, $buttonDesignMode, $buttonConsole, $buttonSaveProgram, $buttonHints, $buttonWiki;
-    var editorMode = false;
-    var saveEnabled = false;
-    var currentHeight = -1;
+    var $main, $buttonExecute
+    var $buttonFloatingController, $buttonDesignMode, $buttonConsole, $buttonSaveProgram, $buttonHints, $buttonWiki
+    var editorMode = false
+    var saveEnabled = false
+    var currentHeight = -1
 
-    TComponent.call(this, "TToolbar.html", function(component) {
-        $main = component;
-        $buttonExecute = component.find("#ttoolbar-play");
-        $buttonDesignMode = component.find("#ttoolbar-design-mode");
+    TComponent.call(this, 'TToolbar.html', function(component) {
+        $main = component
+        $buttonExecute = component.find('#ttoolbar-play')
+        $buttonDesignMode = component.find('#ttoolbar-design-mode')
         $buttonFloatingController =
-            component.find("#ttoolbar-floating-controller");
-        $buttonConsole = component.find("#ttoolbar-console");
-        $buttonSaveProgram = component.find("#ttoolbar-save");
+            component.find('#ttoolbar-floating-controller')
+        $buttonConsole = component.find('#ttoolbar-console')
+        $buttonSaveProgram = component.find('#ttoolbar-save')
 
-        $buttonWiki = component.find("#ttoolbar-wiki");
-        $buttonWiki.prop("title", TEnvironment.getMessage('button-wiki'));
+        $buttonWiki = component.find('#ttoolbar-wiki')
+        $buttonWiki.prop('title', TEnvironment.getMessage('button-wiki'))
         $buttonWiki.click(function(e) {
-            $buttonWiki.toggleClass("active");
+            $buttonWiki.toggleClass('active')
             if (typeof window.parent !== 'undefined') {
-                window.parent.postMessage("toggleWiki", "*");
+                window.parent.postMessage('toggleWiki', '*')
             }
-        });
+        })
 
-        $buttonHints = component.find("#ttoolbar-hints");
-        $buttonHints.prop("title", TEnvironment.getMessage('button-hints'));
+        $buttonHints = component.find('#ttoolbar-hints')
+        $buttonHints.prop('title', TEnvironment.getMessage('button-hints'))
         $buttonHints.click(function(e) {
-            TUI.toggleHints();
-        });
+            TUI.toggleHints()
+        })
 
-        $buttonExecute.attr("title", TEnvironment.getMessage('button-execute'));
+        $buttonExecute.attr('title', TEnvironment.getMessage('button-execute'))
         $buttonExecute.click(function(e) {
             if (!$(this).is(':disabled')) {
-                TUI.execute();
+                TUI.execute()
             }
-        });
+        })
 
-        $buttonDesignMode.attr("title", TEnvironment.getMessage('option-design-mode'));
+        $buttonDesignMode.attr('title', TEnvironment.getMessage('option-design-mode'))
         $buttonDesignMode.click(function(e) {
-            TUI.toggleDesignMode();
-        });
+            TUI.toggleDesignMode()
+        })
 
-        $buttonFloatingController.attr("title", TEnvironment.getMessage('option-floating-controller'));
+        $buttonFloatingController.attr('title', TEnvironment.getMessage('option-floating-controller'))
         $buttonFloatingController.click(function(e) {
-            TUI.toggleFloatingController();
-        });
+            TUI.toggleFloatingController()
+        })
 
-        $buttonConsole.attr("title", TEnvironment.getMessage('option-console'));
+        $buttonConsole.attr('title', TEnvironment.getMessage('option-console'))
         $buttonConsole.click(function(e) {
-            TUI.toggleConsole();
-        });
+            TUI.toggleConsole()
+        })
 
 
-        $buttonSaveProgram.attr("title", TEnvironment.getMessage('option-save-program'));
+        $buttonSaveProgram.attr('title', TEnvironment.getMessage('option-save-program'))
         $buttonSaveProgram.click(function(e) {
             if (!$(this).is(':disabled')) {
-                TUI.saveProgram();
+                TUI.saveProgram()
             }
-        });
+        })
 
         if (typeof callback !== 'undefined') {
-            callback.call(this, component);
+            callback.call(this, component)
         }
-    });
+    })
 
-    this.mounted = function() {};
+    this.mounted = function() {}
 
     this.enableConsole = function() {
-        $buttonConsole.addClass("active");
-    };
+        $buttonConsole.addClass('active')
+    }
 
     this.disableConsole = function() {
-        $buttonConsole.removeClass("active");
-    };
+        $buttonConsole.removeClass('active')
+    }
 
     this.enableControllerMode = function() {
-        $buttonControllerMode.addClass("active");
-    };
+        $buttonControllerMode.addClass('active')
+    }
 
     this.disableControllerMode = function() {
-        $buttonControllerMode.removeClass("active");
-    };
+        $buttonControllerMode.removeClass('active')
+    }
 
     this.enableDesignMode = function() {
-        $buttonDesignMode.addClass("active");
-    };
+        $buttonDesignMode.addClass('active')
+    }
 
     this.disableDesignMode = function() {
-        $buttonDesignMode.removeClass("active");
-    };
+        $buttonDesignMode.removeClass('active')
+    }
 
     this.enableFloatingController = function() {
-        $buttonFloatingController.addClass("active");
-    };
+        $buttonFloatingController.addClass('active')
+    }
 
     this.disableFloatingController = function() {
-        $buttonFloatingController.removeClass("active");
-    };
+        $buttonFloatingController.removeClass('active')
+    }
 
     this.enableEditor = function() {
         if (!editorMode) {
-            $buttonDesignMode.hide();
-            $buttonFloatingController.hide();
-            $buttonConsole.hide();
-            $buttonExecute.show();
-            $buttonSaveProgram.show();
-            editorMode = true;
+            $buttonDesignMode.hide()
+            $buttonFloatingController.hide()
+            $buttonConsole.hide()
+            $buttonExecute.show()
+            $buttonSaveProgram.show()
+            editorMode = true
         }
-    };
+    }
 
     this.disableEditor = function() {
         if (editorMode) {
-            $buttonDesignMode.show();
-            $buttonFloatingController.show();
-            $buttonConsole.show();
-            $buttonExecute.hide();
-            $buttonSaveProgram.hide();
-            editorMode = false;
+            $buttonDesignMode.show()
+            $buttonFloatingController.show()
+            $buttonConsole.show()
+            $buttonExecute.hide()
+            $buttonSaveProgram.hide()
+            editorMode = false
         }
-    };
+    }
 
     this.setSaveEnabled = function(value) {
-        saveEnabled = value;
+        saveEnabled = value
         if (value) {
-            $buttonSaveProgram.prop("disabled", false);
+            $buttonSaveProgram.prop('disabled', false)
         }
         else {
-            $buttonSaveProgram.prop("disabled", true);
+            $buttonSaveProgram.prop('disabled', true)
         }
-    };
+    }
 
     this.setSaveAvailable = function(value) {
         if (value && saveEnabled) {
-            $buttonSaveProgram.addClass("active");
+            $buttonSaveProgram.addClass('active')
         }
         else {
-            $buttonSaveProgram.removeClass("active");
+            $buttonSaveProgram.removeClass('active')
         }
-    };
+    }
 
     this.setHintsDisplayed = function(value) {
         if (value) {
-            $buttonHints.addClass("active");
+            $buttonHints.addClass('active')
         }
         else {
-            $buttonHints.removeClass("active");
+            $buttonHints.removeClass('active')
         }
-    };
+    }
 
     this.getHeight = function() {
         if (currentHeight === -1) {
-            currentHeight = $main.outerHeight(false);
+            currentHeight = $main.outerHeight(false)
         }
-        return currentHeight;
-    };
+        return currentHeight
+    }
 
     this.setWikiOpen = function() {
-        $buttonWiki.addClass("active");
-    };
+        $buttonWiki.addClass('active')
+    }
 
     this.setWikiClosed = function() {
-        $buttonWiki.removeClass("active");
+        $buttonWiki.removeClass('active')
     }
 }
 

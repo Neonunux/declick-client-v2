@@ -23,163 +23,163 @@ import TRuntime from '@/run/TRuntime'
  * @exports {TEditor}
  */
 function TEditor(callback) {
-    var $editor;
+    var $editor
 
-    TComponent.call(this, {id: "teditor"}, function(component) {
-        $editor = component;
+    TComponent.call(this, {id: 'teditor'}, function(component) {
+        $editor = component
         if (typeof callback !== 'undefined') {
-            callback.call(this, component);
+            callback.call(this, component)
         }
-    });
+    })
 
-    var aceEditor;
-    var codeChanged = false;
-    var program;
+    var aceEditor
+    var codeChanged = false
+    var program
 
-    var AceEditSession = ace.EditSession;
-    var AceUndoManager = ace.UndoManager;
-    var AceRange = ace_range;
-    var AceAutocomplete = ace_autocomplete;
+    var AceEditSession = ace.EditSession
+    var AceUndoManager = ace.UndoManager
+    var AceRange = ace_range
+    var AceAutocomplete = ace_autocomplete
 
-    var errorMarker = null;
-    var disabled = false;
-    var disabledSession = new AceEditSession('');
-    var disabledMessage = document.createElement("div");
-    disabledMessage.id = "disabled-message";
-    var disabledP = document.createElement("p");
-    var disabledText = TEnvironment.getMessage("editor-disabled");
-    disabledP.appendChild(document.createTextNode(disabledText));
-    disabledMessage.appendChild(disabledP);
-    var $disabledMessage = $(disabledMessage);
+    var errorMarker = null
+    var disabled = false
+    var disabledSession = new AceEditSession('')
+    var disabledMessage = document.createElement('div')
+    disabledMessage.id = 'disabled-message'
+    var disabledP = document.createElement('p')
+    var disabledText = TEnvironment.getMessage('editor-disabled')
+    disabledP.appendChild(document.createTextNode(disabledText))
+    disabledMessage.appendChild(disabledP)
+    var $disabledMessage = $(disabledMessage)
 
-    var popupTriggered = false;
-    var popupTimeout;
-    var triggerPopup = false;
-    var saveEnabled = false;
+    var popupTriggered = false
+    var popupTimeout
+    var triggerPopup = false
+    var saveEnabled = false
 
     /**
      * Initialize Editor.
      */
     this.mounted = function() {
-        aceEditor = ace.edit($editor.attr("id"));
-        aceEditor.setShowPrintMargin(false);
+        aceEditor = ace.edit($editor.attr('id'))
+        aceEditor.setShowPrintMargin(false)
         //aceEditor.renderer.setShowGutter(false);
-        aceEditor.setFontSize("20px");
-        aceEditor.setHighlightActiveLine(false);
-        aceEditor.setBehavioursEnabled(false);
-        aceEditor.setTheme("ace/theme/twilight");
-        aceEditor.$blockScrolling = Infinity;
+        aceEditor.setFontSize('20px')
+        aceEditor.setHighlightActiveLine(false)
+        aceEditor.setBehavioursEnabled(false)
+        aceEditor.setTheme('ace/theme/twilight')
+        aceEditor.$blockScrolling = Infinity
 
-        var self = this;
+        var self = this
         aceEditor.on('input', function() {
             if (!program.isModified() && saveEnabled) {
-                program.setModified(true);
-                TUI.updateSidebarPrograms();
-                TUI.setSaveAvailable(true);
+                program.setModified(true)
+                TUI.updateSidebarPrograms()
+                TUI.setSaveAvailable(true)
             }
-            codeChanged = true;
-            self.removeError();
+            codeChanged = true
+            self.removeError()
             if (triggerPopup) {
-                triggerPopup = false;
+                triggerPopup = false
                 popupTimeout = setTimeout(function() {
-                    popupTriggered = false;
-                    AceAutocomplete.startCommand.exec(aceEditor);
-                }, 800);
-                popupTriggered = true;
+                    popupTriggered = false
+                    AceAutocomplete.startCommand.exec(aceEditor)
+                }, 800)
+                popupTriggered = true
             } else if (popupTriggered) {
-                clearTimeout(popupTimeout);
-                popupTriggered = false;
+                clearTimeout(popupTimeout)
+                popupTriggered = false
             }
-        });
+        })
         aceEditor.commands.addCommand({
-            name: "save",
-            bindKey: {win: "Ctrl-S", mac: "Command-S"},
+            name: 'save',
+            bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
             exec: function(arg) {
                 if (saveEnabled) {
-                    TUI.saveProgram();
+                    TUI.saveProgram()
                 }
             }
-        });
+        })
 
         aceEditor.commands.addCommand({
-            name: "execute",
-            bindKey: {win: "Ctrl-Return", mac: "Command-Return"},
+            name: 'execute',
+            bindKey: {win: 'Ctrl-Return', mac: 'Command-Return'},
             exec: function(arg) {
-                TUI.execute();
+                TUI.execute()
             }
-        });
+        })
 
-        aceEditor.completers = [editorCompleter];
-        aceEditor.setBehavioursEnabled(false);
+        aceEditor.completers = [editorCompleter]
+        aceEditor.setBehavioursEnabled(false)
 
-        this.enableMethodHelper();
+        this.enableMethodHelper()
 
         // disable editor, waiting for a program to edit
-        this.disable();
-    };
+        this.disable()
+    }
 
     /**
      * Show Editor.
      */
     this.show = function() {
-        $editor.show();
-        aceEditor.focus();
-    };
+        $editor.show()
+        aceEditor.focus()
+    }
 
     /**
      * Hide Editor.
      */
     this.hide = function() {
-        $editor.hide();
-    };
+        $editor.hide()
+    }
 
     /**
      * Get code in Editor.
      * @returns {String}
      */
     this.getValue = function() {
-        var simpleText = aceEditor.getSession().getValue();
-        var protectedText = TUtils.addQuoteDelimiters(simpleText);
-        var command = TUtils.parseQuotes(protectedText);
-        return command;
-    };
+        var simpleText = aceEditor.getSession().getValue()
+        var protectedText = TUtils.addQuoteDelimiters(simpleText)
+        var command = TUtils.parseQuotes(protectedText)
+        return command
+    }
 
     /**
      * Update Program & get statements of Program's code.
      * @returns {Statement[]}
      */
     this.getStatements = function() {
-        this.updateProgram();
-        return program.getStatements();
-    };
+        this.updateProgram()
+        return program.getStatements()
+    }
 
     /**
      * Update Program's code.
      */
     this.updateProgram = function() {
         if (codeChanged) {
-            program.setCode(this.getValue());
-            codeChanged = false;
+            program.setCode(this.getValue())
+            codeChanged = false
         }
-    };
+    }
 
     /**
      * Returns current Program.
      * @returns {TProgram}
      */
     this.getProgram = function() {
-        return program;
-    };
+        return program
+    }
 
     /**
      * Set a Program.
      * @param {TProgram} value
      */
     this.setProgram = function(value) {
-        program = value;
-        codeChanged = true;
-        TUI.setSaveAvailable(program.isModified());
-    };
+        program = value
+        codeChanged = true
+        TUI.setSaveAvailable(program.isModified())
+    }
 
     /**
      * Returns Program's name.
@@ -187,10 +187,10 @@ function TEditor(callback) {
      */
     this.getProgramName = function() {
         if (disabled) {
-            return false;
+            return false
         }
-        return program.getName();
-    };
+        return program.getName()
+    }
 
     /**
      * Set Session.
@@ -198,23 +198,23 @@ function TEditor(callback) {
      */
     this.setSession = function(session) {
         if (disabled) {
-            aceEditor.setReadOnly(false);
-            aceEditor.renderer.setShowGutter(true);
-            $editor.removeClass('editor-disabled');
-            $disabledMessage.remove();
-            disabled = false;
-            TUI.setSaveEnabled(true);
+            aceEditor.setReadOnly(false)
+            aceEditor.renderer.setShowGutter(true)
+            $editor.removeClass('editor-disabled')
+            $disabledMessage.remove()
+            disabled = false
+            TUI.setSaveEnabled(true)
         }
-        aceEditor.setSession(session);
-    };
+        aceEditor.setSession(session)
+    }
 
     /**
      * Returns current Session.
      * @returns {Session}
      */
     this.getSession = function() {
-        return aceEditor.getSession();
-    };
+        return aceEditor.getSession()
+    }
 
     /**
      * Reset current Session.
@@ -222,38 +222,38 @@ function TEditor(callback) {
     this.reset = function() {
         /*var undo = aceEditor.getSession().getUndoManager();
         undo.reset();*/
-        codeChanged = false;
-    };
+        codeChanged = false
+    }
 
     /**
      * Brings the current `textInput` into focus.
      */
     this.giveFocus = function() {
-        aceEditor.focus();
-    };
+        aceEditor.focus()
+    }
 
     /**
      * Disable Editor.
      */
     this.disable = function() {
-        aceEditor.setSession(disabledSession);
-        aceEditor.setReadOnly(true);
-        aceEditor.renderer.setShowGutter(false);
-        $editor.addClass('editor-disabled');
-        $editor.append($disabledMessage);
-        TUI.setSaveEnabled(false);
-        disabled = true;
-    };
+        aceEditor.setSession(disabledSession)
+        aceEditor.setReadOnly(true)
+        aceEditor.renderer.setShowGutter(false)
+        $editor.addClass('editor-disabled')
+        $editor.append($disabledMessage)
+        TUI.setSaveEnabled(false)
+        disabled = true
+    }
 
     /**
      * Remove error marker.
      */
     this.removeError = function() {
         if (errorMarker !== null) {
-            aceEditor.getSession().removeMarker(errorMarker);
-            errorMarker = null;
+            aceEditor.getSession().removeMarker(errorMarker)
+            errorMarker = null
         }
-    };
+    }
 
     /**
      * Set an error on a line or a range of lines :
@@ -262,21 +262,21 @@ function TEditor(callback) {
      * @param {Number[]} lines
      */
     this.setError = function(lines) {
-        this.removeError();
-        var range;
+        this.removeError()
+        var range
         if (lines.length > 1) {
-            range = new AceRange(lines[0] - 1, 0, lines[1] - 1, 100);
-            errorMarker = aceEditor.getSession().addMarker(range, 'declick_error', 'line', true);
+            range = new AceRange(lines[0] - 1, 0, lines[1] - 1, 100)
+            errorMarker = aceEditor.getSession().addMarker(range, 'declick_error', 'line', true)
         } else if (lines.length > 0) {
-            range = new AceRange(lines[0] - 1, 0, lines[0] - 1, 100);
-            errorMarker = aceEditor.getSession().addMarker(range, 'declick_error', 'line', true);
+            range = new AceRange(lines[0] - 1, 0, lines[0] - 1, 100)
+            errorMarker = aceEditor.getSession().addMarker(range, 'declick_error', 'line', true)
         }
-        aceEditor.navigateTo(lines[0] - 1, 0);
+        aceEditor.navigateTo(lines[0] - 1, 0)
         // In a timer, because otherwise does not seem to work when editor mode has just been activated
         setTimeout(function() {
-            aceEditor.scrollToLine(lines[0] - 1, true, true, null);
-        }, 100);
-    };
+            aceEditor.scrollToLine(lines[0] - 1, true, true, null)
+        }, 100)
+    }
 
     /**
      * Create a new session.
@@ -284,59 +284,59 @@ function TEditor(callback) {
      * @returns {Session}
      */
     this.createSession = function(program) {
-        var session = new AceEditSession(program.getCode());
-        session.setMode("ace/mode/javascript");
-        session.setUndoManager(new AceUndoManager());
+        var session = new AceEditSession(program.getCode())
+        session.setMode('ace/mode/javascript')
+        session.setUndoManager(new AceUndoManager())
         // Disable JSHint
-        session.setUseWorker(false);
-        return session;
-    };
+        session.setUseWorker(false)
+        return session
+    }
 
     /**
      * Enable helping methods.
      */
     this.enableMethodHelper = function() {
-        aceEditor.commands.addCommand(dotCommand);
-        aceEditor.commands.addCommand(backspaceCommand);
-        aceEditor.commands.addCommand(AceAutocomplete.startCommand);
-    };
+        aceEditor.commands.addCommand(dotCommand)
+        aceEditor.commands.addCommand(backspaceCommand)
+        aceEditor.commands.addCommand(AceAutocomplete.startCommand)
+    }
 
     /**
      * Disable helping methods.
      */
     this.disableMethodHelper = function() {
-        aceEditor.commands.removeCommand(dotCommand);
-        aceEditor.commands.removeCommand(backspaceCommand);
-        aceEditor.commands.removeCommand(AceAutocomplete.startCommand);
-    };
+        aceEditor.commands.removeCommand(dotCommand)
+        aceEditor.commands.removeCommand(backspaceCommand)
+        aceEditor.commands.removeCommand(AceAutocomplete.startCommand)
+    }
 
     /**
      * Enable or disable the edition.
      * @param {Boolean} value
      */
     this.setSaveEnabled = function(value) {
-        saveEnabled = value;
-    };
+        saveEnabled = value
+    }
 
     /**
      * Resize the ACE editor according to its container's height
      */
     this.resize = function() {
-        aceEditor.resize();
-    };
+        aceEditor.resize()
+    }
 
     var editorCompleter = {
         getCompletions: function(editor, session, pos, prefix, callback) {
-            pos.column--;
-            var token = session.getTokenAt(pos.row, pos.column);
-            var endToken = "(";
+            pos.column--
+            var token = session.getTokenAt(pos.row, pos.column)
+            var endToken = '('
 
             if (token === null) {
-                return false;
+                return false
             }
 
-            var tokens = session.getTokens(pos.row);
-            var index = token.index;
+            var tokens = session.getTokens(pos.row)
+            var index = token.index
 
             // TODO: see if we can handle this situation in js
             /*if (token.type === "rparen") {
@@ -347,124 +347,124 @@ function TEditor(callback) {
              }
              endToken = "[";
              }*/
-            if (token.type !== "identifier" && token.type !== "text" && token.type !== "string" && token.type !== "keyword") {
-                return false;
+            if (token.type !== 'identifier' && token.type !== 'text' && token.type !== 'string' && token.type !== 'keyword') {
+                return false
             }
 
-            var name = token.value.trim();
+            var name = token.value.trim()
 
 // Class completion
-            if (name === "new") {
+            if (name === 'new') {
                 //TODO: get real classes
-                var classNames = ["Animation", "Héros",
-                    "CommandesClavier", "Bloc", "Item"];
-                methodNames = TUtils.sortArray(classNames);
+                var classNames = ['Animation', 'Héros',
+                    'CommandesClavier', 'Bloc', 'Item']
+                methodNames = TUtils.sortArray(classNames)
 
-                var completions = [];
+                var completions = []
                 for (var j = 0; j < methodNames.length; j++) {
                     completions.push({
                         caption: methodNames[j],
-                        value: methodNames[j] + "()"
-                    });
+                        value: methodNames[j] + '()'
+                    })
                 }
-                callback(null, completions);
-                return;
+                callback(null, completions)
+                return
             }
             for (var i = index - 1; i >= 0; i--) {
-                token = tokens[i];
-                if (token.type !== "identifier" && token.type !== "text" && token.type !== "string") {
-                    break;
+                token = tokens[i]
+                if (token.type !== 'identifier' && token.type !== 'text' && token.type !== 'string') {
+                    break
                 }
-                var part = token.value.trim();
+                var part = token.value.trim()
                 if (part.length === 0) {
-                    break;
+                    break
                 }
-                name = part + name;
+                name = part + name
             }
             if (name.length === 0) {
-                return false;
+                return false
             }
 
-            var lastcar = name.slice(name.length - 1, name.length);
-            var lastlastcar = name.slice(name.length - 2, name.length - 1);
-            var firstcar = name.slice(0, 1);
+            var lastcar = name.slice(name.length - 1, name.length)
+            var lastlastcar = name.slice(name.length - 2, name.length - 1)
+            var firstcar = name.slice(0, 1)
 
-            if (token.type === "text") {
+            if (token.type === 'text') {
                 // Remove first simple/double quote
-                if (firstcar === '"' || firstcar === "'") {
-                    name = name.slice(1, name.length); // "r. -> r.
+                if (firstcar === '"' || firstcar === '\'') {
+                    name = name.slice(1, name.length) // "r. -> r.
                 }
                 // remove dot caracter
                 if (lastcar === '.') {
-                    name = name.slice(0, name.length - 1); // "r. -> r
+                    name = name.slice(0, name.length - 1) // "r. -> r
                 }
                 // remove dot caracter and simple/double quote
-                if (lastlastcar === '.' && (lastcar === '"' || firstcar === "'")) {
-                    name = name.slice(0, name.length - 2); // "r" -> r
+                if (lastlastcar === '.' && (lastcar === '"' || firstcar === '\'')) {
+                    name = name.slice(0, name.length - 2) // "r" -> r
                 }
                 // remove simple/double quote when string extracted hasn't "
-                if (lastlastcar !== '.' && (lastcar === '"' || firstcar === "'")) {
-                    name = name.slice(0, name.length - 1); // "r.") -> r
+                if (lastlastcar !== '.' && (lastcar === '"' || firstcar === '\'')) {
+                    name = name.slice(0, name.length - 1) // "r.") -> r
                 }
             }
 
-            var range = new AceRange(0, 0, pos.row, pos.column);
-            var valueBefore = session.getDocument().getTextRange(range);
+            var range = new AceRange(0, 0, pos.row, pos.column)
+            var valueBefore = session.getDocument().getTextRange(range)
             // Since regex do not support unicode...
-            var unicodeName = TUtils.toUnicode(name);
-            var regex = new RegExp("(?:^|\\s)" + unicodeName + "\\s*=\\s*new\\s*([\\S^\\" + endToken + "]*)\\s*\\" + endToken);
+            var unicodeName = TUtils.toUnicode(name)
+            var regex = new RegExp('(?:^|\\s)' + unicodeName + '\\s*=\\s*new\\s*([\\S^\\' + endToken + ']*)\\s*\\' + endToken)
 
-            var result = regex.exec(valueBefore);
+            var result = regex.exec(valueBefore)
 
-            var completions = [];
+            var completions = []
 
-            if (name == "declick") {
+            if (name == 'declick') {
                 // result[1] is the important part
-                result = [name, name];
+                result = [name, name]
             }
             if (result !== null && result.length > 0) {
-                var className = result[1];
-                var methods = TRuntime.getClassTranslatedMethods(className);
-                var methodNames = Object.keys(methods);
-                methodNames = TUtils.sortArray(methodNames);
+                var className = result[1]
+                var methods = TRuntime.getClassTranslatedMethods(className)
+                var methodNames = Object.keys(methods)
+                methodNames = TUtils.sortArray(methodNames)
                 for (var j = 0; j < methodNames.length; j++) {
                     completions.push({
                         caption: methodNames[j],
                         value: methods[methodNames[j]]
-                    });
+                    })
                 }
             }
 
-            callback(null, completions);
+            callback(null, completions)
         }
-    };
+    }
 
     var dotCommand = {
-        name: "methodHelper",
+        name: 'methodHelper',
         bindKey: {win: '.', mac: '.'},
         exec: function(editor) {
-            triggerPopup = true;
-            return false; // let default event perform
+            triggerPopup = true
+            return false // let default event perform
         },
         readOnly: true // false if this command should not apply in readOnly mode
-    };
+    }
 
     var backspaceCommand = {
-        name: "methodHelper2",
+        name: 'methodHelper2',
         bindKey: {win: 'Backspace', mac: 'Backspace'},
         exec: function(editor) {
-            var cursor = editor.selection.getCursor();
-            var token = editor.getSession().getTokenAt(cursor.row, cursor.column - 1);
-            if (token !== null && token.type === "punctuation.operator" && token.value === ".") {
-                triggerPopup = true;
+            var cursor = editor.selection.getCursor()
+            var token = editor.getSession().getTokenAt(cursor.row, cursor.column - 1)
+            if (token !== null && token.type === 'punctuation.operator' && token.value === '.') {
+                triggerPopup = true
             }
-            return false;
+            return false
         },
         readOnly: true // false if this command should not apply in readOnly mode
-    };
+    }
 }
 
-TEditor.prototype = Object.create(TComponent.prototype);
-TEditor.prototype.constructor = TEditor;
+TEditor.prototype = Object.create(TComponent.prototype)
+TEditor.prototype.constructor = TEditor
 
 export default TEditor

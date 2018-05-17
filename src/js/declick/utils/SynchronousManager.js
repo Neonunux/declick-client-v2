@@ -5,22 +5,22 @@ import TRuntime from '@/run/TRuntime'
  * @exports SynchronousManager  
  */
 var SynchronousManager = function() {
-    this.running = false;
-};
+    this.running = false
+}
 
 /**
  * Suspend the execution of the interpreter and set running to true.
  */
 SynchronousManager.prototype.begin = function() {
-    TRuntime.suspend();
-    this.running = true;
-};
+    TRuntime.suspend()
+    this.running = true
+}
 
 /**
  * Resume the execution of the interpreter and set running to false.
  */
 SynchronousManager.prototype.end = function() {
-    TRuntime.resume();
+    TRuntime.resume()
     this.running = false
 }
 

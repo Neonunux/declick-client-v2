@@ -9,27 +9,27 @@ import TUtils from '@/utils/TUtils'
  * @exports KeyStroke
  */
 var Keyboard = function() {
-    this.active = false;
-    this.keyboardEnabled = false;
-    this.waiting = false;
-    this.keys = [];
-    var that = this;
+    this.active = false
+    this.keyboardEnabled = false
+    this.waiting = false
+    this.keys = []
+    var that = this
     this.listenerKeyDown = function(e) {
-        that.processKeyDown(e);
-        e.preventDefault();
-    };
+        that.processKeyDown(e)
+        e.preventDefault()
+    }
     this.listenerKeyUp = function(e) {
-        that.processKeyUp(e);
-        e.preventDefault();
-    };
-    this.synchronousManager = new SynchronousManager();
-    TRuntime.addInstance(this);
-    this.keyNamesInitialized = false;       
-};
+        that.processKeyUp(e)
+        e.preventDefault()
+    }
+    this.synchronousManager = new SynchronousManager()
+    TRuntime.addInstance(this)
+    this.keyNamesInitialized = false       
+}
 
-Keyboard.prototype = Object.create(TObject.prototype);
-Keyboard.prototype.constructor = Keyboard;
-Keyboard.prototype.className = "Keyboard";
+Keyboard.prototype = Object.create(TObject.prototype)
+Keyboard.prototype.constructor = Keyboard
+Keyboard.prototype.className = 'Keyboard'
 
 /**
  * Returns the Keycode of a key.
@@ -37,14 +37,14 @@ Keyboard.prototype.className = "Keyboard";
  * @returns {Number}    Keycode corresponding to key.
  */
 Keyboard.prototype.getKeyCode = function(key) {
-    key = TUtils.removeAccents(key);
-    key = this.getMessage(key);
-    var code = TUtils.getkeyCode(key);
+    key = TUtils.removeAccents(key)
+    key = this.getMessage(key)
+    var code = TUtils.getkeyCode(key)
     if (code === false) {
-        throw new Error(TUtils.format(this.getMessage("unknown key"), key));
+        throw new Error(TUtils.format(this.getMessage('unknown key'), key))
     }
-    return code;
-};
+    return code
+}
 
 /**
  * Enable the possibility to use keyboard.
@@ -52,23 +52,23 @@ Keyboard.prototype.getKeyCode = function(key) {
  */
 Keyboard.prototype.enableKeyboard = function() {
     if (this.keyboardEnabled) {
-        return false;
+        return false
     }
 
-    var element = TRuntime.getGraphics().getElement();
+    var element = TRuntime.getGraphics().getElement()
     
     if (typeof element !== 'undefined') {
 
         // Copied from Quintus_input
-        element.tabIndex = 0;
-        element.style.outline = 0;
+        element.tabIndex = 0
+        element.style.outline = 0
 
-        element.addEventListener("keydown", this.listenerKeyDown, false);
-        element.addEventListener("keyup", this.listenerKeyUp, false);
+        element.addEventListener('keydown', this.listenerKeyDown, false)
+        element.addEventListener('keyup', this.listenerKeyUp, false)
 
-        this.keyboardEnabled = true;
+        this.keyboardEnabled = true
     }
-};
+}
 
 /**
  * Disable the possibility to use keyboard.
@@ -76,15 +76,15 @@ Keyboard.prototype.enableKeyboard = function() {
  */
 Keyboard.prototype.disableKeyboard = function() {
     if (!this.keyboardEnabled) {
-        return false;
+        return false
     }
-    var element = TRuntime.getGraphics().getElement();
+    var element = TRuntime.getGraphics().getElement()
 
-    element.removeEventListener("keydown", this.listenerKeyDown, false);
-    element.removeEventListener("keyup", this.listenerKeyUp, false);
+    element.removeEventListener('keydown', this.listenerKeyDown, false)
+    element.removeEventListener('keyup', this.listenerKeyUp, false)
 
-    this.keyboardEnabled = false;
-};
+    this.keyboardEnabled = false
+}
 
 /**
  * Checks which keys are down and execute associated commands.
@@ -92,15 +92,15 @@ Keyboard.prototype.disableKeyboard = function() {
  */
 Keyboard.prototype.processKeyDown = function(e) {
     if (this.active) {
-        var keycode = e.keyCode;
-        this.keys[keycode] = true;
-        this[TUtils.getkeyName(keycode)] = true;
+        var keycode = e.keyCode
+        this.keys[keycode] = true
+        this[TUtils.getkeyName(keycode)] = true
         if (this.waiting) {
-            this.waiting = false;
-            this.synchronousManager.end();
+            this.waiting = false
+            this.synchronousManager.end()
         }
     }
-};
+}
 
 /**
  * Checks which keys are up and execute associated commands.
@@ -108,11 +108,11 @@ Keyboard.prototype.processKeyDown = function(e) {
  */
 Keyboard.prototype.processKeyUp = function(e) {
     if (this.active) {
-        var keycode = e.keyCode;
-        this.keys[keycode] = false;
-        this[TUtils.getkeyName(keycode)] = false;
+        var keycode = e.keyCode
+        this.keys[keycode] = false
+        this[TUtils.getkeyName(keycode)] = false
     }
-};
+}
 
 /**
  * Enable or disable keyboard depending on value, and freeze it.
@@ -120,21 +120,21 @@ Keyboard.prototype.processKeyUp = function(e) {
  */
 Keyboard.prototype.freeze = function(value) {
     if (value) {
-        this.disableKeyboard();
+        this.disableKeyboard()
     } else {
-        this.enableKeyboard();
+        this.enableKeyboard()
     }
-    TObject.prototype.freeze.call(this, value);
-};
+    TObject.prototype.freeze.call(this, value)
+}
 
 
 /**
  * Wait for a key to be typed
  */
 Keyboard.prototype._wait = function() {
-    this.waiting = true;
-    this.synchronousManager.begin();
-};
+    this.waiting = true
+    this.synchronousManager.begin()
+}
 
 
 /**
@@ -142,43 +142,43 @@ Keyboard.prototype._wait = function() {
  * @param {String} key
  */
 Keyboard.prototype._detect = function(key) {
-    var keycode = this.getKeyCode(key);
-    return (typeof this.keys[keycode] !== 'undefined' && this.keys[keycode]);
-};
+    var keycode = this.getKeyCode(key)
+    return (typeof this.keys[keycode] !== 'undefined' && this.keys[keycode])
+}
 
 Keyboard.prototype.freeze = function(value) {
-    this.active = !value;
-};
+    this.active = !value
+}
 
 Keyboard.prototype.initKeyNames = function() {
     if (typeof this.constructor.messages !== 'undefined') {
-        var names = TUtils.getKeyNames();
-        for (var i = 0;i<names.length;i++) {
-            TRuntime.exposeProperty(this, names[i],this.getMessage(names[i]));
-            this[names[i]] = false;
+        var names = TUtils.getKeyNames()
+        for (var i = 0;i < names.length;i++) {
+            TRuntime.exposeProperty(this, names[i],this.getMessage(names[i]))
+            this[names[i]] = false
         }
-        this.keyNamesInitialized = true;
+        this.keyNamesInitialized = true
     }
-};
+}
 
 Keyboard.prototype.clear = function() {
-    this.waiting = false;
-    this.keys = [];
-    var names = TUtils.getKeyNames();
-    for (var i = 0;i<names.length;i++) {
-        this[names[i]] = false;
+    this.waiting = false
+    this.keys = []
+    var names = TUtils.getKeyNames()
+    for (var i = 0;i < names.length;i++) {
+        this[names[i]] = false
     }        
-    this.synchronousManager.end();
-};
+    this.synchronousManager.end()
+}
 
 Keyboard.prototype.init = function() {
     if (!this.keyNamesInitialized) {
-        this.initKeyNames();
+        this.initKeyNames()
     }
-    this.enableKeyboard();
-};
+    this.enableKeyboard()
+}
 
 
-var instance = new Keyboard();
+var instance = new Keyboard()
 
 export default instance

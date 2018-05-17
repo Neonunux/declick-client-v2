@@ -15,203 +15,203 @@ import TUI from '@/ui/TUI'
 import TRuntime from '@/run/TRuntime'
 
 function TFrame(callback) {
-    var initialized = false;
-    var canvas, editor, sidebar, toolbar, console, log, message;
-    var $frame, $main, $top, $separator, $bottom, $loading;
+    var initialized = false
+    var canvas, editor, sidebar, toolbar, console, log, message
+    var $frame, $main, $top, $separator, $bottom, $loading
 
-    var frame = this;
-    var separatorEnabled = true;
-    var currentToken = "";
-    var currentId = null;
+    var frame = this
+    var separatorEnabled = true
+    var currentToken = ''
+    var currentId = null
 
-    TComponent.call(this, "TFrame.html", function(component) {
-        var waiting = ['canvas', 'editor', 'sidebar', 'toolbar', 'console', 'log', 'message'];
+    TComponent.call(this, 'TFrame.html', function(component) {
+        var waiting = ['canvas', 'editor', 'sidebar', 'toolbar', 'console', 'log', 'message']
 
         var checkWaiting = function(name) {
-            var i = waiting.indexOf(name);
+            var i = waiting.indexOf(name)
             if (i > -1) {
-                waiting.splice(i, 1);
+                waiting.splice(i, 1)
             }
             if (waiting.length === 0) {
                 if (typeof callback !== 'undefined') {
-                    callback.call(this, component);
+                    callback.call(this, component)
                 }
             }
-        };
+        }
 
-        $frame = component;
-        $main = component.find("#tframe-main");
-        $top = component.find("#tframe-top");
-        $separator = component.find("#tframe-separator");
-        $bottom = component.find("#tframe-bottom");
-        $loading = component.find("#tframe-loading");
-        var loadingText = $loading.find("p");
-        loadingText.text(TEnvironment.getMessage('loading-message'));
+        $frame = component
+        $main = component.find('#tframe-main')
+        $top = component.find('#tframe-top')
+        $separator = component.find('#tframe-separator')
+        $bottom = component.find('#tframe-bottom')
+        $loading = component.find('#tframe-loading')
+        var loadingText = $loading.find('p')
+        loadingText.text(TEnvironment.getMessage('loading-message'))
 
-        THints.loadHints("hints_create.json");
+        THints.loadHints('hints_create.json')
 
         canvas = new TCanvas(function(c) {
-            component.find("#TCanvas").replaceWith(c);
-            checkWaiting("canvas");
-        });
+            component.find('#TCanvas').replaceWith(c)
+            checkWaiting('canvas')
+        })
         editor = new TEditor(function(c) {
-            component.find("#TEditor").replaceWith(c);
-            checkWaiting("editor");
-        });
+            component.find('#TEditor').replaceWith(c)
+            checkWaiting('editor')
+        })
         sidebar = new TSidebar(function(c) {
-            component.find("#TSidebar").replaceWith(c);
-            checkWaiting("sidebar");
-        });
+            component.find('#TSidebar').replaceWith(c)
+            checkWaiting('sidebar')
+        })
         toolbar = new TToolbar(function(c) {
-            component.find("#TToolbar").replaceWith(c);
-            checkWaiting("toolbar");
-        });
+            component.find('#TToolbar').replaceWith(c)
+            checkWaiting('toolbar')
+        })
         console = new TConsole(function(c) {
-            component.find("#TConsole").replaceWith(c);
-            checkWaiting("console");
-        });
+            component.find('#TConsole').replaceWith(c)
+            checkWaiting('console')
+        })
         log = new TLog(function(c) {
-            component.find("#TLog").replaceWith(c);
-            checkWaiting("log");
-        });
+            component.find('#TLog').replaceWith(c)
+            checkWaiting('log')
+        })
         message = new TMessage(function(c) {
-            component.find("#TMessage").replaceWith(c);
-            checkWaiting("message");
-        });
+            component.find('#TMessage').replaceWith(c)
+            checkWaiting('message')
+        })
 
-    });
+    })
 
     var checkSeparatorEnabled = function(event) {
         if (!separatorEnabled) {
-            event.stopImmediatePropagation();
+            event.stopImmediatePropagation()
         }
-    };
+    }
 
     this.mounted = function() {
         // Set UI
-        TUI.setFrame(frame);
-        TUI.setCanvas(canvas);
-        TUI.setEditor(editor);
-        TUI.setSidebar(sidebar);
-        TUI.setToolbar(toolbar);
-        TUI.setConsole(console);
-        TUI.setLog(log);
-        TUI.setMessage(message);
+        TUI.setFrame(frame)
+        TUI.setCanvas(canvas)
+        TUI.setEditor(editor)
+        TUI.setSidebar(sidebar)
+        TUI.setToolbar(toolbar)
+        TUI.setConsole(console)
+        TUI.setLog(log)
+        TUI.setMessage(message)
 
         // Plug Runtime with Log
-        TRuntime.setLog(log);
+        TRuntime.setLog(log)
 
-        canvas.mounted();
-        editor.mounted();
-        sidebar.mounted();
-        console.mounted();
-        toolbar.mounted();
-        log.mounted();
-        $main.on("splitpane:resized", function() {
-            editor.resize();
-        });
+        canvas.mounted()
+        editor.mounted()
+        sidebar.mounted()
+        console.mounted()
+        toolbar.mounted()
+        log.mounted()
+        $main.on('splitpane:resized', function() {
+            editor.resize()
+        })
         // Important to attach handler before calling splitPane
-        $separator.on("mousedown", checkSeparatorEnabled);
+        $separator.on('mousedown', checkSeparatorEnabled)
         var initEditor = function() {
-            $(window).off("resize", initEditor);
+            $(window).off('resize', initEditor)
             if ($frame.height() > 0) {
-                $('.split-pane').splitPane();
-                initialized = true;
+                $('.split-pane').splitPane()
+                initialized = true
                 // init separator position so that toolbar is visible
-                TUI.enableEditor(false);
+                TUI.enableEditor(false)
                 $loading.fadeOut(1000, function() {
-                    $(this).remove();
-                });
+                    $(this).remove()
+                })
                 // set init function to be launched whenever frame parameters (ie access token) change
                 TEnvironment.registerParametersHandler(function(parameters, callback) {
-                    var initRequired = false;
-                    var idSet = false;
+                    var initRequired = false
+                    var idSet = false
                     for (var name in parameters) {
                         if (name === 'editor') {
-                            var editor = (parameters['editor'] == 'true');
+                            var editor = (parameters['editor'] == 'true')
                             if (editor) {
-                                TUI.enableEditor(false);
+                                TUI.enableEditor(false)
                             }
                             else {
-                                TUI.disableEditor(false);
+                                TUI.disableEditor(false)
                             }
                         }
                         if (name === 'id') {
-                            idSet = true;
+                            idSet = true
                             if (currentId != parameters['id']) {
-                                currentId = parameters['id'];
-                                initRequired = true;
+                                currentId = parameters['id']
+                                initRequired = true
                             }
                         }
                         if (name === 'token') {
                             if (currentToken != parameters['token']) {
-                                currentToken = parameters['token'];
-                                initRequired = true;
+                                currentToken = parameters['token']
+                                initRequired = true
                             }
                         }
                         if (name === 'wiki') {
-                            var wiki = (parameters['wiki'] == 'true');
+                            var wiki = (parameters['wiki'] == 'true')
                             if (wiki) {
-                                TUI.enableWiki();
+                                TUI.enableWiki()
                             }
                             else {
-                                TUI.disableWiki();
+                                TUI.disableWiki()
                             }
                         }
                     }
                     if (!idSet) {
                         if (currentId !== null) {
-                            initRequired = true;
+                            initRequired = true
                         }
-                        currentId = null;
+                        currentId = null
                     }
                     if (initRequired) {
-                        TUI.init(currentId);
+                        TUI.init(currentId)
                     }
-                });
+                })
                 TEnvironment.registerMessagesHandler(function(message) {
-                    if (message == "init") {
-                        TUI.init(currentId);
+                    if (message == 'init') {
+                        TUI.init(currentId)
                     }
-                });
+                })
             }
             else {
-                $(window).resize(initEditor);
+                $(window).resize(initEditor)
             }
-        };
-        initEditor();
-    };
+        }
+        initEditor()
+    }
 
     this.setSeparatorPosition = function(value) {
-        $top.css('bottom', value);
-        $top.css('color', 'blue');
-        $separator.css('bottom', value);
-        $bottom.css('height', value);
-        $frame.resize();
-    };
+        $top.css('bottom', value)
+        $top.css('color', 'blue')
+        $separator.css('bottom', value)
+        $bottom.css('height', value)
+        $frame.resize()
+    }
 
     this.lowerSeparator = function(value) {
         if (initialized) {
-            var totalHeight = $frame.height();
-            var currentBottom = totalHeight - ($separator.position().top + $separator.height());
-            var newBottom = ((currentBottom - value) * 100 / totalHeight) + '%';
-            this.setSeparatorPosition(newBottom);
+            var totalHeight = $frame.height()
+            var currentBottom = totalHeight - ($separator.position().top + $separator.height())
+            var newBottom = ((currentBottom - value) * 100 / totalHeight) + '%'
+            this.setSeparatorPosition(newBottom)
         }
-    };
+    }
 
     this.raiseSeparator = function(value) {
-        this.lowerSeparator(-value);
-    };
+        this.lowerSeparator(-value)
+    }
 
     this.disableSeparator = function() {
-        separatorEnabled = false;
-        $separator.addClass("disabled");
-    };
+        separatorEnabled = false
+        $separator.addClass('disabled')
+    }
 
     this.enableSeparator = function() {
-        separatorEnabled = true;
-        $separator.removeClass("disabled");
-    };
+        separatorEnabled = true
+        $separator.removeClass('disabled')
+    }
 
     // Declare global functions
 
@@ -223,7 +223,7 @@ function TFrame(callback) {
 
 }
 
-TFrame.prototype = Object.create(TComponent.prototype);
-TFrame.prototype.constructor = TFrame;
+TFrame.prototype = Object.create(TComponent.prototype)
+TFrame.prototype.constructor = TFrame
 
 export default TFrame

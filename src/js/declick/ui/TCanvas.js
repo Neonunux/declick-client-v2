@@ -7,96 +7,96 @@ import TComponent from '@/ui/TComponent'
 import TFloatingController from '@/ui/TFloatingController'
 
 function TCanvas(callback) {
-    var $main, $canvas, $canvasDesign, $canvasDesignMouse, $canvasLoading, $canvasLoadingValue, $popup, $popupContent, $floatingController;
-    var popupCallback = null;
-    var cursorX, cursorY;
+    var $main, $canvas, $canvasDesign, $canvasDesignMouse, $canvasLoading, $canvasLoadingValue, $popup, $popupContent, $floatingController
+    var popupCallback = null
+    var cursorX, cursorY
 
-    TComponent.call(this, "TCanvas.html", function(component) {
-        $main = component;
-        $canvas = component.find("#tcanvas");
-        $canvasDesign = component.find("#tcanvas-design");
-        $canvasDesignMouse = component.find("#tcanvas-design-mouse");
-        $canvasLoading = component.find("#tcanvas-loading");
-        $canvasLoadingValue = component.find("#tcanvas-loading-value");
+    TComponent.call(this, 'TCanvas.html', function(component) {
+        $main = component
+        $canvas = component.find('#tcanvas')
+        $canvasDesign = component.find('#tcanvas-design')
+        $canvasDesignMouse = component.find('#tcanvas-design-mouse')
+        $canvasLoading = component.find('#tcanvas-loading')
+        $canvasLoadingValue = component.find('#tcanvas-loading-value')
 
         var floatingController = new TFloatingController(function (content) {
-            component.find("#TFloatingController").replaceWith(content);
+            component.find('#TFloatingController').replaceWith(content)
             $floatingController = component.find('#tfloatingcontroller')
-            $floatingController.hide();
-        });
+            $floatingController.hide()
+        })
 
-        $canvasDesign.hide();
-        $canvasLoading.hide();
+        $canvasDesign.hide()
+        $canvasLoading.hide()
 
-        $canvas.on("mousemove", cursorHandler);
-        $canvas.on("touchmove", cursorHandler);
+        $canvas.on('mousemove', cursorHandler)
+        $canvas.on('touchmove', cursorHandler)
 
-        $canvasLoadingValue = component.find("#tcanvas-loading-value");
+        $canvasLoadingValue = component.find('#tcanvas-loading-value')
 
-        $popup = component.find("#tcanvas-popup");
-        $popupContent = component.find("#tcanvas-popup-content");
-        var $buttonPopup = component.find("#tcanvas-popup-button");
-        $buttonPopup.text(TEnvironment.getMessage('popup-ok'));
+        $popup = component.find('#tcanvas-popup')
+        $popupContent = component.find('#tcanvas-popup-content')
+        var $buttonPopup = component.find('#tcanvas-popup-button')
+        $buttonPopup.text(TEnvironment.getMessage('popup-ok'))
         $buttonPopup.click(function() {
-            $popup.hide();
+            $popup.hide()
             if (popupCallback !== null) {
-                popupCallback.call(this);
+                popupCallback.call(this)
             }
-        });
+        })
 
         if (typeof callback !== 'undefined') {
-            callback.call(this, component);
+            callback.call(this, component)
         }
-    });
+    })
 
     var cursorHandler = function (event) {
-        cursorX = event.clientX + $main.scrollLeft();
-        cursorY = event.clientY + $main.scrollTop();
-    };
+        cursorX = event.clientX + $main.scrollLeft()
+        cursorY = event.clientY + $main.scrollTop()
+    }
     var designMouseHandler = function (event) {
-        $canvasDesignMouse.text(cursorX + "," + cursorY);
-    };
+        $canvasDesignMouse.text(cursorX + ',' + cursorY)
+    }
 
     /**
      *
      * @param event
      */
     var designMouseSideHandler = function(event) {
-        if ($canvasDesignMouse.hasClass("left-design")) {
-            $canvasDesignMouse.removeClass("left-design");
-            $canvasDesignMouse.addClass("right-design");
-            return;
+        if ($canvasDesignMouse.hasClass('left-design')) {
+            $canvasDesignMouse.removeClass('left-design')
+            $canvasDesignMouse.addClass('right-design')
+            return
         }
         else {
-            $canvasDesignMouse.removeClass("right-design");
-            $canvasDesignMouse.addClass("left-design");
+            $canvasDesignMouse.removeClass('right-design')
+            $canvasDesignMouse.addClass('left-design')
         }
-    };
+    }
 
     this.mounted = function() {
-        $popup.hide();
-        var graphics = TRuntime.getGraphics();
-        graphics.setCanvas("tcanvas");
+        $popup.hide()
+        var graphics = TRuntime.getGraphics()
+        graphics.setCanvas('tcanvas')
         // resize canvas and its container when window is resized
-        var self = this;
+        var self = this
         $(window).resize(function(e) {
-            self.resize();
-        });
-    };
+            self.resize()
+        })
+    }
 
     this.show = function() {
-        $main.show();
-    };
+        $main.show()
+    }
 
     this.hide = function() {
-        $main.hide();
-    };
+        $main.hide()
+    }
 
     this.setDesignMode = function(value) {
         if (value) {
-            $canvasDesign.show();
-            $canvas.on("mousemove", designMouseHandler);
-            $canvasDesignMouse.on("mouseover", designMouseSideHandler);
+            $canvasDesign.show()
+            $canvas.on('mousemove', designMouseHandler)
+            $canvasDesignMouse.on('mouseover', designMouseSideHandler)
 
             //                $domCanvas3d.on("click", function(e) {
             //                    console.log("c3D clicked");
@@ -105,69 +105,69 @@ function TCanvas(callback) {
             //                    }
             //                });
         } else {
-            $canvasDesign.hide();
-            $canvasDesignMouse.empty();
-            $canvas.off("mousemove", designMouseHandler);
-            $canvasDesignMouse.off("mouseover", designMouseSideHandler);
+            $canvasDesign.hide()
+            $canvasDesignMouse.empty()
+            $canvas.off('mousemove', designMouseHandler)
+            $canvasDesignMouse.off('mouseover', designMouseSideHandler)
         }
-    };
+    }
 
     this.enableFloatingController = function () {
-        $floatingController.draggable({ containment: 'parent' });
-        $floatingController.show();
-    };
+        $floatingController.draggable({ containment: 'parent' })
+        $floatingController.show()
+    }
 
     this.disableFloatingController = function () {
-        $floatingController.hide();
-    };
+        $floatingController.hide()
+    }
 
     this.showLoading = function() {
-        $canvasLoading.show();
-    };
+        $canvasLoading.show()
+    }
 
     this.setLoadingValue = function(count, total) {
-        var value = Math.round(count * 100 / total);
-        $canvasLoadingValue.text(value + "%");
-    };
+        var value = Math.round(count * 100 / total)
+        $canvasLoadingValue.text(value + '%')
+    }
 
     this.removeLoading = function() {
-        $canvasLoading.hide();
-    };
+        $canvasLoading.hide()
+    }
 
     this.giveFocus = function() {
-        $canvas.get(0).focus();
-    };
+        $canvas.get(0).focus()
+    }
 
     this.resize = function() {
-        var width = $main.width();
-        var height = $main.height();
-        TRuntime.getGraphics().resize(width, height);
-    };
+        var width = $main.width()
+        var height = $main.height()
+        TRuntime.getGraphics().resize(width, height)
+    }
 
     this.popup = function(text, callback) {
-        $popupContent.text(text);
-        if (typeof callback !== "undefined") {
-            popupCallback = callback;
+        $popupContent.text(text)
+        if (typeof callback !== 'undefined') {
+            popupCallback = callback
         } else {
-            popupCallback = null;
+            popupCallback = null
         }
-        $popup.show();
-    };
+        $popup.show()
+    }
 
     this.clear = function() {
-        $popup.hide();
-    };
+        $popup.hide()
+    }
 
     this.getCursorX = function () {
-        return cursorX;
-    };
+        return cursorX
+    }
     this.getCursorY = function () {
-        return cursorY;
-    };
+        return cursorY
+    }
 }
 ;
 
-TCanvas.prototype = Object.create(TComponent.prototype);
-TCanvas.prototype.constructor = TCanvas;
+TCanvas.prototype = Object.create(TComponent.prototype)
+TCanvas.prototype.constructor = TCanvas
 
 export default TCanvas

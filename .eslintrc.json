@@ -1,0 +1,11 @@
+{
+	"parserOptions": {
+			"ecmaVersion": 6,
+			"sourceType": "module"
+	},
+	"rules": {
+			"semi": ["error", "never"],
+			"quotes": ["error", "single"],
+			"space-infix-ops": ["error"]
+	}
+}

@@ -12,56 +12,56 @@ import TUtils from '@/utils/TUtils'
  * @exports Item
  */
 var Item = function(name) {
-    var translated = this.getMessage(name);
+    var translated = this.getMessage(name)
     if (translated !== name) {
         // name is one of the default category
-        Sprite.call(this);
-        this.addImage(translated, "", false);
-        this.setDisplayedImage(translated);
-        this.gObject.setName(name);
+        Sprite.call(this)
+        this.addImage(translated, '', false)
+        this.setDisplayedImage(translated)
+        this.gObject.setName(name)
     } else {
-        Sprite.call(this, name);
+        Sprite.call(this, name)
         if (typeof name === 'undefined') {
-            this.addImage("coin.png", "", false);
-            this.setDisplayedImage("coin.png");
-            this.gObject.setName(this.getMessage("default"));                
+            this.addImage('coin.png', '', false)
+            this.setDisplayedImage('coin.png')
+            this.gObject.setName(this.getMessage('default'))                
         } else { 
-            this.gObject.setName(name);                
+            this.gObject.setName(name)                
         }
     }
-};
+}
 
-Item.prototype = Object.create(Sprite.prototype);
-Item.prototype.constructor = Item;
-Item.prototype.className = "Item";
+Item.prototype = Object.create(Sprite.prototype)
+Item.prototype.constructor = Item
+Item.prototype.className = 'Item'
 
-var graphics = Item.prototype.graphics;
+var graphics = Item.prototype.graphics
 
-Item.prototype.gClass = graphics.addClass("TSprite", "TItem", {
+Item.prototype.gClass = graphics.addClass('TSprite', 'TItem', {
     init: function(props, defaultProps) {
         this._super(TUtils.extend({
             type: TGraphicalObject.TYPE_ITEM | TGraphicalObject.TYPE_SPRITE,
-            name: "item"
-        }, props), defaultProps);
+            name: 'item'
+        }, props), defaultProps)
     },
     setName: function(value) {
-        this.p.name = value;
-        this.setCategory(value);
+        this.p.name = value
+        this.setCategory(value)
     },
     getName: function() {
-        return this.p.name;
+        return this.p.name
     }
-});
+})
 
 Item.prototype._setName = function(value) {
-    value = TUtils.getString(value);
-    var translated = this.getMessage(value);
+    value = TUtils.getString(value)
+    var translated = this.getMessage(value)
     if (translated !== value) {
         // name is one of the default category
-        this.addImage(translated, "", false);
-        this.setDisplayedImage(translated);
+        this.addImage(translated, '', false)
+        this.setDisplayedImage(translated)
     }
-    this.gObject.setName(value);
-};
+    this.gObject.setName(value)
+}
 
 export default Item

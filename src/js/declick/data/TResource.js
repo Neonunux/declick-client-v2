@@ -2,8 +2,8 @@ import $ from 'jquery'
 import staticImports from './static-imports'
 
 var TResource = function() {
-    var cacheEnabled = false;
-    var log = false;
+    var cacheEnabled = false
+    var log = false
     
     var error
 
@@ -15,43 +15,43 @@ var TResource = function() {
     this.setCacheEnabled = function(value, version) {
 
         var clearCache = function() {
-            var toBeRemoved = [];
+            var toBeRemoved = []
 
-            for (var i=0; i<localStorage.length; i++) {
-                var key = localStorage.key(i);
-                if (key.substring(0, 7)=="client.") {
-                    toBeRemoved.push(key);
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i)
+                if (key.substring(0, 7) == 'client.') {
+                    toBeRemoved.push(key)
                 }
             }
 
-            for (i=0;i<toBeRemoved.length;i++) {
-                localStorage.removeItem(toBeRemoved[i]);
+            for (i = 0;i < toBeRemoved.length;i++) {
+                localStorage.removeItem(toBeRemoved[i])
             }
         }
-        cacheEnabled = value;
+        cacheEnabled = value
         if (cacheEnabled) {
             // check validity of data
-            var oldVersion = localStorage.getItem("client.version");
+            var oldVersion = localStorage.getItem('client.version')
             if (oldVersion) {
-                oldVersion = parseInt(oldVersion);
+                oldVersion = parseInt(oldVersion)
                 if (version !== oldVersion) {
                     // Versions differ: clear cache
-                    clearCache();
+                    clearCache()
                 }
             } else {
                 // cache does not contain version: clear it
-                clearCache();
+                clearCache()
             }
             try {
-                localStorage.setItem("client.version", version);
+                localStorage.setItem('client.version', version)
             } catch (e) {
                 // in case setItem throws an exception (e.g. private mode)
                 // set cacheEnabled to false
-                cacheEnabled = false;
+                cacheEnabled = false
             }
         }
-        return cacheEnabled;
-    };
+        return cacheEnabled
+    }
 
     /*
      * Get value from a JSON resource file
@@ -63,14 +63,14 @@ var TResource = function() {
     this.get = function(name, fields, callback, errorCallback) {
         if (cacheEnabled) {
             // try to retrieve value from local storage
-            var value = localStorage.getItem("client."+name);
+            var value = localStorage.getItem('client.' + name)
             if (value) {
                 // value is available from local storage
-                callback.call(this,JSON.parse(value));
-                return;
+                callback.call(this,JSON.parse(value))
+                return
             }
         }
-        var self = this;
+        var self = this
         /*
         $.ajax({
             dataType: "json",
@@ -83,26 +83,26 @@ var TResource = function() {
             console.error('TResource.get: not found with arguments:')
             console.error(arguments)
         }
-                var value;
-                if (fields.length>0) {
-                    value = {};
-                    for (var i=0; i<fields.length; i++) {
+                var value
+                if (fields.length > 0) {
+                    value = {}
+                    for (var i = 0; i < fields.length; i++) {
                         if (typeof data[fields[i]] !== 'undefined') {
-                            value[fields[i]] = data[fields[i]];
-                            self.log("found field '"+fields[i]+"' in resource '"+name);
+                            value[fields[i]] = data[fields[i]]
+                            self.log('found field \'' + fields[i] + '\' in resource \'' + name)
                         }
                     }
                 } else {
-                    value = data;
+                    value = data
                 }
                 if (cacheEnabled) {
                     try  {
-                        localStorage.setItem("client."+name,JSON.stringify(value));
+                        localStorage.setItem('client.' + name,JSON.stringify(value))
                     } catch (e) {
-                        this.error("Error trying to cache value "+value+": "+e);
+                        this.error('Error trying to cache value ' + value + ': ' + e)
                     }
                 }
-                callback.call(this, value);
+                callback.call(this, value)
         /*
             },
             error: function(data, status, error) {
@@ -115,7 +115,7 @@ var TResource = function() {
             }
         });
         */
-    };
+    }
 
 
      /*
@@ -127,14 +127,14 @@ var TResource = function() {
     this.getPlain = function(name, callback, errorCallback) {
         if (cacheEnabled) {
             // try to retrieve value from local storage
-            var value = localStorage.getItem("client."+name);
+            var value = localStorage.getItem('client.' + name)
             if (value) {
                 // value is available from local storage
                 // postpone callback execution
                 setTimeout(function() {
-                    callback.call(this,value);
-                }, 0);
-                return;
+                    callback.call(this,value)
+                }, 0)
+                return
             }
         }
         /*
@@ -150,13 +150,13 @@ var TResource = function() {
         }
                 if (cacheEnabled) {
                     try {
-                        localStorage.setItem("client."+name,data);
+                        localStorage.setItem('client.' + name,data)
                     } catch (e) {
-                        this.error("Error trying to cache value "+data+": "+e);
+                        this.error('Error trying to cache value ' + data + ': ' + e)
                     }
 
                 }
-                callback.call(this, data);
+                callback.call(this, data)
         /*
             },
             error: function(data, status, error) {
@@ -169,31 +169,31 @@ var TResource = function() {
             }
         });
         */
-    };
+    }
 
     this.setLog = function(value) {
-        log = value;
-    };
+        log = value
+    }
 
     this.setError = function(value) {
-        error = value;
-    };
+        error = value
+    }
 
     this.log = function(message) {
         if (log) {
-            window.console.log(message);
+            window.console.log(message)
         }
-    };
+    }
 
     this.error = function(message) {
         if (error) {
-            window.console.error(message);
+            window.console.error(message)
         } else {
-            this.log("ERROR> "+message);
+            this.log('ERROR> ' + message)
         }
-    };
-};
+    }
+}
 
-var resourceInstance = new TResource();
+var resourceInstance = new TResource()
 
 export default resourceInstance

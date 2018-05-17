@@ -1,54 +1,54 @@
 // Worker to udpate infos from backend
 
 // Interval for polling info
-var pollingInterval = 5000;
-var polling;
-var pollingUrl;
+var pollingInterval = 5000
+var polling
+var pollingUrl
 
 onmessage = function(event) {
-    var data = event.data;
+    var data = event.data
     switch (data.operation) {
         case 'init': // init poll info
-            pollingUrl = data.url;
-            pollingInterval = data.interval;
-            break;
+            pollingUrl = data.url
+            pollingInterval = data.interval
+            break
         case 'reset': // reset poll interval
-            reset();
-            break;
+            reset()
+            break
         case 'start': // start poll interval
-            start();
-            break;
+            start()
+            break
         case 'stop': // start poll interval
-            stop();
-            break;
+            stop()
+            break
     }
-};
+}
 
 poll = function() {
-    var httpRequest = new XMLHttpRequest();
-    httpRequest.open("GET", fullUrl, true);
+    var httpRequest = new XMLHttpRequest()
+    httpRequest.open('GET', fullUrl, true)
     httpRequest.onload = function() {
-        var output = httpRequest.responseText;
+        var output = httpRequest.responseText
         if (output) {
-            output = output.trim();
+            output = output.trim()
             if (output.length() > 0) {
-                postMessage(output);
+                postMessage(output)
             }
         }
-    };
-    httpRequest.send(null);
-};
+    }
+    httpRequest.send(null)
+}
 
 start = function() {
-    polling = window.setInterval(poll, pollingInterval);
-};
+    polling = window.setInterval(poll, pollingInterval)
+}
 
 stop = function() {
-    window.clearInterval(polling);
-};
+    window.clearInterval(polling)
+}
 
 reset = function() {
-    stop();
-    start();
-};
+    stop()
+    start()
+}
 

@@ -17,12 +17,12 @@ function Grader() {
     }*/
 
     this.gradeTask = function (strAnswer, token, callback) {
-        var answer = JSON.parse(strAnswer);
+        var answer = JSON.parse(strAnswer)
         platform.getTaskParams('maxScore', 100, function(maxScore) {
-           var score = answer.score * maxScore;
-           callback(score, answer.message);
-        });
-    };           
+           var score = answer.score * maxScore
+           callback(score, answer.message)
+        })
+    }           
     
 }
 

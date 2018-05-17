@@ -23,130 +23,130 @@ import TRuntime from '@/run/TRuntime'
  * @exports TLearnEditor
  */
 function TLearnEditor(callback) {
-    var $editor, $editorText;
+    var $editor, $editorText
 
-    TComponent.call(this, "TLearnEditor.html", function(component) {
-        $editor = component;
-        $editorText = component.find("#tlearneditor-text");
+    TComponent.call(this, 'TLearnEditor.html', function(component) {
+        $editor = component
+        $editorText = component.find('#tlearneditor-text')
         if (typeof callback !== 'undefined') {
-            callback.call(this, component);
+            callback.call(this, component)
         }
-    });
+    })
 
-    var AceRange = ace_range;
-    var AceAutocomplete = ace_autocomplete;
+    var AceRange = ace_range
+    var AceAutocomplete = ace_autocomplete
 
-    var aceEditor;
-    var computedHeight = -1;
+    var aceEditor
+    var computedHeight = -1
 
-    var popupTriggered = false;
-    var popupTimeout;
-    var triggerPopup = false;
+    var popupTriggered = false
+    var popupTimeout
+    var triggerPopup = false
 
     /**
      * Initialize LearnEditor.
      */
     this.mounted = function() {
-        aceEditor = ace.edit($editorText.attr("id"));
-        aceEditor.getSession().setMode("ace/mode/javascript");
+        aceEditor = ace.edit($editorText.attr('id'))
+        aceEditor.getSession().setMode('ace/mode/javascript')
         // Disable JSHint
-        aceEditor.getSession().setUseWorker(false);
-        aceEditor.setShowPrintMargin(false);
-        aceEditor.renderer.setShowGutter(true);
-        aceEditor.setFontSize("20px");
-        aceEditor.setHighlightActiveLine(false);
-        aceEditor.setTheme("ace/theme/twilight");
-        aceEditor.$blockScrolling = Infinity;
+        aceEditor.getSession().setUseWorker(false)
+        aceEditor.setShowPrintMargin(false)
+        aceEditor.renderer.setShowGutter(true)
+        aceEditor.setFontSize('20px')
+        aceEditor.setHighlightActiveLine(false)
+        aceEditor.setTheme('ace/theme/twilight')
+        aceEditor.$blockScrolling = Infinity
         aceEditor.on('input', function() {
             if (triggerPopup) {
-                triggerPopup = false;
+                triggerPopup = false
                 popupTimeout = setTimeout(function() {
-                    popupTriggered = false;
+                    popupTriggered = false
                     // Force Ace popup to not add gutter width when computing popup pos
                     // since gutter is not shown
-                    aceEditor.renderer.$gutterLayer.gutterWidth = 0;
-                    AceAutocomplete.startCommand.exec(aceEditor);
-                }, 800);
-                popupTriggered = true;
+                    aceEditor.renderer.$gutterLayer.gutterWidth = 0
+                    AceAutocomplete.startCommand.exec(aceEditor)
+                }, 800)
+                popupTriggered = true
             }
             else if (popupTriggered) {
-                clearTimeout(popupTimeout);
-                popupTriggered = false;
+                clearTimeout(popupTimeout)
+                popupTriggered = false
             }
-        });
+        })
         aceEditor.commands.addCommand({
-            name: "save",
-            bindKey: { win: "Ctrl-S", mac: "Command-S" },
+            name: 'save',
+            bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
             exec: function(arg) {
-                platform.validate("stay");
+                platform.validate('stay')
             }
-        });
+        })
 
         // aceEditor.completers = [consoleCompleter];
-        aceEditor.completers = [];
-        aceEditor.setBehavioursEnabled(false);
+        aceEditor.completers = []
+        aceEditor.setBehavioursEnabled(false)
 
-        this.enableMethodHelper();
+        this.enableMethodHelper()
 
-    };
+    }
 
     /**
      * Get code in LearnEditor.
      * @returns {String}
      */
     this.getValue = function() {
-        var simpleText = aceEditor.getSession().getValue();
-        var protectedText = TUtils.addQuoteDelimiters(simpleText);
-        var command = TUtils.parseQuotes(protectedText);
-        return command;
-    };
+        var simpleText = aceEditor.getSession().getValue()
+        var protectedText = TUtils.addQuoteDelimiters(simpleText)
+        var command = TUtils.parseQuotes(protectedText)
+        return command
+    }
 
     /**
      * Set code in LearnEditor to value.
      * @param {String} value
      */
     this.setValue = function(value) {
-        aceEditor.getSession().setValue(value);
+        aceEditor.getSession().setValue(value)
         // set cursor to the end of line
-        aceEditor.gotoPageDown();
-    };
+        aceEditor.gotoPageDown()
+    }
 
     /**
      * Brings the current `textInput` into focus.
      */
     this.focus = function() {
-        aceEditor.focus();
-    };
+        aceEditor.focus()
+    }
 
     /**
      * Update Program & get statements of Program's code.
      * @returns {Statement[]}
      */
     this.getStatements = function() {
-        return TParser.parse(this.getValue());
-    };
+        return TParser.parse(this.getValue())
+    }
 
     /**
      * Clear LearnEditor.
      */
     this.clear = function() {
-        aceEditor.setValue("");
-    };
+        aceEditor.setValue('')
+    }
 
     /**
      * Show LearnEditor.
      */
     this.show = function() {
-        $editor.show();
-        aceEditor.focus();
-    };
+        $editor.show()
+        aceEditor.focus()
+    }
 
     /**
      * Hide LearnEditor.
      */
     this.hide = function() {
-        $editor.hide();
-    };
+        $editor.hide()
+    }
 
     /**
      * Get LearnEditor's height.
@@ -154,38 +154,38 @@ function TLearnEditor(callback) {
      */
     this.getHeight = function() {
         if (computedHeight === -1) {
-            computedHeight = $editor.outerHeight(false);
+            computedHeight = $editor.outerHeight(false)
         }
-        return computedHeight;
-    };
+        return computedHeight
+    }
 
     /**
      * Enable helping methods.
      */
     this.enableMethodHelper = function() {
-        aceEditor.commands.addCommand(dotCommand);
-        aceEditor.commands.addCommand(backspaceCommand);
-        aceEditor.commands.addCommand(classCommand);
-        aceEditor.commands.addCommand(AceAutocomplete.startCommand);
-    };
+        aceEditor.commands.addCommand(dotCommand)
+        aceEditor.commands.addCommand(backspaceCommand)
+        aceEditor.commands.addCommand(classCommand)
+        aceEditor.commands.addCommand(AceAutocomplete.startCommand)
+    }
 
     /**
      * Disable helping methods.
      */
     this.disableMethodHelper = function() {
-        aceEditor.commands.removeCommand(dotCommand);
-        aceEditor.commands.removeCommand(backspaceCommand);
-        aceEditor.commands.removeCommand(classCommand);
-        aceEditor.commands.removeCommand(AceAutocomplete.startCommand);
-    };
+        aceEditor.commands.removeCommand(dotCommand)
+        aceEditor.commands.removeCommand(backspaceCommand)
+        aceEditor.commands.removeCommand(classCommand)
+        aceEditor.commands.removeCommand(AceAutocomplete.startCommand)
+    }
 
 
     /**
      * Resize the ACE editor according to its container's height
      */
     this.resize = function() {
-        aceEditor.resize();
-    };
+        aceEditor.resize()
+    }
 
     /*
         var consoleCompleter = {
@@ -272,45 +272,45 @@ function TLearnEditor(callback) {
         */
 
     var dotCommand = {
-        name: "methodHelper",
+        name: 'methodHelper',
         bindKey: { win: '.', mac: '.' },
         exec: function(editor) {
-            triggerPopup = true;
-            return false; // let default event perform
+            triggerPopup = true
+            return false // let default event perform
         },
         readOnly: true // false if this command should not apply in readOnly mode
-    };
+    }
 
     var backspaceCommand = {
-        name: "methodHelper2",
+        name: 'methodHelper2',
         bindKey: { win: 'Backspace', mac: 'Backspace' },
         exec: function(editor) {
-            var cursor = editor.selection.getCursor();
-            var token = editor.getSession().getTokenAt(cursor.row, cursor.column - 1);
-            if (token !== null && token.type === "punctuation.operator" && token.value === ".") {
-                triggerPopup = true;
+            var cursor = editor.selection.getCursor()
+            var token = editor.getSession().getTokenAt(cursor.row, cursor.column - 1)
+            if (token !== null && token.type === 'punctuation.operator' && token.value === '.') {
+                triggerPopup = true
             }
-            return false;
+            return false
         },
         readOnly: true // false if this command should not apply in readOnly mode
-    };
+    }
     var classCommand = {
-        name: "classHelper",
+        name: 'classHelper',
         bindKey: { win: 'Space', mac: 'Space' },
         exec: function(editor) {
-            var cursor = editor.selection.getCursor();
-            var token = editor.getSession().getTokenAt(cursor.row, cursor.column - 1);
+            var cursor = editor.selection.getCursor()
+            var token = editor.getSession().getTokenAt(cursor.row, cursor.column - 1)
 
-            if (token !== null && token.type === "keyword" && token.value === "new") {
-                triggerPopup = true;
+            if (token !== null && token.type === 'keyword' && token.value === 'new') {
+                triggerPopup = true
             }
-            return false;
+            return false
         },
         readOnly: true // false if this command should not apply in readOnly mode
-    };
+    }
 }
 
-TLearnEditor.prototype = Object.create(TComponent.prototype);
-TLearnEditor.prototype.constructor = TLearnEditor;
+TLearnEditor.prototype = Object.create(TComponent.prototype)
+TLearnEditor.prototype.constructor = TLearnEditor
 
-export default TLearnEditor;
+export default TLearnEditor

@@ -10,21 +10,21 @@ import TError from '@/utils/TError'
 */
 function TExerciseProject() {
     // associated project
-    var project = new TProject();
-    TEnvironment.setProject(project);
-    var checkStatements = false;
-    var initStatements = false;
-    var startStatements = false;
-    var endStatements = false;
-    var exerciseStatements = false;
-    var exercise = false;
-    var userCode = false;
-    var solutionCode = false;
-    var instructions = false;
-    var hints = false;
+    var project = new TProject()
+    TEnvironment.setProject(project)
+    var checkStatements = false
+    var initStatements = false
+    var startStatements = false
+    var endStatements = false
+    var exerciseStatements = false
+    var exercise = false
+    var userCode = false
+    var solutionCode = false
+    var instructions = false
+    var hints = false
     //TODO: generate this name dynamically and find a way to protect it
-    var name = "exercise_123456";
-    var frame = false;
+    var name = 'exercise_123456'
+    var frame = false
 
     const checkImgs = /(<img\s[^>]*?src\s*=\s*['"])([^'"]*?)(['"][^>]*?>)/g
 
@@ -33,56 +33,56 @@ function TExerciseProject() {
     * @param {String} value
     */
     this.setId = function(value) {
-        project.setId(value);
-    };
+        project.setId(value)
+    }
 
     /**
     * Returns Project's ID.
     * @returns {String}
     */
     this.getId = function() {
-        return project.getId();
-    };
+        return project.getId()
+    }
 
     /**
     * Checks if Exercise has insructions.
     * @returns {Boolean}
     */
     this.hasInstructions = function() {
-        return (instructions !== false);
-    };
+        return (instructions !== false)
+    }
 
     /**
     * Checks if Exercise has a solution.
     * @returns {Boolean}
     */
     this.hasSolution = function() {
-        return (solutionCode !== false);
-    };
+        return (solutionCode !== false)
+    }
 
     /**
     * Checks if Exercise has hints.
     * @returns {Boolean}
     */
     this.hasHints = function() {
-        return (hints !== false);
-    };
+        return (hints !== false)
+    }
 
     /**
     * Checks if Exercise has start statementse.
     * @returns {Boolean}
     */
     this.hasStart = function() {
-        return (startStatements !== false);
-    };
+        return (startStatements !== false)
+    }
 
     /**
     * Checks if Exercise has iit statementse.
     * @returns {Boolean}
     */
     this.hasInit = function() {
-        return (initStatements !== false);
-    };
+        return (initStatements !== false)
+    }
 
 
     /**
@@ -90,24 +90,24 @@ function TExerciseProject() {
     * @returns {Boolean}
     */
     this.hasEnd = function() {
-        return (endStatements !== false);
-    };
+        return (endStatements !== false)
+    }
 
     /**
     * Checks if Exercise has check statements.
     * @returns {Boolean}
     */
     this.hasCheck = function() {
-        return (checkStatements !== false);
-    };
+        return (checkStatements !== false)
+    }
 
     /**
     * Checks if Exercise has user code.
     * @returns {Boolean}
     */
     this.hasUserCode = function() {
-        return (userCode !== false);
-    };
+        return (userCode !== false)
+    }
 
     /**
     * Get Project's instructions if defined.
@@ -115,26 +115,26 @@ function TExerciseProject() {
     */
     this.getInstructions = function(callback) {
         if (instructions !== false) {
-            var self = this;
-            var resources = project.getResources();
-            project.getResourceContent("instructions.html", function(content) {
+            var self = this
+            var resources = project.getResources()
+            project.getResourceContent('instructions.html', function(content) {
                 content = content.replace(checkImgs, function(match, start, value, end) {
                     if (typeof resources[value] !== 'undefined') {
-                        return start + project.getResourceLocation(value) + end;
+                        return start + project.getResourceLocation(value) + end
                     } else {
-                        return start + value + end;
+                        return start + value + end
                     }
-                });
+                })
                 if (typeof callback !== 'undefined') {
-                    callback.call(self, content);
+                    callback.call(self, content)
                 }
-            });                
+            })                
         } else {
             if (typeof callback !== 'undefined') {
-                callback.call(this);
+                callback.call(this)
             }
         }
-    };
+    }
 
     /**
     * Returns solution code.
@@ -142,11 +142,11 @@ function TExerciseProject() {
     */
     this.getSolution = function() {
         if (solutionCode !== false) {
-            return solutionCode;
+            return solutionCode
         } else {
-            return "";
+            return ''
         }
-    };
+    }
 
     /**
     * Get Project's hints.
@@ -154,13 +154,13 @@ function TExerciseProject() {
     */
     this.getHints = function(callback) {
         if (hints !== false) {
-            project.getResourceContent("hints.html", callback);
+            project.getResourceContent('hints.html', callback)
         } else {
             if (typeof callback !== 'undefined') {
-                callback.call(this);
+                callback.call(this)
             }
         }
-    };
+    }
 
     /**
     * Get User code.
@@ -168,104 +168,104 @@ function TExerciseProject() {
     */
     this.getUserCode = function() {
         if (userCode !== false) {
-            return userCode;
+            return userCode
         } else {
-            return "";
+            return ''
         }
-    };
+    }
 
     this.executeInit = function ()
     {
         if (initStatements !== false) {
-            TRuntime.executeStatements(initStatements);
+            TRuntime.executeStatements(initStatements)
         }
-    };
+    }
 
     /**
     * Exectute init statements if any.
     */
     this.init = function() {
         if (exerciseStatements !== false) {
-            TRuntime.executeStatements(exerciseStatements);
-            exercise = TRuntime.getTObject(name);
-            exercise.setFrame(frame);
+            TRuntime.executeStatements(exerciseStatements)
+            exercise = TRuntime.getTObject(name)
+            exercise.setFrame(frame)
         }
-        this.executeInit();
-    };
+        this.executeInit()
+    }
 
     /**
     * Exectute start statements if any.
     */
     this.start = function() {
         if (startStatements !== false) {
-            TRuntime.executeStatements(startStatements);
+            TRuntime.executeStatements(startStatements)
         }
-    };
+    }
 
     /**
     * Exectute end statements if any.
     */
     this.end = function() {
         if (endStatements !== false) {
-            TRuntime.executeStatements(endStatements);
+            TRuntime.executeStatements(endStatements)
         }
-    };
+    }
 
     /**
     * Execute check statements if any.
     */
     this.check = function(statements, callback) {
-        exercise.setStatements(statements);
+        exercise.setStatements(statements)
         if (checkStatements !== false) {
-            TRuntime.evaluate(checkStatements, callback);
+            TRuntime.evaluate(checkStatements, callback)
         }
-    };
+    }
 
     /**
     * Loads solution code.
     * @param {Function} callback
     */
     var loadSolution = function(callback) {
-        project.getProgramCode("solution", function(result) {
+        project.getProgramCode('solution', function(result) {
             if (!(result instanceof TError)) {
-                solutionCode = result;
+                solutionCode = result
             }
-            callback.call(this);
-        });
-    };
+            callback.call(this)
+        })
+    }
 
     /**
     * Loads user code.
     * @param {Function} callback
     */
     var loadUserCode = function(callback) {
-        project.getProgramCode("user", function(result) {
+        project.getProgramCode('user', function(result) {
             if (!(result instanceof TError)) {
-                userCode = result;
+                userCode = result
             }
-            callback.call(this);
-        });
-    };        
+            callback.call(this)
+        })
+    }        
 
     /** Loads exercise
     * @param {Function} callback
     */
     var loadExercise = function(callback) {
-        project.getProgramCode("exercise", function(result) {
+        project.getProgramCode('exercise', function(result) {
             if (!(result instanceof TError)) {
-                var code = name+"= new Exercise();\n";
-                code += "(function(){\n";
-                code += result;
-                code +="\nreturn this;\n}).call("+name+")";
-                exerciseStatements = TParser.parse(code);
-                initStatements = TParser.parse(name+".init()");
-                startStatements = TParser.parse(name+".start()");
-                endStatements = TParser.parse(name+".end()");
-                checkStatements = TParser.parse(name+".check()");
+                var code = name + '= new Exercise();\n'
+                code += '(function(){\n'
+                code += result
+                code += '\nreturn this;\n}).call(' + name + ')'
+                exerciseStatements = TParser.parse(code)
+                initStatements = TParser.parse(name + '.init()')
+                startStatements = TParser.parse(name + '.start()')
+                endStatements = TParser.parse(name + '.end()')
+                checkStatements = TParser.parse(name + '.check()')
             }
-            callback.call(this);
-        });
-    };
+            callback.call(this)
+        })
+    }
 
     /**
     * Initialize Exercise.
@@ -273,77 +273,77 @@ function TExerciseProject() {
     * @param {Integer} id
     */
     this.load = function(callback, id) {
-        checkStatements = false;
-        initStatements = false;
-        startStatements = false;
-        endStatements = false;
-        solutionCode = false;
-        instructions = false;
-        hints = false;
+        checkStatements = false
+        initStatements = false
+        startStatements = false
+        endStatements = false
+        solutionCode = false
+        instructions = false
+        hints = false
 
         project.init(function() {
             // 1st check existing programs
-            var programs = project.getProgramsNames();
-            var solutionPresent = false;
-            var exercisePresent = false;
-            var userCodePresent = false;
-            var toLoad = 0;
+            var programs = project.getProgramsNames()
+            var solutionPresent = false
+            var exercisePresent = false
+            var userCodePresent = false
+            var toLoad = 0
 
-            if (programs.indexOf("solution") > -1) {
-                toLoad++;
-                solutionPresent = true;
+            if (programs.indexOf('solution') > -1) {
+                toLoad++
+                solutionPresent = true
             }
 
-            if (programs.indexOf("exercise") > -1) {
-                toLoad++;
-                exercisePresent = true;
+            if (programs.indexOf('exercise') > -1) {
+                toLoad++
+                exercisePresent = true
             }
 
-            if (programs.indexOf("user") > -1) {
-                toLoad++;
-                userCodePresent = true;
+            if (programs.indexOf('user') > -1) {
+                toLoad++
+                userCodePresent = true
             }
 
             // 2nd check existing resources
-            var resources = project.getResourcesNames();
-            if (resources.indexOf("instructions.html") > -1) {
-                instructions = true;
+            var resources = project.getResourcesNames()
+            if (resources.indexOf('instructions.html') > -1) {
+                instructions = true
             }
 
-            if (programs.indexOf("hints.html") > -1) {
-                hints = true;
+            if (programs.indexOf('hints.html') > -1) {
+                hints = true
             }
 
             // 3rd load statements
-            if (toLoad===0) {
+            if (toLoad === 0) {
                 // In case there is nothing to load: call callback now
-                callback.call(this);
+                callback.call(this)
             }
             var checkLoad = function() {
-                toLoad--;
-                if (toLoad===0) {
-                    callback.call(this);
+                toLoad--
+                if (toLoad === 0) {
+                    callback.call(this)
                 }
-            };
+            }
             if (solutionPresent) {
-                loadSolution(checkLoad);
+                loadSolution(checkLoad)
             }
             if (exercisePresent) {
-                loadExercise(checkLoad);
+                loadExercise(checkLoad)
             }
             if (userCodePresent) {
-                loadUserCode(checkLoad);
+                loadUserCode(checkLoad)
             }
-        }, id);
+        }, id)
 
-    };
+    }
 
     this.setFrame = function(aFrame) {
-        frame = aFrame;
+        frame = aFrame
         if (exercise) {
-            exercise.setFrame(aFrame);
+            exercise.setFrame(aFrame)
         }
-    };
+    }
 }
 
 export default TExerciseProject

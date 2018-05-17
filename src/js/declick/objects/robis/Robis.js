@@ -10,64 +10,64 @@ import TUtils from '@/utils/TUtils'
  * @exports Robis
  */
 var Robis = function() {
-    TObject.call(this);
-    this.prefix = 'http://';
-    this.suffix = '/';
-    this.url = 'undefined';
-};
+    TObject.call(this)
+    this.prefix = 'http://'
+    this.suffix = '/'
+    this.url = 'undefined'
+}
 
-Robis.prototype = Object.create(TObject.prototype);
-Robis.prototype.constructor = Robis;
-Robis.prototype.className = "Robis";
+Robis.prototype = Object.create(TObject.prototype)
+Robis.prototype.constructor = Robis
+Robis.prototype.className = 'Robis'
 
 Robis.prototype.command = function(command) {
     if (this.url !== 'undefined')
-        $.get(this.url, {command: command});
+        $.get(this.url, {command: command})
     else
-        console.debug("failed");
-};
+        console.debug('failed')
+}
 
 /**
  * Define Robis's server URL.
  * @param {String} url
  */
 Robis.prototype._defineURL = function(url) {
-    this.url = this.prefix + url + this.suffix;
-};
+    this.url = this.prefix + url + this.suffix
+}
 
 /**
  * Move Robis forward.
  */
 Robis.prototype._moveForward = function() {
-    this.command("fwd");
-};
+    this.command('fwd')
+}
 
 /**
  * Move Robis backward.
  */
 Robis.prototype._moveBackward = function() {
-    this.command("bwd");
-};
+    this.command('bwd')
+}
 
 /**
  * Spin round to left.
 */
 Robis.prototype._turnLeft = function() {
-    this.command("left");
-};
+    this.command('left')
+}
 
 /**
  * Spin round to right.
 */
 Robis.prototype._turnRight = function() {
-    this.command("right");
-};
+    this.command('right')
+}
 
 /**
  * Stop Robis.
  */
 Robis.prototype._stop = function() {
-    this.command("stop");
-};
+    this.command('stop')
+}
 
 export default Robis

@@ -4,49 +4,49 @@ import TObject from '@/objects/tobject/TObject'
 
 function Midi() {
     // window.console.log(JZZ.info);    
-    var domBody = document.getElementsByTagName("body")[0];
+    var domBody = document.getElementsByTagName('body')[0]
 
-    this.domMidi = null;
-    $head = $("head");
-    $body = $(domBody);
-    $head.append('<script src="node_modules/jzz/javascript/JZZ.js"></script>');
-    $head.append('<script src="node_modules/jzz-modules-dev/minified/JZZ.synth.OSC.js"></script>');
+    this.domMidi = null
+    $head = $('head')
+    $body = $(domBody)
+    $head.append('<script src="node_modules/jzz/javascript/JZZ.js"></script>')
+    $head.append('<script src="node_modules/jzz-modules-dev/minified/JZZ.synth.OSC.js"></script>')
 
-    this.domPlugin = document.getElementsByTagName("object")[0];
-    var Jazz = null;
+    this.domPlugin = document.getElementsByTagName('object')[0]
+    var Jazz = null
     
 //        if (ie8)
     //<meta http-equiv="X-UA-Compatible" content="requiresActiveX=true"/>
 
     this.addPlugin = function (where) {
-        this.domPlugin = document.getElementsByTagName("object")[0];
-        console.dir(this.domPlugin);
-        var obj;
+        this.domPlugin = document.getElementsByTagName('object')[0]
+        console.dir(this.domPlugin)
+        var obj
         if (typeof this.domPlugin === 'undefined') {
-            obj = document.createElement('object');
+            obj = document.createElement('object')
         } else {
-            obj = this.domPlugin;
+            obj = this.domPlugin
         }
-        $(obj).attr("id", "Jazz1");
-        $(obj).attr("classid", "CLSID:1ACE1618-1C7D-4561-AEE1-34842AA85E90");
+        $(obj).attr('id', 'Jazz1')
+        $(obj).attr('classid', 'CLSID:1ACE1618-1C7D-4561-AEE1-34842AA85E90')
         if (!obj.isJazz) {
-            obj.type = "audio/x-jazz";
-            $(obj).attr("type", "audio/x-jazz");
+            obj.type = 'audio/x-jazz'
+            $(obj).attr('type', 'audio/x-jazz')
         }
-        obj.style.visibility = 'hidden';
-        obj.style.width = '0px';
-        obj.style.height = '0px';
-        where.appendChild(obj);
+        obj.style.visibility = 'hidden'
+        obj.style.width = '0px'
+        obj.style.height = '0px'
+        where.appendChild(obj)
         if (obj.isJazz) {
-            return obj;
+            return obj
         } else {
-            where.removeChild(obj);
-            throw "Cannot create Jazz-Plugin";
+            where.removeChild(obj)
+            throw 'Cannot create Jazz-Plugin'
         }
-    };
+    }
 
-    Jazz = this.addPlugin(domBody);
-    console.log(Jazz.isJazz());
+    Jazz = this.addPlugin(domBody)
+    console.log(Jazz.isJazz())
 
 
     //this.domMidi = this.createPlugin(domBody);
@@ -63,12 +63,12 @@ function Midi() {
 //        });
 }
 
-Midi.prototype = Object.create(TObject.prototype);
-Midi.prototype.constructor = Midi;
-Midi.prototype.className = "Midi";
+Midi.prototype = Object.create(TObject.prototype)
+Midi.prototype.constructor = Midi
+Midi.prototype.className = 'Midi'
 
 Midi.prototype.bonjour = function () {
     //window.console.log(JZZ.info);        
-};
+}
 
 export default Midi

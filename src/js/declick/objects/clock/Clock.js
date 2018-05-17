@@ -12,36 +12,36 @@ import TUtils from '@/utils/TUtils'
  * @exports Clock
  */
 var Clock = function() {
-    TObject.call(this);
-    this.commands = new CommandManager();
-    this.delay = 1000;
-    this.initialDelay = false;
-    this.running = false;
-    this.wasRunning = false;
-    this.timeout = null;
-    this.loop = true;
-    this.frozen = false;
-};
+    TObject.call(this)
+    this.commands = new CommandManager()
+    this.delay = 1000
+    this.initialDelay = false
+    this.running = false
+    this.wasRunning = false
+    this.timeout = null
+    this.loop = true
+    this.frozen = false
+}
 
-Clock.prototype = Object.create(TObject.prototype);
-Clock.prototype.constructor = Clock;
-Clock.prototype.className = "Clock";
+Clock.prototype = Object.create(TObject.prototype)
+Clock.prototype.constructor = Clock
+Clock.prototype.className = 'Clock'
 
 /**
  * Add a command to Clock.
  * @param {String} command
  */
 Clock.prototype._addCommand = function(command) {
-    command = TUtils.getCommand(command);
-    this.commands.addCommand(command);
-};
+    command = TUtils.getCommand(command)
+    this.commands.addCommand(command)
+}
 
 /**
  * Remove all commands to Clock.
  */
 Clock.prototype._removeCommands = function() {
-    this.commands.removeCommands();
-};
+    this.commands.removeCommands()
+}
 
 /**
  * Set a Delay between the execution of two commands.
@@ -50,12 +50,12 @@ Clock.prototype._removeCommands = function() {
  * @param {Number} delay    (ms)
  */
 Clock.prototype._setDelay = function(delay) {
-    delay = TUtils.getInteger(delay);
-    this.delay = delay;
+    delay = TUtils.getInteger(delay)
+    this.delay = delay
     if (this.initialDelay === false) {
-        this._setInitialDelay(delay);
+        this._setInitialDelay(delay)
     }
-};
+}
 
 /**
  * Set the initial Delay before the execution of the commands,
@@ -63,59 +63,59 @@ Clock.prototype._setDelay = function(delay) {
  * @param {Number} delay    (ms)
  */
 Clock.prototype._setInitialDelay = function(delay) {
-    delay = TUtils.getInteger(delay);
-    this.initialDelay = delay;
-};
+    delay = TUtils.getInteger(delay)
+    this.initialDelay = delay
+}
 
 /**
  * Start the execution of Clock.
  */
 Clock.prototype._start = function() {
     if (!this.running) {
-        this.running = true;
-        var self = this;
+        this.running = true
+        var self = this
         this.timeout = window.setTimeout(function() {
-            self.executeActions();
-        }, this.initialDelay);
+            self.executeActions()
+        }, this.initialDelay)
     }
-};
+}
 
 /**
  * Stop the execution of Clock.
  */
 Clock.prototype._stop = function() {
-    this.running = false;
+    this.running = false
     if (this.timeout !== null) {
-        window.clearTimeout(this.timeout);
-        this.timeout = null;
+        window.clearTimeout(this.timeout)
+        this.timeout = null
     }
-};
+}
 
 /**
  * Execute actions linked to Clock.
  */
 Clock.prototype.executeActions = function() {
-    this.timeout = null;
+    this.timeout = null
     if (this.running) {
-        this.commands.executeCommands();
+        this.commands.executeCommands()
         if (this.loop) {
-            var self = this;
+            var self = this
             this.timeout = window.setTimeout(function() {
-                self.executeActions();
-            }, this.delay);
+                self.executeActions()
+            }, this.delay)
         } else {
-            this._stop();
+            this._stop()
         }
     }
-};
+}
 
 /**
  * Delete Clock.
  */
 Clock.prototype.deleteObject = function() {
-    this._stop();
-    TObject.prototype.deleteObject.call(this);
-};
+    this._stop()
+    TObject.prototype.deleteObject.call(this)
+}
 
 /**
  * Enable or disable loops for the execution of Clock.
@@ -123,29 +123,29 @@ Clock.prototype.deleteObject = function() {
  * @param {Boolean} value
  */
 Clock.prototype._loop = function(value) {
-    value = TUtils.getBoolean(value);
-    this.loop = value;
-};
+    value = TUtils.getBoolean(value)
+    this.loop = value
+}
 
 /**
  * Freeze of unfreeze Clock.
  * @param {Boolean} value
  */
 Clock.prototype.freeze = function(value) {
-    TObject.prototype.freeze.call(value);
+    TObject.prototype.freeze.call(value)
     if (value !== this.frozen) {
         if (value) {
-            this.wasRunning = this.running;
-            this._stop();
-            this.frozen = true;
+            this.wasRunning = this.running
+            this._stop()
+            this.frozen = true
         } else {
             if (this.wasRunning) {
-                this._start();
+                this._start()
             }
-            this.frozen = false;
+            this.frozen = false
         }
     }
-};
+}
 
 /**
  * Enable or disable the display of commands.
@@ -153,8 +153,8 @@ Clock.prototype.freeze = function(value) {
  * @param {type} value
  */
 Clock.prototype._displayCommands = function(value) {
-    value = TUtils.getBoolean(value);
-    this.commands.logCommands(value);
-};
+    value = TUtils.getBoolean(value)
+    this.commands.logCommands(value)
+}
 
 export default Clock

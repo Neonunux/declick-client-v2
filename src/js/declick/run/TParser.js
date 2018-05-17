@@ -5,11 +5,11 @@ const acorn = require('acorn')
  * @exports TParser
  */
 function TParser() {
-    var options = {locations: true, forbidReserved: "everywhere"};
+    var options = {locations: true, forbidReserved: 'everywhere'}
     
     this.setRepeatKeyword = function(name) {
-        acorn.setRepeatKeyword(name);
-    };        
+        acorn.setRepeatKeyword(name)
+    }        
 
     /**
      * Parse code to statements.
@@ -18,17 +18,17 @@ function TParser() {
      */
     this.parse = function(input, programName) {
         if (programName) {
-            options["sourceFile"] = programName;
+            options['sourceFile'] = programName
         } else {
-            options["sourceFile"] = null;
+            options['sourceFile'] = null
         }
         
-        var result = acorn.parse(input, options);
+        var result = acorn.parse(input, options)
         // return statements
-        return result;
-    };
+        return result
+    }
 }
 
-var parserInstance = new TParser();
+var parserInstance = new TParser()
 
 export default parserInstance

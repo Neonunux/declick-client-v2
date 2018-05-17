@@ -26,69 +26,69 @@ import TRuntime from '@/run/TRuntime'
  * @exports {TConsole}
  */
 function TConsole(callback) {
-    var $console, $consoleText;
+    var $console, $consoleText
 
-    TComponent.call(this, "TConsole.html", function(component) {
-        $console = component;
-        $consoleText = component.find("#tconsole-text");
-        var buttonExecute = component.find("#tconsole-play");
-        buttonExecute.attr("title", TEnvironment.getMessage('button-execute'));
+    TComponent.call(this, 'TConsole.html', function(component) {
+        $console = component
+        $consoleText = component.find('#tconsole-text')
+        var buttonExecute = component.find('#tconsole-play')
+        buttonExecute.attr('title', TEnvironment.getMessage('button-execute'))
         buttonExecute.click(function(e) {
-            TUI.execute();
-        });
+            TUI.execute()
+        })
 
-        var buttonClear = component.find("#tconsole-clear");
-        buttonClear.attr("title", TEnvironment.getMessage('option-clear'));
+        var buttonClear = component.find('#tconsole-clear')
+        buttonClear.attr('title', TEnvironment.getMessage('option-clear'))
         buttonClear.click(function(e) {
-            TUI.clear(true);
-        });
+            TUI.clear(true)
+        })
 
         if (typeof callback !== 'undefined') {
-            callback.call(this, component);
+            callback.call(this, component)
         }
-    });
+    })
 
-    var AceRange = ace_range;
-    var AceAutocomplete = ace_autocomplete;
+    var AceRange = ace_range
+    var AceAutocomplete = ace_autocomplete
 
-    var aceEditor;
-    var currentCommand;
-    var currentPosition;
-    var computedHeight = -1;
-    var browsingHistory = false;
+    var aceEditor
+    var currentCommand
+    var currentPosition
+    var computedHeight = -1
+    var browsingHistory = false
 
-    var popupTriggered = false;
-    var popupTimeout;
-    var triggerPopup = false;
+    var popupTriggered = false
+    var popupTimeout
+    var triggerPopup = false
 
     this.mounted = function() {
-        aceEditor = ace.edit($consoleText.attr("id"));
-        aceEditor.getSession().setMode("ace/mode/javascript");
+        aceEditor = ace.edit($consoleText.attr('id'))
+        aceEditor.getSession().setMode('ace/mode/javascript')
         // Disable JSHint
-        aceEditor.getSession().setUseWorker(false);
-        aceEditor.setShowPrintMargin(false);
-        aceEditor.renderer.setShowGutter(false);
-        aceEditor.setFontSize("20px");
-        aceEditor.setHighlightActiveLine(false);
-        aceEditor.setTheme("ace/theme/twilight");
-        aceEditor.$blockScrolling = Infinity;
+        aceEditor.getSession().setUseWorker(false)
+        aceEditor.setShowPrintMargin(false)
+        aceEditor.renderer.setShowGutter(false)
+        aceEditor.setFontSize('20px')
+        aceEditor.setHighlightActiveLine(false)
+        aceEditor.setTheme('ace/theme/twilight')
+        aceEditor.$blockScrolling = Infinity
         aceEditor.on('input', function() {
             if (triggerPopup) {
-                triggerPopup = false;
+                triggerPopup = false
                 popupTimeout = setTimeout(function() {
-                    popupTriggered = false;
+                    popupTriggered = false
                     // Force Ace popup to not add gutter width when computing popup pos
                     // since gutter is not shown
-                    aceEditor.renderer.$gutterLayer.gutterWidth = 0;
-                    AceAutocomplete.startCommand.exec(aceEditor);
-                }, 800);
-                popupTriggered = true;
+                    aceEditor.renderer.$gutterLayer.gutterWidth = 0
+                    AceAutocomplete.startCommand.exec(aceEditor)
+                }, 800)
+                popupTriggered = true
             }
             else if (popupTriggered) {
-                clearTimeout(popupTimeout);
-                popupTriggered = false;
+                clearTimeout(popupTimeout)
+                popupTriggered = false
             }
-        });
+        })
 
         aceEditor.commands.addCommand({
             name: 'executeCommand',
@@ -97,129 +97,129 @@ function TConsole(callback) {
                 // postpone execution due to a bug in Firefox handling synchronous ajax when in a keyboard event
                 // (insert new line)
                 window.setTimeout(function() {
-                    TUI.execute();
-                }, 0);
+                    TUI.execute()
+                }, 0)
             },
             readOnly: true // false if this command should not apply in readOnly mode
-        });
+        })
         aceEditor.commands.addCommand({
             name: 'browseHistoryUp',
             bindKey: { win: 'Up', mac: 'Up' },
             exec: function(editor) {
-                var history = TUI.getPreviousRow();
+                var history = TUI.getPreviousRow()
                 if (history !== null) {
                     if (!browsingHistory) {
-                        currentCommand = editor.getValue();
-                        currentPosition = editor.getCursorPosition();
-                        browsingHistory = true;
+                        currentCommand = editor.getValue()
+                        currentPosition = editor.getCursorPosition()
+                        browsingHistory = true
                     }
-                    editor.setValue(history);
-                    editor.navigateLineEnd();
+                    editor.setValue(history)
+                    editor.navigateLineEnd()
                 }
             },
             readOnly: true // false if this command should not apply in readOnly mode
-        });
+        })
         aceEditor.commands.addCommand({
             name: 'browsehistoryDown',
             bindKey: { win: 'Down', mac: 'Down' },
             exec: function(editor) {
                 if (browsingHistory) {
-                    var history = TUI.getNextRow();
+                    var history = TUI.getNextRow()
                     if (history !== null) {
-                        editor.setValue(history);
-                        editor.navigateLineEnd();
+                        editor.setValue(history)
+                        editor.navigateLineEnd()
                     }
                     else {
                         // end of history reached
-                        editor.setValue(currentCommand);
-                        editor.navigateTo(currentPosition.row, currentPosition.column);
-                        browsingHistory = false;
+                        editor.setValue(currentCommand)
+                        editor.navigateTo(currentPosition.row, currentPosition.column)
+                        browsingHistory = false
                     }
                 }
             },
             readOnly: true // false if this command should not apply in readOnly mode
-        });
+        })
         aceEditor.commands.addCommand({
             name: 'returnToCurrentCommand',
             bindKey: { win: 'Escape', mac: 'Escape' },
             exec: function(editor) {
                 if (browsingHistory) {
-                    editor.setValue(currentCommand);
-                    editor.navigateTo(currentPosition.row, currentPosition.column);
-                    TUI.setLastRow();
-                    browsingHistory = false;
+                    editor.setValue(currentCommand)
+                    editor.navigateTo(currentPosition.row, currentPosition.column)
+                    TUI.setLastRow()
+                    browsingHistory = false
                 }
             },
             readOnly: true // false if this command should not apply in readOnly mode
-        });
+        })
 
-        aceEditor.completers = [consoleCompleter];
+        aceEditor.completers = [consoleCompleter]
 
-        this.enableMethodHelper();
+        this.enableMethodHelper()
 
-    };
+    }
 
     /**
      * Returns code in Console.
      * @returns {String}
      */
     this.getValue = function() {
-        var simpleText = aceEditor.getSession().getValue();
-        var protectedText = TUtils.addQuoteDelimiters(simpleText);
-        var command = TUtils.parseQuotes(protectedText);
-        return command;
-    };
+        var simpleText = aceEditor.getSession().getValue()
+        var protectedText = TUtils.addQuoteDelimiters(simpleText)
+        var command = TUtils.parseQuotes(protectedText)
+        return command
+    }
 
     /**
      * Set code in Console to value.
      * @param {String} value
      */
     this.setValue = function(value) {
-        aceEditor.getSession().setValue(value);
+        aceEditor.getSession().setValue(value)
         // set cursor to the end of line
-        aceEditor.gotoPageDown();
-    };
+        aceEditor.gotoPageDown()
+    }
 
     /**
      * Brings the current `textInput` into focus.
      */
     this.focus = function() {
-        aceEditor.focus();
-    };
+        aceEditor.focus()
+    }
 
     /**
      * Returns statements of Console's code.
      * @returns {Statement[]}
      */
     this.getStatements = function() {
-        return TParser.parse(this.getValue());
-    };
+        return TParser.parse(this.getValue())
+    }
 
     /**
      * Clear Console.
      */
     this.clear = function() {
-        aceEditor.setValue("");
-        browsingHistory = false;
-    };
+        aceEditor.setValue('')
+        browsingHistory = false
+    }
 
     /**
      * Show Console.
      */
     this.show = function() {
-        $console.show();
-        aceEditor.focus();
-    };
+        $console.show()
+        aceEditor.focus()
+    }
 
     /**
      * Hide Console.
      */
     this.hide = function() {
         if (computedHeight === -1) {
-            computedHeight = $console.outerHeight(false);
+            computedHeight = $console.outerHeight(false)
         }
-        $console.hide();
-    };
+        $console.hide()
+    }
 
     /**
      * Get Console's height.
@@ -227,40 +227,40 @@ function TConsole(callback) {
      */
     this.getHeight = function() {
         if (computedHeight === -1) {
-            computedHeight = $console.outerHeight(false);
+            computedHeight = $console.outerHeight(false)
         }
-        return computedHeight;
-    };
+        return computedHeight
+    }
 
     /**
      * Enable helping methods.
      */
     this.enableMethodHelper = function() {
-        aceEditor.commands.addCommand(dotCommand);
-        aceEditor.commands.addCommand(backspaceCommand);
-        aceEditor.commands.addCommand(AceAutocomplete.startCommand);
-    };
+        aceEditor.commands.addCommand(dotCommand)
+        aceEditor.commands.addCommand(backspaceCommand)
+        aceEditor.commands.addCommand(AceAutocomplete.startCommand)
+    }
 
     /**
      * Disable helping methods.
      */
     this.disableMethodHelper = function() {
-        aceEditor.commands.removeCommand(dotCommand);
-        aceEditor.commands.removeCommand(backspaceCommand);
-        aceEditor.commands.removeCommand(AceAutocomplete.startCommand);
-    };
+        aceEditor.commands.removeCommand(dotCommand)
+        aceEditor.commands.removeCommand(backspaceCommand)
+        aceEditor.commands.removeCommand(AceAutocomplete.startCommand)
+    }
 
     var consoleCompleter = {
         getCompletions: function(editor, session, pos, prefix, callback) {
-            pos.column--;
-            var token = session.getTokenAt(pos.row, pos.column);
+            pos.column--
+            var token = session.getTokenAt(pos.row, pos.column)
 
             if (token === null) {
-                return false;
+                return false
             }
 
-            var tokens = session.getTokens(pos.row);
-            var index = token.index;
+            var tokens = session.getTokens(pos.row)
+            var index = token.index
 
             // TODO: see if we can handle this situation in js
             /*if (token.type === "rparen") {
@@ -272,69 +272,69 @@ function TConsole(callback) {
              endToken = "[";
              }*/
 
-            if (token.type !== "identifier" && token.type !== "text" && token.type !== "keyword" && token.type !== "string") {
-                return false;
+            if (token.type !== 'identifier' && token.type !== 'text' && token.type !== 'keyword' && token.type !== 'string') {
+                return false
             }
 
-            var name = token.value.trim();
+            var name = token.value.trim()
 
             for (var i = index - 1; i >= 0; i--) {
-                token = tokens[i];
-                if (token.type !== "identifier" && token.type !== "text") {
-                    break;
+                token = tokens[i]
+                if (token.type !== 'identifier' && token.type !== 'text') {
+                    break
                 }
-                var part = token.value.trim();
+                var part = token.value.trim()
                 if (part.length === 0) {
-                    break;
+                    break
                 }
 
-                name = part + name;
+                name = part + name
             }
 
             if (name.length === 0) {
-                return false;
+                return false
             }
 
             /* var className = TRuntime.getTObjectClassName(name);
             var methods = TEnvironment.getClassMethods(className);*/
-            var methods = TRuntime.getTObjectTranslatedMethods(name);
-            var methodNames = Object.keys(methods);
-            methodNames = TUtils.sortArray(methodNames);
+            var methods = TRuntime.getTObjectTranslatedMethods(name)
+            var methodNames = Object.keys(methods)
+            methodNames = TUtils.sortArray(methodNames)
 
-            var completions = [];
+            var completions = []
             for (var j = 0; j < methodNames.length; j++) {
                 completions.push({
                     caption: methodNames[j],
                     value: methods[methodNames[j]]
-                });
+                })
             }
-            callback(null, completions);
+            callback(null, completions)
         }
-    };
+    }
 
     var dotCommand = {
-        name: "methodHelper",
+        name: 'methodHelper',
         bindKey: { win: '.', mac: '.' },
         exec: function(editor) {
-            triggerPopup = true;
-            return false; // let default event perform
+            triggerPopup = true
+            return false // let default event perform
         },
         readOnly: true // false if this command should not apply in readOnly mode
-    };
+    }
 
     var backspaceCommand = {
-        name: "methodHelper2",
+        name: 'methodHelper2',
         bindKey: { win: 'Backspace', mac: 'Backspace' },
         exec: function(editor) {
-            var cursor = editor.selection.getCursor();
-            var token = editor.getSession().getTokenAt(cursor.row, cursor.column - 1);
-            if (token !== null && token.type === "punctuation.operator" && token.value === ".") {
-                triggerPopup = true;
+            var cursor = editor.selection.getCursor()
+            var token = editor.getSession().getTokenAt(cursor.row, cursor.column - 1)
+            if (token !== null && token.type === 'punctuation.operator' && token.value === '.') {
+                triggerPopup = true
             }
-            return false;
+            return false
         },
         readOnly: true // false if this command should not apply in readOnly mode
-    };
+    }
     //        var classCommand = {
     //            name: "classHelper",
     //            bindKey: {win: 'Space', mac: 'Space'},

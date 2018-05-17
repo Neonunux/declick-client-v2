@@ -12,76 +12,76 @@ import TUtils from '@/utils/TUtils'
  * @exports Platform
  */
 var Platform = function() {
-    this.gObject = new this.gClass();
-    this._setLocation(0, 0);
-    this.baseTile="";
-    this.tiles = [];
-    this.rows = [];
-    this.nbCols = 0;
-    this.nbRows = 0;
-    this.resources = new ResourceManager();
-    this.built = false;
-    this.entranceLocation = false;
-    this.exitLocations = false;
-    this.counters = [0];
-    TRuntime.addGraphicalObject(this, false);
-    var g = TRuntime.getGraphics().getInstance();
-    g.stage().collisionLayer(this.gObject);
-    Platform.instances.push(this);
-    for (var i=0;i<Platform.registered.length;i++) {
-        var object = Platform.registered[i];
-        object._addPlatform(this);
+    this.gObject = new this.gClass()
+    this._setLocation(0, 0)
+    this.baseTile = ''
+    this.tiles = []
+    this.rows = []
+    this.nbCols = 0
+    this.nbRows = 0
+    this.resources = new ResourceManager()
+    this.built = false
+    this.entranceLocation = false
+    this.exitLocations = false
+    this.counters = [0]
+    TRuntime.addGraphicalObject(this, false)
+    var g = TRuntime.getGraphics().getInstance()
+    g.stage().collisionLayer(this.gObject)
+    Platform.instances.push(this)
+    for (var i = 0;i < Platform.registered.length;i++) {
+        var object = Platform.registered[i]
+        object._addPlatform(this)
     }
-    this.addTile("wall.png", this.getResource("wall.png"));
-    this.addTile("brick.png", this.getResource("brick.png"));
-    this.addTile("entrance.png", this.getResource("entrance.png"));
-    this.addTile("exit.png", this.getResource("exit.png"));
-    this.setCollidableTile(Platform.ENTRANCE, false);
-    this.setCollidableTile(Platform.EXIT, false);
-    this.hasDefaultSettings = true;
-};
+    this.addTile('wall.png', this.getResource('wall.png'))
+    this.addTile('brick.png', this.getResource('brick.png'))
+    this.addTile('entrance.png', this.getResource('entrance.png'))
+    this.addTile('exit.png', this.getResource('exit.png'))
+    this.setCollidableTile(Platform.ENTRANCE, false)
+    this.setCollidableTile(Platform.EXIT, false)
+    this.hasDefaultSettings = true
+}
 
-Platform.prototype = Object.create(TGraphicalObject.prototype);
-Platform.prototype.constructor = Platform;
-Platform.prototype.className = "Platform";
-Platform.instances = [];
-Platform.registered = [];
+Platform.prototype = Object.create(TGraphicalObject.prototype)
+Platform.prototype.constructor = Platform
+Platform.prototype.className = 'Platform'
+Platform.instances = []
+Platform.registered = []
 
-Platform.WALL = 0x01;
-Platform.GROUND = 0x02;
-Platform.ENTRANCE = 0x03;
-Platform.EXIT = 0x04;
+Platform.WALL = 0x01
+Platform.GROUND = 0x02
+Platform.ENTRANCE = 0x03
+Platform.EXIT = 0x04
 
-var graphics = Platform.prototype.graphics;
+var graphics = Platform.prototype.graphics
 
 Platform.register =  function(object) {
-    Platform.registered.push(object);
-    for (var i=0;i<Platform.instances.length; i++) {
-        var platform = Platform.instances[i];
-        object._addPlatform(platform);
+    Platform.registered.push(object)
+    for (var i = 0;i < Platform.instances.length; i++) {
+        var platform = Platform.instances[i]
+        object._addPlatform(platform)
     }
-};
+}
 
 Platform.unregister =  function(object) {
-    var index = Platform.registered.indexOf(object);
+    var index = Platform.registered.indexOf(object)
     if (index > -1) {
-        Platform.registered.splice(index, 1);
+        Platform.registered.splice(index, 1)
     }
-};
+}
 
 // TODO: Correct this. It's a hack that works if there is only 1 answer
 // callback.
 Platform.ask = function (source, question) {
     for (var index = 0; index < Platform.registered.length; index++) {
-        var object = Platform.registered[index];
+        var object = Platform.registered[index]
         if (object.className === 'Girl') {
-            var commands = object.getGObject().askCommands;
-            commands.executeCommands({'parameters': [source, question]}, true);
+            var commands = object.getGObject().askCommands
+            commands.executeCommands({'parameters': [source, question]}, true)
         }
     }
-};
+}
 
-var TSpriteSheet = graphics.addClass("SpriteSheet", "TSpriteSheet", {
+var TSpriteSheet = graphics.addClass('SpriteSheet', 'TSpriteSheet', {
     init: function(img, options) {
         TUtils.extend(this, {
             name: name,
@@ -96,36 +96,36 @@ var TSpriteSheet = graphics.addClass("SpriteSheet", "TSpriteSheet", {
             spacingY: 0,
             currentRow: 0,
             frameProperties: {}
-        });
+        })
         if (options) {
-            TUtils.extend(this,options);
+            TUtils.extend(this,options)
         }
         // fix for old tilew instead of tileW
         if (this.tilew) {
-            this.tileW = this.tilew;
-            delete this.tilew;
+            this.tileW = this.tilew
+            delete this.tilew
         }
         if (this.tileh) {
-            this.tileH = this.tileh;
-            delete this.tileh;
+            this.tileH = this.tileh
+            delete this.tileh
         }
 
         this.cols = this.cols ||
-                    Math.floor(this.w / (this.tileW + this.spacingX));
+                    Math.floor(this.w / (this.tileW + this.spacingX))
 
-        this.frames = this.cols * (Math.ceil(this.h/(this.tileH + this.spacingY)));
+        this.frames = this.cols * (Math.ceil(this.h / (this.tileH + this.spacingY)))
         },
             draw: function(ctx, x, y, frame) {
-            if(!ctx) { ctx = Q.ctx; }
+            if(!ctx) { ctx = Q.ctx }
             ctx.drawImage(this.img,
                 this.fx(frame),this.fy(frame),
                 this.tileW, this.tileH,
                 Math.floor(x),Math.floor(y),
-                this.tileW, this.tileH);
+                this.tileW, this.tileH)
         }
-});
+})
 
-Platform.prototype.gClass = graphics.addClass("TileLayer", "TPlatform", {
+Platform.prototype.gClass = graphics.addClass('TileLayer', 'TPlatform', {
     init: function(props, defaultProps) {
         this._super(TUtils.extend({
             type: TGraphicalObject.TYPE_PLATFORM,
@@ -137,158 +137,158 @@ Platform.prototype.gClass = graphics.addClass("TileLayer", "TPlatform", {
             designMode:false,
             tiles: [[]],
             collidable: [false]
-        }, props), defaultProps);
+        }, props), defaultProps)
         if (!this.p.built) {
-            this.spriteSheet = false;
-            this.operations = [];
+            this.spriteSheet = false
+            this.operations = []
         }
     },
     build: function() {
         this.perform( function() {
-            this.init({built:true, initialized:this.p.initialized, tiles:this.p.tiles, tileW:this.p.tileW, tileH:this.p.tileH, drawBaseTile:this.p.drawBaseTile, id:this.p.id, x:this.p.x, y:this.p.y, collidable:this.p.collidable});
-            graphics.objectResized(this);
-        });
+            this.init({built:true, initialized:this.p.initialized, tiles:this.p.tiles, tileW:this.p.tileW, tileH:this.p.tileH, drawBaseTile:this.p.drawBaseTile, id:this.p.id, x:this.p.x, y:this.p.y, collidable:this.p.collidable})
+            graphics.objectResized(this)
+        })
     },
 empty: function ()
 {
-    this.sheet(new Image(), {'tileW': 40, 'tileH': 40});
-    this.p.tiles = [[]];
-    this.p.collidable = [false];
-    this.p.initialized = false;
+    this.sheet(new Image(), {'tileW': 40, 'tileH': 40})
+    this.p.tiles = [[]]
+    this.p.collidable = [false]
+    this.p.initialized = false
     if (this.p.built) {
-        this.build();
+        this.build()
     }
 },
     setStructure: function(data) {
-        this.p.tiles = data;
+        this.p.tiles = data
         if (this.p.built) {
                 // rebuild object
-            this.build();
+            this.build()
         }
         if (!this.p.initialized && this.spriteSheet !== false) {
-            this.initialized();
+            this.initialized()
         }
     },
     draw: function(context) {
         if (this.p.initialized && this.p.built) {
-            this._super(context);
+            this._super(context)
         }
     },
     sheet: function(img,options) {
         if(!img) {
-            return this.spriteSheet;
+            return this.spriteSheet
         }
-        this.spriteSheet = new TSpriteSheet(img, options);
-        this.p.tileW = this.spriteSheet.tileW;
-        this.p.tileH = this.spriteSheet.tileH;
+        this.spriteSheet = new TSpriteSheet(img, options)
+        this.p.tileW = this.spriteSheet.tileW
+        this.p.tileH = this.spriteSheet.tileH
         if (this.p.built) {
             // rebuild object
-            this.build();
+            this.build()
         }
         if (!this.p.initialized && this.p.tiles) {
-            this.initialized();
+            this.initialized()
         }
     },
     perform: function(action, parameters) {
         if (this.p.initialized) {
-            action.apply(this, parameters);
+            action.apply(this, parameters)
         } else {
-            this.operations.push([action, parameters]);
+            this.operations.push([action, parameters])
         }
     },
     initialized: function() {
-        this.p.initialized = true;
+        this.p.initialized = true
         while (this.operations.length > 0) {
-            var operation = this.operations.shift();
-            operation[0].apply(this, operation[1]);
+            var operation = this.operations.shift()
+            operation[0].apply(this, operation[1])
         }
     },
     setDimensions: function() {
-        this._super();
+        this._super()
     },
     setLocation: function(x, y) {
         this.perform(function(x, y) {
-            this.p.x = x;
-            this.p.y = y;
-        }, [x, y]);
+            this.p.x = x
+            this.p.y = y
+        }, [x, y])
     },
     getLocation: function() {
-        return {x: Math.round(this.p.x), y: Math.round(this.p.y)};
+        return {x: Math.round(this.p.x), y: Math.round(this.p.y)}
     },
     getXCenter: function() {
-        return Math.round(this.p.x+this.p.w/2);
+        return Math.round(this.p.x + this.p.w / 2)
     },
     getYCenter: function() {
-        return Math.round(this.p.y+this.p.h/2);
+        return Math.round(this.p.y + this.p.h / 2)
     },
     getX: function() {
-        return Math.round(this.p.x);
+        return Math.round(this.p.x)
     },
     getY: function() {
-        return Math.round(this.p.y);
+        return Math.round(this.p.y)
     },
     setCenterLocation: function(x, y) {
         this.perform(function(x, y) {
-            this.p.x = x - this.p.w / 2;
-            this.p.y = y - this.p.h / 2;
-        }, [x, y]);
+            this.p.x = x - this.p.w / 2
+            this.p.y = y - this.p.h / 2
+        }, [x, y])
     },
     freeze: function(value) {
     },
     drawBaseTile: function(value) {
-        this.p.drawBaseTile = value;
+        this.p.drawBaseTile = value
     },
     drawableTile: function(tileNum) {
         if (!this.p.drawBaseTile) {
-            return tileNum > 0;
+            return tileNum > 0
         }
-        return true;
+        return true
     },
     designDrag: function(touch) {
         if (this.p.designMode) {
-            this.p.dragging = true;
-            this.p.x = touch.origX + touch.dx;
-            this.p.y = touch.origY + touch.dy;
+            this.p.dragging = true
+            this.p.x = touch.origX + touch.dx
+            this.p.y = touch.origY + touch.dy
         }
     },
     designTouchEnd: function(touch) {
         if (this.p.designMode) {
-            this.p.dragging = false;
-            this.p.designCallback(this.p.x - this.p.w / 2, this.p.y - this.p.h / 2);
+            this.p.dragging = false
+            this.p.designCallback(this.p.x - this.p.w / 2, this.p.y - this.p.h / 2)
         }
     },
     getId: function() {
-        return this.p.id;
+        return this.p.id
     },
     size: function(force) {
         if(force || (!this.p.w || !this.p.h)) {
-            this.setDimensions();
+            this.setDimensions()
         }
     },
     drawBlock: function(ctx, blockX, blockY) {
         // Fixed a bug in Quintus(?): startX and startY should not hold references to p.x and p.y
         var p = this.p,
             startX = Math.floor(blockX * p.blockW),
-            startY = Math.floor(blockY * p.blockH);
+            startY = Math.floor(blockY * p.blockH)
 
         if(!this.blocks[blockY] || !this.blocks[blockY][blockX]) {
-          this.prerenderBlock(blockX,blockY);
+          this.prerenderBlock(blockX,blockY)
         }
 
         if(this.blocks[blockY]  && this.blocks[blockY][blockX]) {
-          ctx.drawImage(this.blocks[blockY][blockX],startX,startY);
+          ctx.drawImage(this.blocks[blockY][blockX],startX,startY)
         }
 },
     addCollidable:function() {
-        this.p.collidable.push(true);
+        this.p.collidable.push(true)
     },
     setCollidable: function(tileNum, value) {
-        this.p.collidable[tileNum] = value;
+        this.p.collidable[tileNum] = value
     },
     collidableTile: function(tileNum) {
-        return this.p.collidable[tileNum];
+        return this.p.collidable[tileNum]
     }
-});
+})
 
 /**
  * Set a new tile image. There can be many tiles.
@@ -297,13 +297,13 @@ empty: function ()
  * @param {String} imageName    Image's name used for tiles
  */
 Platform.prototype._addTile = function(imageName) {
-    imageName = TUtils.getString(imageName);
+    imageName = TUtils.getString(imageName)
     try {
-        this.addTile(imageName, TEnvironment.getProjectResource(imageName));
+        this.addTile(imageName, TEnvironment.getProjectResource(imageName))
     } catch (e) {
-        throw new Error(this.getMessage("file not found", name));
+        throw new Error(this.getMessage('file not found', name))
     }
-};
+}
 
 /**
  * Set a new tile image. There can be many tiles.
@@ -313,45 +313,45 @@ Platform.prototype._addTile = function(imageName) {
  * @param {String} path    path to image
  */
 Platform.prototype.addTile = function(imageName, imagePath) {
-    var self = this;
-    this.tiles.push(imageName);
-    this.counters.push(0);
-    this.gObject.addCollidable();
+    var self = this
+    this.tiles.push(imageName)
+    this.counters.push(0)
+    this.gObject.addCollidable()
     if (this.resources.has(imageName)) {
         if (this.built) {
-            this.buildSheet();
+            this.buildSheet()
         }
     } else {
         this.resources.add(imageName, imagePath, function() {
             if (self.built) {
                 // build sheet only if object already built
-                self.buildSheet();
+                self.buildSheet()
             }
-        });
+        })
     }
-};
+}
 
 Platform.prototype._initialize = function () {
-    this.baseTile="";
-        this.rows = [];
-        this.nbCols = 0;
-        this.nbRows = 0;
-    this.removeEntranceLocation();
-    this.removeExitLocations();
-        this.counters = [0];
-    this.gObject.empty();
-        this.tiles = [];
-    this.built = false;
-    this.hasDefaultSettings = false;
-};
+    this.baseTile = ''
+        this.rows = []
+        this.nbCols = 0
+        this.nbRows = 0
+    this.removeEntranceLocation()
+    this.removeExitLocations()
+        this.counters = [0]
+    this.gObject.empty()
+        this.tiles = []
+    this.built = false
+    this.hasDefaultSettings = false
+}
 
 Platform.prototype._setCollidableTile = function(number, value) {
-    this.setCollidableTile(number, value);
-};
+    this.setCollidableTile(number, value)
+}
 
 Platform.prototype.setCollidableTile = function(number, value) {
-    this.gObject.setCollidable(number, value);
-};
+    this.gObject.setCollidable(number, value)
+}
 
 /**
  * Set the background image. There is only one base tile.
@@ -359,27 +359,27 @@ Platform.prototype.setCollidableTile = function(number, value) {
  * @param {String} imageName    Image's name used for background
  */
 Platform.prototype._setBaseTile = function(imageName) {
-    imageName = TUtils.getString(imageName);
+    imageName = TUtils.getString(imageName)
     try {
-        this.baseTile = imageName;
-        var asset = TEnvironment.getProjectResource(imageName);
-        var self = this;
+        this.baseTile = imageName
+        var asset = TEnvironment.getProjectResource(imageName)
+        var self = this
         this.resources.add(imageName, asset, function() {
-            self.gObject.drawBaseTile(true);
+            self.gObject.drawBaseTile(true)
             if (self.built) {
                 // build sheet only if object already built
-                self.buildSheet();
+                self.buildSheet()
             }
-        });
+        })
     } catch (e) {
-        throw new Error(this.getMessage("file not found", imageName));
+        throw new Error(this.getMessage('file not found', imageName))
     }
-};
+}
 
 
 Platform.prototype._addTiles = function(/* tile, ... */) {
-    this._addRow.apply(this, arguments);
-};
+    this._addRow.apply(this, arguments)
+}
 
 /**
  * Add a new row, at the end of the structure.
@@ -388,36 +388,36 @@ Platform.prototype._addTiles = function(/* tile, ... */) {
  * @param {Number[]} row
  */
 Platform.prototype._addRow = function() {
-    var row;
+    var row
     if (arguments.length === 1 && TUtils.checkArray(arguments[0])) {
-        row = arguments[0];
+        row = arguments[0]
     } else {
-        row = arguments;
+        row = arguments
     }
 
     if (this.nbCols === 0 && this.nbRows === 0) {
-        this.nbCols = row.length;
+        this.nbCols = row.length
     }
     if (row.length < this.nbCols) {
         // Fill row with 0
-        for (var i = row.length; i< this.nbCols; i++) {
-            row.push(0);
+        for (var i = row.length; i < this.nbCols; i++) {
+            row.push(0)
         }
-    } else if (row.length>this.nbCols) {
+    } else if (row.length > this.nbCols) {
         // truncate row
-        row.splice(this.nbCols, row.length);
+        row.splice(this.nbCols, row.length)
     }
     for (var index = 0; index < row.length; index++) {
-        this.notifyTileChange(index, this.rows.length, row[index]);
+        this.notifyTileChange(index, this.rows.length, row[index])
     }
-    this.rows.push(row);
+    this.rows.push(row)
     // update counters
-    for (var j=0;j<row.length;j++) {
-        this.counters[row[j]]++;
+    for (var j = 0;j < row.length;j++) {
+        this.counters[row[j]]++
     }
-    this.nbRows++;
-    this.buildStructure();
-};
+    this.nbRows++
+    this.buildStructure()
+}
 
 /**
  * Add a new column, at the end of the structure.
@@ -426,24 +426,24 @@ Platform.prototype._addRow = function() {
  * @param {Number[]} col
  */
 Platform.prototype._addColumn = function(col) {
-    col = TUtils.getArray(col);
+    col = TUtils.getArray(col)
     if (this.nbCols === 0 && this.nbRows === 0) {
-        this.nbRows = col.length;
+        this.nbRows = col.length
     }
-    for (var i = 0; i< this.nbRows; i++) {
-        if (i<col.length) {
-    this.notifyTileChange(this.rows[i].length, i, col[i]);
-            this.rows[i].push(col[i]);
-            this.counters[col[i]]++;
+    for (var i = 0; i < this.nbRows; i++) {
+        if (i < col.length) {
+    this.notifyTileChange(this.rows[i].length, i, col[i])
+            this.rows[i].push(col[i])
+            this.counters[col[i]]++
         } else {
-    this.notifyTileChange(this.rows[i].length, i, 0);
-            this.rows[i].push(0);
-            this.counters[0]++;
+    this.notifyTileChange(this.rows[i].length, i, 0)
+            this.rows[i].push(0)
+            this.counters[0]++
         }
     }
-    this.nbCols++;
-    this.buildStructure();
-};
+    this.nbCols++
+    this.buildStructure()
+}
 
 /**
  * Create a new structure from a 2D matrix.
@@ -451,91 +451,91 @@ Platform.prototype._addColumn = function(col) {
  * @param {Number[][]} structure
  */
 Platform.prototype._loadStructure = function(structure) {
-    var newRows = [],i;
+    var newRows = [],i
     if (TUtils.checkArray(structure)) {
         if (!TUtils.checkArray(structure[0])) {
-            throw new Error(this.getMessage("structure incorrect"));
+            throw new Error(this.getMessage('structure incorrect'))
         }
-        var newNbCols = structure[0].length;
-        var tileNumber;
+        var newNbCols = structure[0].length
+        var tileNumber
         // init counters
-        for (i=0; i<this.counters.length; i++) {
-            this.counters[i]=0;
+        for (i = 0; i < this.counters.length; i++) {
+            this.counters[i] = 0
         }
-        for (i=0; i<structure.length; i++) {
-            newRows[i] = [];
-            for (var j = 0; j<newNbCols; j++) {
-                if (j<structure[i].length) {
-                    tileNumber = structure[i][j];
-        this.notifyTileChange(j, i, tileNumber);
-                    newRows[i][j] = tileNumber;
-                    this.counters[tileNumber]++;
+        for (i = 0; i < structure.length; i++) {
+            newRows[i] = []
+            for (var j = 0; j < newNbCols; j++) {
+                if (j < structure[i].length) {
+                    tileNumber = structure[i][j]
+        this.notifyTileChange(j, i, tileNumber)
+                    newRows[i][j] = tileNumber
+                    this.counters[tileNumber]++
                 } else {
                     // row too short: fill with 0
-                    newRows[i][j] = 0;
-                    this.counters[0]++;
+                    newRows[i][j] = 0
+                    this.counters[0]++
                 }
             }
         }
-    this.removeEntranceLocation();
-    this.removeExitLocations();
-        this.rows = newRows;
-        this.nbRows = structure.length;
-        this.nbCols = newNbCols;
-        this.buildStructure();
+    this.removeEntranceLocation()
+    this.removeExitLocations()
+        this.rows = newRows
+        this.nbRows = structure.length
+        this.nbCols = newNbCols
+        this.buildStructure()
     } else {
         //TODO: offer to load structure from file as well (if structure is string)
-        throw new Error(this.getMessage("structure incorrect"));
+        throw new Error(this.getMessage('structure incorrect'))
     }
-};
+}
 
 Platform.prototype._compareStructure = function (comparison) {
-    var a = comparison;
-    var b = this.gObject.p.tiles;
+    var a = comparison
+    var b = this.gObject.p.tiles
     if (a.length !== b.length) {
-        return false;
+        return false
     }
     for (var y = 0; y < a.length; y++) {
-        var ya = a[y];
-        var yb = b[y];
+        var ya = a[y]
+        var yb = b[y]
         if (ya.length !== yb.length) {
-            return false;
+            return false
         }
         for (var x = 0; x < ya.length; x++) {
-            xa = ya[x];
-            xb = yb[x];
+            xa = ya[x]
+            xb = yb[x]
             if (xa !== xb) {
-                return false;
+                return false
             }
         }
     }
-    return true;
-};
+    return true
+}
 
 /**
  * Returns the 2D matrix.
  * @returns {Integer[][]}
  */
 Platform.prototype._getStructure = function() {
-    return (this.gObject.p.tiles);
-};
+    return (this.gObject.p.tiles)
+}
 
 Platform.prototype._placeTile = function(x, y, number) {
-    x = TUtils.getInteger(x);
-    y = TUtils.getInteger(y);
+    x = TUtils.getInteger(x)
+    y = TUtils.getInteger(y)
     if (typeof number !== 'undefined') {
-        number = TUtils.getInteger(number);
+        number = TUtils.getInteger(number)
     } else {
-        number = 1;
+        number = 1
     }
-    this.setTile(x, y, number);
-};
+    this.setTile(x, y, number)
+}
 
 Platform.prototype._removeTile = function(x, y) {
-    x = TUtils.getInteger(x);
-    y = TUtils.getInteger(y);
-    this.setTile(x, y, 0);
-};
+    x = TUtils.getInteger(x)
+    y = TUtils.getInteger(y)
+    this.setTile(x, y, 0)
+}
 
 /**
  * Change the value of the tile [x,y] in structure to the value "number".
@@ -544,110 +544,110 @@ Platform.prototype._removeTile = function(x, y) {
  * @param {Number} number
  */
 Platform.prototype._setTile = function(x, y, number) {
-    this._placeTile(x, y, number);
-};
+    this._placeTile(x, y, number)
+}
 
 Platform.prototype.setTile = function (x, y, number) {
-    var i,j;
-    if (x<0) {
-        throw new Error(this.getMessage("x value incorrect", x));
+    var i,j
+    if (x < 0) {
+        throw new Error(this.getMessage('x value incorrect', x))
     }
-    if (y<0) {
-        throw new Error(this.getMessage("y value incorrect", y));
+    if (y < 0) {
+        throw new Error(this.getMessage('y value incorrect', y))
     }
-    if (number<0 || number > this.tiles.length) {
+    if (number < 0 || number > this.tiles.length) {
         // tile.length+1 to take base block (#0) into account
-        throw new Error(this.getMessage("tile number incorrect", number));
+        throw new Error(this.getMessage('tile number incorrect', number))
     }
-    if (y>=this.nbRows) {
+    if (y >= this.nbRows) {
         // rows have to be created
-        for (i=this.nbRows; i<=y; i++) {
-            this.rows[i] = [];
-            for (j=0; j<this.nbCols; j++) {
-               this.rows[i].push(0);
-               this.counters[0]++;
+        for (i = this.nbRows; i <= y; i++) {
+            this.rows[i] = []
+            for (j = 0; j < this.nbCols; j++) {
+               this.rows[i].push(0)
+               this.counters[0]++
             }
         }
-        this.nbRows = y+1;
+        this.nbRows = y + 1
     }
-    if (x>=this.nbCols) {
+    if (x >= this.nbCols) {
         // cols have to be created
-        for (i=0; i< this.nbRows; i++) {
-            for (j = this.nbCols; j<=x; j++) {
-                this.rows[i].push(0);
-                this.counters[0]++;
+        for (i = 0; i < this.nbRows; i++) {
+            for (j = this.nbCols; j <= x; j++) {
+                this.rows[i].push(0)
+                this.counters[0]++
             }
         }
-        this.nbCols = x+1;
+        this.nbCols = x + 1
     }
     // update counter of preceding tile
-    this.counters[this.rows[y][x]]--;
-    this.notifyTileChange(x, y, number);
-    this.rows[y][x] = number;
-    this.counters[number]++;
-    this.buildStructure();
-};
+    this.counters[this.rows[y][x]]--
+    this.notifyTileChange(x, y, number)
+    this.rows[y][x] = number
+    this.counters[number]++
+    this.buildStructure()
+}
 
 /**
  * Build Platform.
  */
 Platform.prototype._build = function() {
-    this.gObject.build();
-    this.buildSheet();
-    this.built = true;
-};
+    this.gObject.build()
+    this.buildSheet()
+    this.built = true
+}
 
 /**
  * Loads resources and draws Platform.
  */
 Platform.prototype.buildSheet = function() {
-    var tile;
+    var tile
     if (this.tiles.length === 0) {
-        return;
+        return
     }
-    var tile0 = this.resources.get(this.tiles[0]);
+    var tile0 = this.resources.get(this.tiles[0])
     if (!tile0) {
         // resource not already loaded: exit
-        return;
+        return
     }
-    var tileW = tile0.width;
-    var tileH = tile0.height;
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
-    canvas.width = tileW*(this.tiles.length+1);
-    canvas.height = tileH;
-    if (this.baseTile !== "") {
-        tile = this.resources.get(this.baseTile);
+    var tileW = tile0.width
+    var tileH = tile0.height
+    var canvas = document.createElement('canvas')
+    var ctx = canvas.getContext('2d')
+    canvas.width = tileW * (this.tiles.length + 1)
+    canvas.height = tileH
+    if (this.baseTile !== '') {
+        tile = this.resources.get(this.baseTile)
         if (!tile) {
             // resource not already loaded: exit
-            return;
+            return
         }
-        ctx.drawImage(tile, 0, 0);
+        ctx.drawImage(tile, 0, 0)
     }
-    for (var i =0; i< this.tiles.length;i++) {
-        tile = this.resources.get(this.tiles[i]);
+    for (var i = 0; i < this.tiles.length;i++) {
+        tile = this.resources.get(this.tiles[i])
         if (!tile) {
             // resource not already loaded: exit
-            return;
+            return
         }
-        ctx.drawImage(tile, tileW*(i+1), 0);
+        ctx.drawImage(tile, tileW * (i + 1), 0)
     }
-    var newImage = new Image();
-    var self = this;
+    var newImage = new Image()
+    var self = this
     newImage.onload = function() {
         //self.sheet = newImage;
-        self.gObject.sheet(newImage, {'tileW':tileW, 'tileH':tileH});
-    };
+        self.gObject.sheet(newImage, {'tileW':tileW, 'tileH':tileH})
+    }
     // start loading
-    newImage.src = canvas.toDataURL();
-};
+    newImage.src = canvas.toDataURL()
+}
 
 /**
  * Build structure.
  */
 Platform.prototype.buildStructure = function() {
-    this.gObject.setStructure(this.rows);
-};
+    this.gObject.setStructure(this.rows)
+}
 
 /**
  * Returns Platform is ready or not.
@@ -658,97 +658,97 @@ Platform.prototype.buildStructure = function() {
  */
 Platform.prototype.isReady = function(callback, args) {
     if (this.gObject.p.initialized) {
-        return true;
+        return true
     } else {
         if (typeof callback !== 'undefined') {
-            this.gObject.perform(callback, args);
+            this.gObject.perform(callback, args)
         }
-        return false;
+        return false
     }
-};
+}
 
 Platform.prototype.notifyTileChange = function (x, y, identifier) {
     if (this.entranceLocation !== false && this.entranceLocation[0] === x && this.entranceLocation[1] === y) {
-        this.removeEntranceLocation();
+        this.removeEntranceLocation()
     } else if (this.exitLocations !== false) {
-        this.removeExitLocation(x, y);
+        this.removeExitLocation(x, y)
     }
     if (this.hasDefaultSettings) {
         if (identifier === Platform.ENTRANCE) {
-            this.setEntranceLocation(x, y);
+            this.setEntranceLocation(x, y)
         } else if (identifier === Platform.EXIT) {
-            this.addExitLocation(x, y);
+            this.addExitLocation(x, y)
         }
     }
-};
+}
 
 Platform.prototype.getEntranceLocation = function() {
-    return this.entranceLocation;
-};
+    return this.entranceLocation
+}
 
 Platform.prototype.removeEntranceLocation = function () {
     if (this.entranceLocation === false) {
-        return;
+        return
     }
-    var x = this.entranceLocation[0];
-    var y = this.entranceLocation[1];
-    for (var i=0;i<Platform.registered.length;i++) {
-        var object = Platform.registered[i];
-        object.removeEntranceLocation();
+    var x = this.entranceLocation[0]
+    var y = this.entranceLocation[1]
+    for (var i = 0;i < Platform.registered.length;i++) {
+        var object = Platform.registered[i]
+        object.removeEntranceLocation()
     }
-    this.entranceLocation = false;
-};
+    this.entranceLocation = false
+}
 
 Platform.prototype.setEntranceLocation = function(x,y) {
-    this.entranceLocation = [x,y];
+    this.entranceLocation = [x,y]
     // warn every robots registered that entrance has been added
-    for (var i=0;i<Platform.registered.length;i++) {
-        var object = Platform.registered[i];
-        object.setEntranceLocation(x,y);
+    for (var i = 0;i < Platform.registered.length;i++) {
+        var object = Platform.registered[i]
+        object.setEntranceLocation(x,y)
     }
-};
+}
 
 Platform.prototype.getExitLocations = function() {
-    return this.exitLocations;
-};
+    return this.exitLocations
+}
 
 Platform.prototype.removeExitLocations = function () {
     if (this.exitLocations === false) {
-        return;
+        return
     }
-    var exitLocations = this.exitLocations.slice();
+    var exitLocations = this.exitLocations.slice()
     for (var index = 0; index < exitLocations.length; index++) {
-        var location = exitLocations[index];
-        this.removeExitLocation(location[0], location[1]);
+        var location = exitLocations[index]
+        this.removeExitLocation(location[0], location[1])
     }
-    this.exitLocations = false;
-};
+    this.exitLocations = false
+}
 
 Platform.prototype.removeExitLocation = function (x, y) {
     for (var index = this.exitLocations.length - 1; index >= 0; index--) {
-        var exitLocation = this.exitLocations[index];
+        var exitLocation = this.exitLocations[index]
         if (exitLocation[0] === x && exitLocation[1] === y) {
-            this.exitLocations.splice(index, 1);
-            break;
+            this.exitLocations.splice(index, 1)
+            break
         }
     }
-    for (var i=0;i<Platform.registered.length;i++) {
-        var object = Platform.registered[i];
-        object.removeExitLocation(x,y);
+    for (var i = 0;i < Platform.registered.length;i++) {
+        var object = Platform.registered[i]
+        object.removeExitLocation(x,y)
     }
-};
+}
 
 Platform.prototype.addExitLocation = function(x,y) {
     if (this.exitLocations === false) {
-        this.exitLocations = [];
+        this.exitLocations = []
     }
-    this.exitLocations.push([x,y]);
+    this.exitLocations.push([x,y])
     // warn every robots registered that entrance has been added
-    for (var i=0;i<Platform.registered.length;i++) {
-        var object = Platform.registered[i];
-        object.addExitLocation(x,y);
+    for (var i = 0;i < Platform.registered.length;i++) {
+        var object = Platform.registered[i]
+        object.addExitLocation(x,y)
     }
-};
+}
 
 /**
  * Sets a row, starting from the given location.
@@ -757,69 +757,69 @@ Platform.prototype.addExitLocation = function(x,y) {
  * @param {Number[]} row
  */
 Platform.prototype._setRow = function(x, y, row) {
-    var i,j;
+    var i,j
     if (this.nbCols === 0 && this.nbRows === 0) {
-        this.nbCols = row.length+x;
+        this.nbCols = row.length + x
     }
-    if (y>=this.nbRows) {
+    if (y >= this.nbRows) {
         // rows have to be created
-        for (i=this.nbRows; i<=y; i++) {
-            this.rows[i] = [];
-            for (j=0; j<this.nbCols; j++) {
-               this.rows[i].push(0);
-               this.counters[0]++;
+        for (i = this.nbRows; i <= y; i++) {
+            this.rows[i] = []
+            for (j = 0; j < this.nbCols; j++) {
+               this.rows[i].push(0)
+               this.counters[0]++
             }
         }
-        this.nbRows = y+1;
+        this.nbRows = y + 1
     }
-    var newNbCols = row.length+x;
-    if (newNbCols>this.nbCols) {
+    var newNbCols = row.length + x
+    if (newNbCols > this.nbCols) {
         // cols have to be created
-        for (i=0; i< this.nbRows; i++) {
-            for (j = this.nbCols; j<newNbCols; j++) {
-                this.rows[i].push(0);
-                this.counters[0]++;
+        for (i = 0; i < this.nbRows; i++) {
+            for (j = this.nbCols; j < newNbCols; j++) {
+                this.rows[i].push(0)
+                this.counters[0]++
             }
         }
-        this.nbCols = newNbCols;
+        this.nbCols = newNbCols
     }
 
-    var previous;
-    for (i=0; i<row.length; i++) {
-        previous = this.rows[y][x+i];
-        this.counters[previous]--;
-    this.notifyTileChange(x + i, y, row[i]);
-        this.rows[y][x+i] = row[i];
-        this.counters[row[i]]++;
+    var previous
+    for (i = 0; i < row.length; i++) {
+        previous = this.rows[y][x + i]
+        this.counters[previous]--
+    this.notifyTileChange(x + i, y, row[i])
+        this.rows[y][x + i] = row[i]
+        this.counters[row[i]]++
     }
-    this.buildStructure();
-};
+    this.buildStructure()
+}
 
 Platform.prototype._getTileCount = function(tileNumber) {
     if (typeof this.counters[tileNumber] !== 'undefined') {
-        return this.counters[tileNumber];
+        return this.counters[tileNumber]
     }
-    return 0;
-};
+    return 0
+}
 
 Platform.prototype.getTilesLength = function() {
-    return this.tiles.length;
-};
+    return this.tiles.length
+}
 
 
 /**
  * Delete Platform.
  */
 Platform.prototype.deleteObject = function() {
-    var g = TRuntime.getGraphics().getInstance();
-    g.stage().removeCollisionLayer(this.gObject);
+    var g = TRuntime.getGraphics().getInstance()
+    g.stage().removeCollisionLayer(this.gObject)
     // remove object from instances list
-    var index = Platform.instances.indexOf(this);
+    var index = Platform.instances.indexOf(this)
     if (index > -1) {
-        Platform.instances.splice(index, 1);
+        Platform.instances.splice(index, 1)
     }
-    TGraphicalObject.prototype.deleteObject.call(this);
-};
+    TGraphicalObject.prototype.deleteObject.call(this)
+}
 
 
 export default Platform

@@ -7,7 +7,7 @@ import TEnvironment from '@/env/TEnvironment'
  * @exports TUtils
  */
 var TUtils = function() {
-    var QUOTE_DELIMITER = '#';
+    var QUOTE_DELIMITER = '#'
     var defaultDiacriticsRemovalap = [
         { 'base': 'A', 'letters': 'AⒶＡÀÁÂẦẤẪẨÃĀĂẰẮẴẲȦǠÄǞẢÅǺǍȀȂẠẬẶḀĄȺⱯ' },
         { 'base': 'AA', 'letters': 'Ꜳ' },
@@ -93,115 +93,115 @@ var TUtils = function() {
         { 'base': 'x', 'letters': 'xⓧｘẋẍ' },
         { 'base': 'y', 'letters': 'yⓨｙỳýŷỹȳẏÿỷẙỵƴɏỿ' },
         { 'base': 'z', 'letters': 'zⓩｚźẑżžẓẕƶȥɀⱬꝣ' }
-    ];
-    var diacriticsMap = {};
+    ]
+    var diacriticsMap = {}
     for (var i = 0; i < defaultDiacriticsRemovalap.length; i++) {
-        var letters = defaultDiacriticsRemovalap[i].letters.split("");
+        var letters = defaultDiacriticsRemovalap[i].letters.split('')
         for (var j = 0; j < letters.length; j++) {
-            diacriticsMap[letters[j]] = defaultDiacriticsRemovalap[i].base;
+            diacriticsMap[letters[j]] = defaultDiacriticsRemovalap[i].base
         }
     }
 
     var keyCodes = {
-        "backspace": 0,
-        "tab": 9,
-        "return": 13,
-        "shift": 16,
-        "ctrl": 17,
-        "alt": 18,
-        "pausebreak": 19,
-        "capslock": 20,
-        "escape": 27,
-        " ": 32,
-        "pageup": 33,
-        "pagedown": 34,
-        "end": 35,
-        "home": 36,
-        "left": 37,
-        "up": 38,
-        "right": 39,
-        "down": 40,
-        "+": [43, 107],
-        "printscreen": 44,
-        "insert": 45,
-        "delete": 46,
-        "0": [48, 96],
-        "1": [49, 97],
-        "2": [50, 98],
-        "3": [51, 99],
-        "4": [52, 100],
-        "5": [53, 101],
-        "6": [54, 102],
-        "7": [55, 103],
-        "8": [56, 104],
-        "9": [57, 105],
-        ";": [59, 186],
-        "=": [61, 187],
-        "a": 65,
-        "b": 66,
-        "c": 67,
-        "d": 68,
-        "e": 69,
-        "f": 70,
-        "g": 71,
-        "h": 72,
-        "i": 73,
-        "j": 74,
-        "k": 75,
-        "l": 76,
-        "m": 77,
-        "n": 78,
-        "o": 79,
-        "p": 80,
-        "q": 81,
-        "r": 82,
-        "s": 83,
-        "t": 84,
-        "u": 85,
-        "v": 86,
-        "w": 87,
-        "x": 88,
-        "y": 89,
-        "z": 90,
-        "*": 106,
-        "-": [109, 189],
-        ".": [110, 190],
-        "/": [111, 191],
-        "f1": 112,
-        "f2": 113,
-        "f3": 114,
-        "f4": 115,
-        "f5": 116,
-        "f6": 117,
-        "f7": 118,
-        "f8": 119,
-        "f9": 120,
-        "f10": 121,
-        "f11": 122,
-        "f12": 123,
-        "numlock": 144,
-        "scrolllock": 145,
-        ",": 188,
-        "`": 192,
-        "[": 219,
-        "\\": 220,
-        "]": 221,
-        "'": 222
-    };
+        'backspace': 0,
+        'tab': 9,
+        'return': 13,
+        'shift': 16,
+        'ctrl': 17,
+        'alt': 18,
+        'pausebreak': 19,
+        'capslock': 20,
+        'escape': 27,
+        ' ': 32,
+        'pageup': 33,
+        'pagedown': 34,
+        'end': 35,
+        'home': 36,
+        'left': 37,
+        'up': 38,
+        'right': 39,
+        'down': 40,
+        '+': [43, 107],
+        'printscreen': 44,
+        'insert': 45,
+        'delete': 46,
+        '0': [48, 96],
+        '1': [49, 97],
+        '2': [50, 98],
+        '3': [51, 99],
+        '4': [52, 100],
+        '5': [53, 101],
+        '6': [54, 102],
+        '7': [55, 103],
+        '8': [56, 104],
+        '9': [57, 105],
+        ';': [59, 186],
+        '=': [61, 187],
+        'a': 65,
+        'b': 66,
+        'c': 67,
+        'd': 68,
+        'e': 69,
+        'f': 70,
+        'g': 71,
+        'h': 72,
+        'i': 73,
+        'j': 74,
+        'k': 75,
+        'l': 76,
+        'm': 77,
+        'n': 78,
+        'o': 79,
+        'p': 80,
+        'q': 81,
+        'r': 82,
+        's': 83,
+        't': 84,
+        'u': 85,
+        'v': 86,
+        'w': 87,
+        'x': 88,
+        'y': 89,
+        'z': 90,
+        '*': 106,
+        '-': [109, 189],
+        '.': [110, 190],
+        '/': [111, 191],
+        'f1': 112,
+        'f2': 113,
+        'f3': 114,
+        'f4': 115,
+        'f5': 116,
+        'f6': 117,
+        'f7': 118,
+        'f8': 119,
+        'f9': 120,
+        'f10': 121,
+        'f11': 122,
+        'f12': 123,
+        'numlock': 144,
+        'scrolllock': 145,
+        ',': 188,
+        '`': 192,
+        '[': 219,
+        '\\': 220,
+        ']': 221,
+        '\'': 222
+    }
 
-    var keyNamesList = Object.keys(keyCodes);
+    var keyNamesList = Object.keys(keyCodes)
 
-    var keyNames = {};
+    var keyNames = {}
     for (var i = 0; i < keyNamesList.length; i++) {
-        var name = keyNamesList[i];
-        var codes = keyCodes[name];
+        var name = keyNamesList[i]
+        var codes = keyCodes[name]
         if (!isNaN(codes)) {
             // codes is indeed a code
-            keyNames[codes] = name;
+            keyNames[codes] = name
         }
         else {
             for (var j = 0; j < codes.length; j++) {
-                keyNames[codes[j]] = name;
+                keyNames[codes[j]] = name
             }
         }
     }
@@ -234,7 +234,7 @@ var TUtils = function() {
         pink: [255, 192, 203],
         skyblue: [0, 191, 255],
         wheelorange: [255, 127, 0]
-    };
+    }
 
     /**
      * Remove all accents in str.
@@ -242,13 +242,13 @@ var TUtils = function() {
      * @returns {String}    Returns the modified string.
      */
     this.removeAccents = function(str) {
-        var letters = str.split("");
-        var newStr = "";
+        var letters = str.split('')
+        var newStr = ''
         for (var i = 0; i < letters.length; i++) {
-            newStr += letters[i] in diacriticsMap ? diacriticsMap[letters[i]] : letters[i];
+            newStr += letters[i] in diacriticsMap ? diacriticsMap[letters[i]] : letters[i]
         }
-        return newStr;
-    };
+        return newStr
+    }
 
     /**
      * Replace all {Number} in text by corresponding string in argument.
@@ -258,11 +258,11 @@ var TUtils = function() {
      * @returns {String}    Returns the modified string.
      */
     this.format = function(text) {
-        var args = Array.prototype.slice.call(arguments, 1); // Get an array of arguments w/o the first
+        var args = Array.prototype.slice.call(arguments, 1) // Get an array of arguments w/o the first
         return text.replace(/{(\d+)}/g, function(match, number) {
-            return typeof args[number] !== 'undefined' ? args[number] : match;
-        });
-    };
+            return typeof args[number] !== 'undefined' ? args[number] : match
+        })
+    }
 
     /**
      * Check if value is a Boolean.
@@ -270,8 +270,8 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.checkBoolean = function(value) {
-        return (typeof value !== 'undefined' && typeof value === 'boolean');
-    };
+        return (typeof value !== 'undefined' && typeof value === 'boolean')
+    }
 
     /**
      * Get value. If it's not a Boolean, throw an error.
@@ -280,10 +280,10 @@ var TUtils = function() {
      */
     this.getBoolean = function(value) {
         if (!this.checkBoolean(value)) {
-            throw new Error(TEnvironment.getMessage("wrong boolean", value));
+            throw new Error(TEnvironment.getMessage('wrong boolean', value))
         }
-        return value;
-    };
+        return value
+    }
 
     /**
      * Check if value is a Number.
@@ -291,8 +291,8 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.checkInteger = function(value) {
-        return (typeof value !== 'undefined' && !isNaN(value));
-    };
+        return (typeof value !== 'undefined' && !isNaN(value))
+    }
 
     /**
      * Get value. If it's not a Number, throw an error.
@@ -301,10 +301,10 @@ var TUtils = function() {
      */
     this.getInteger = function(value) {
         if (!this.checkInteger(value)) {
-            throw new Error(TEnvironment.getMessage("wrong integer", value));
+            throw new Error(TEnvironment.getMessage('wrong integer', value))
         }
-        return value;
-    };
+        return value
+    }
 
     /**
      * Check if value is a String.
@@ -312,8 +312,8 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.checkString = function(value) {
-        return (typeof value !== 'undefined' && (typeof value === 'string' || value instanceof String));
-    };
+        return (typeof value !== 'undefined' && (typeof value === 'string' || value instanceof String))
+    }
 
     /**
      * Get value. If it's not a String, throw an error.
@@ -322,10 +322,10 @@ var TUtils = function() {
      */
     this.getString = function(value) {
         if (!this.checkString(value)) {
-            throw new Error(TEnvironment.getMessage("wrong string", value));
+            throw new Error(TEnvironment.getMessage('wrong string', value))
         }
-        return value;
-    };
+        return value
+    }
 
     /**
      * Check if value is a Function.
@@ -333,8 +333,8 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.checkFunction = function(value) {
-        return (typeof value !== 'undefined' && typeof value === 'object' && typeof value.type !== 'undefined' && value.type === "function");
-    };
+        return (typeof value !== 'undefined' && typeof value === 'object' && typeof value.type !== 'undefined' && value.type === 'function')
+    }
 
     /**
      * Get value. If it's not a Function, throw an error.
@@ -343,10 +343,10 @@ var TUtils = function() {
      */
     this.getFunction = function(value) {
         if (!this.checkFunction(value)) {
-            throw new Error(TEnvironment.getMessage("wrong function", value));
+            throw new Error(TEnvironment.getMessage('wrong function', value))
         }
-        return value;
-    };
+        return value
+    }
 
     /**
      * Check if value is an Object.
@@ -354,8 +354,8 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.checkObject = function(value) {
-        return (typeof value === 'object' || this.checkFunction(value));
-    };
+        return (typeof value === 'object' || this.checkFunction(value))
+    }
 
     /**
      * Get value. If it's not an Object, throw an error.
@@ -364,10 +364,10 @@ var TUtils = function() {
      */
     this.getObject = function(value) {
         if (!this.checkObject(value)) {
-            throw new Error(TEnvironment.getMessage("wrong object", value));
+            throw new Error(TEnvironment.getMessage('wrong object', value))
         }
-        return value;
-    };
+        return value
+    }
 
     /**
      * Check if value is a Command.
@@ -375,8 +375,8 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.checkCommand = function(value) {
-        return this.checkString(value) || this.checkFunction(value);
-    };
+        return this.checkString(value) || this.checkFunction(value)
+    }
 
     /**
      * Get value. If it's not a Command, throw an error.
@@ -385,10 +385,10 @@ var TUtils = function() {
      */
     this.getCommand = function(value) {
         if (!this.checkCommand(value)) {
-            throw new Error(TEnvironment.getMessage("wrong command", value));
+            throw new Error(TEnvironment.getMessage('wrong command', value))
         }
-        return value;
-    };
+        return value
+    }
 
     /**
      * Check if value is an Array.
@@ -396,8 +396,8 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.checkArray = function(value) {
-        return (Array.isArray(value));
-    };
+        return (Array.isArray(value))
+    }
 
     /**
      * Get value. If it's not an Array, throw an error.
@@ -406,10 +406,10 @@ var TUtils = function() {
      */
     this.getArray = function(value) {
         if (!this.checkArray(value)) {
-            throw new Error(TEnvironment.getMessage("wrong array", value));
+            throw new Error(TEnvironment.getMessage('wrong array', value))
         }
-        return value;
-    };
+        return value
+    }
 
     /**
      * Get the keyCode of value.
@@ -419,22 +419,22 @@ var TUtils = function() {
     this.getkeyCode = function(value) {
         if (this.checkString(value)) {
             if (typeof keyCodes[value] !== 'undefined') {
-                return keyCodes[value];
+                return keyCodes[value]
             }
         }
-        return false;
-    };
+        return false
+    }
 
     this.getkeyName = function(value) {
         if (typeof keyNames[value] !== 'undefined') {
-            return keyNames[value];
+            return keyNames[value]
         }
-        return false;
-    };
+        return false
+    }
 
     this.getKeyNames = function() {
-        return keyNamesList;
-    };
+        return keyNamesList
+    }
 
     /**
      * Get a color from a string or from 3 integers.
@@ -447,22 +447,22 @@ var TUtils = function() {
      */
     this.getColor = function(red, green, blue) {
         if (this.checkString(red)) {
-            var translated = TEnvironment.getMessage("color-" + red);
+            var translated = TEnvironment.getMessage('color-' + red)
             if (typeof colors[translated] !== 'undefined') {
-                return colors[translated];
+                return colors[translated]
             }
             else {
-                throw new Error(TEnvironment.getMessage("wrong color string", red));
+                throw new Error(TEnvironment.getMessage('wrong color string', red))
             }
         }
         else if (this.checkInteger(red) && this.checkInteger(green) & this.checkInteger(blue)) {
-            red = Math.min(Math.abs(red), 255);
-            green = Math.min(Math.abs(green), 255);
-            blue = Math.min(Math.abs(blue), 255);
-            return [red, green, blue];
+            red = Math.min(Math.abs(red), 255)
+            green = Math.min(Math.abs(green), 255)
+            blue = Math.min(Math.abs(blue), 255)
+            return [red, green, blue]
         }
-        throw new Error(TEnvironment.getMessage("wrong color"));
-    };
+        throw new Error(TEnvironment.getMessage('wrong color'))
+    }
 
     /**
      * Convert a RGB component color to Hexadecimal component color.
@@ -470,9 +470,9 @@ var TUtils = function() {
      * @returns {String}    Component in Hexadecimal
      */
     this.componentToHex = function(color) {
-        var hex = color.toString(16);
-        return hex.length === 1 ? "0" + hex : hex;
-    };
+        var hex = color.toString(16)
+        return hex.length === 1 ? '0' + hex : hex
+    }
 
     /**
      * Convert RGB color in Hexadecimal color.
@@ -480,8 +480,8 @@ var TUtils = function() {
      * @returns {String}    Color in Hexadecimal
      */
     this.rgbToHex = function(color) {
-        return "#" + this.componentToHex(color[0]) + this.componentToHex(color[1]) + this.componentToHex(color[2]);
-    };
+        return '#' + this.componentToHex(color[0]) + this.componentToHex(color[1]) + this.componentToHex(color[2])
+    }
 
     /**
      * Convert Hexadecimal color in RGB color.
@@ -489,9 +489,9 @@ var TUtils = function() {
      * @returns {Number[]}    Color in RGB
      */
     this.hexToRgb = function(hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
-    };
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+        return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null
+    }
 
     /**
      * Reverse a color.
@@ -500,10 +500,10 @@ var TUtils = function() {
      */
     this.reverseColor = function(color) {
         var ret = []
-        ret[0] = ((color[0] > 64 && color[0] < 192) ? ((color[0] + 128) % 256) : (255 - color[0]));
-        ret[1] = ((color[1] > 64 && color[1] < 192) ? ((color[1] + 128) % 256) : (255 - color[1]));
-        ret[2] = ((color[2] > 64 && color[2] < 192) ? ((color[2] + 128) % 256) : (255 - color[2]));
-        return ret;
+        ret[0] = ((color[0] > 64 && color[0] < 192) ? ((color[0] + 128) % 256) : (255 - color[0]))
+        ret[1] = ((color[1] > 64 && color[1] < 192) ? ((color[1] + 128) % 256) : (255 - color[1]))
+        ret[2] = ((color[2] > 64 && color[2] < 192) ? ((color[2] + 128) % 256) : (255 - color[2]))
+        return ret
     }
 
     /**
@@ -513,9 +513,9 @@ var TUtils = function() {
      */
     this.sortArray = function(value) {
         return value.sort(function(a, b) {
-            return a.toLowerCase().localeCompare(b.toLowerCase());
-        });
-    };
+            return a.toLowerCase().localeCompare(b.toLowerCase())
+        })
+    }
 
     /**
      * Convert a string to Unicode.
@@ -523,12 +523,12 @@ var TUtils = function() {
      * @returns {String}    Returns the converted String.
      */
     this.toUnicode = function(text) {
-        var result = "";
+        var result = ''
         for (var i = 0; i < text.length; i++) {
-            result += "\\u" + ("000" + text.charCodeAt(i).toString(16)).substr(-4);
+            result += '\\u' + ('000' + text.charCodeAt(i).toString(16)).substr(-4)
         }
-        return result;
-    };
+        return result
+    }
 
     /**
      * Creates a String of delimiters of a given number.
@@ -538,13 +538,13 @@ var TUtils = function() {
      * @returns {String}    Returns the created string.
      */
     this.someDelimiters = function(level, value) {
-        if (typeof value === "undefined")
-            value = QUOTE_DELIMITER;
-        var result = "";
+        if (typeof value === 'undefined')
+            value = QUOTE_DELIMITER
+        var result = ''
         for (var i = 0; i < level; i++)
-            result += value;
-        return result;
-    };
+            result += value
+        return result
+    }
 
     /**
      * This method replaces quote delimiters (#) by a quotation mark (").
@@ -556,56 +556,56 @@ var TUtils = function() {
      * @returns {String}    Returns the modified string.
      */
     this.parseQuotes = function(string) {
-        var result = "";
-        var charactersTab = string.split('');
-        var delimiterEncountered = false;
-        var escapeEncountered = false;
-        var level = 0;
-        var character;
+        var result = ''
+        var charactersTab = string.split('')
+        var delimiterEncountered = false
+        var escapeEncountered = false
+        var level = 0
+        var character
         for (var i = 0; i < string.length; i++) {
-            character = charactersTab[i];
+            character = charactersTab[i]
             switch (character) {
                 case QUOTE_DELIMITER:
-                    delimiterEncountered = true;
-                    level++;
-                    break;
+                    delimiterEncountered = true
+                    level++
+                    break
                 case '\\':
-                    escapeEncountered = true;
-                    result += character;
-                    break;
+                    escapeEncountered = true
+                    result += character
+                    break
                 case '"':
                     if (delimiterEncountered) {
-                        result += this.someDelimiters(level, "\\");
-                        result += '"';
-                        delimiterEncountered = false;
-                        level = 0;
+                        result += this.someDelimiters(level, '\\')
+                        result += '"'
+                        delimiterEncountered = false
+                        level = 0
                     }
                     else if (escapeEncountered) {
                         // Since escape character was encountered before quote, this is not a level 0 quote
                         // so we do not switch "removeAccent"
-                        result += character;
-                        escapeEncountered = false;
+                        result += character
+                        escapeEncountered = false
                     }
                     else { //We have a quotation mark (") of level 0,
                         //so we stop removing accents, or we restart removing them.
-                        result += character;
+                        result += character
                     }
-                    break;
+                    break
                 default:
                     if (delimiterEncountered) {
                         // false alarm : write the delimiters to result
                         for (var j = 0; j < level; j++)
-                            result += QUOTE_DELIMITER;
-                        delimiterEncountered = false;
-                        level = 0;
+                            result += QUOTE_DELIMITER
+                        delimiterEncountered = false
+                        level = 0
                     }
-                    escapeEncountered = false;
-                    result += character;
-                    break;
+                    escapeEncountered = false
+                    result += character
+                    break
             }
         }
-        return result;
-    };
+        return result
+    }
 
     /**
      * Convert Unicode to ASCII.
@@ -615,11 +615,11 @@ var TUtils = function() {
     this.convertUnicode = function(text) {
         var result = text.replace(/\\u([0-9a-fA-F]{4})/g,
             function(whole, group1) {
-                return String.fromCharCode(parseInt(group1, 16));
+                return String.fromCharCode(parseInt(group1, 16))
             }
-        );
-        return result;
-    };
+        )
+        return result
+    }
 
     /**
      * Check if text ends with a '#' or a '\'
@@ -627,9 +627,9 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.isDelimiterEnded = function(text) {
-        var regex = new RegExp(".*[#\\\\]$", "m");
-        return regex.test(text);
-    };
+        var regex = new RegExp('.*[#\\\\]$', 'm')
+        return regex.test(text)
+    }
 
     /**
      * Check if text is a command.
@@ -637,9 +637,9 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.isACommand = function(text) {
-        var regex = new RegExp(".*[A-Za-z0-9]+\\s*.\\s*[A-Za-z0-9]+\\s*\\(\\s*$", "m");
-        return regex.test(text);
-    };
+        var regex = new RegExp('.*[A-Za-z0-9]+\\s*.\\s*[A-Za-z0-9]+\\s*\\(\\s*$', 'm')
+        return regex.test(text)
+    }
 
     /**
      * Check if text is a new instance.
@@ -647,9 +647,9 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.isNewInstanceStringed = function(text) {
-        var regex = new RegExp(".*[A-Za-z\\d]+\\s*=\\s*new\\s*[A-Za-z\\d]*\\s*\\(\\s*[\"\']$", "m");
-        return regex.test(text);
-    };
+        var regex = new RegExp('.*[A-Za-z\\d]+\\s*=\\s*new\\s*[A-Za-z\\d]*\\s*\\(\\s*["\']$', 'm')
+        return regex.test(text)
+    }
 
     /**
      * Check if text is a comparison.
@@ -657,9 +657,9 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.isComparison = function(text) {
-        var regex = new RegExp(".*[\\=!]?\\=\\s*$", "m");
-        return regex.test(text);
-    };
+        var regex = new RegExp('.*[\\=!]?\\=\\s*$', 'm')
+        return regex.test(text)
+    }
 
     /**
      * Check if text is a String. 
@@ -667,9 +667,9 @@ var TUtils = function() {
      * @returns {Boolean}
      */
     this.isStringElement = function(text) {
-        var regex = new RegExp(".*[\\+\\,]\\s*$", "m");
-        return regex.test(text);
-    };
+        var regex = new RegExp('.*[\\+\\,]\\s*$', 'm')
+        return regex.test(text)
+    }
 
     /**
      * Check if a command contains an "else".
@@ -678,13 +678,13 @@ var TUtils = function() {
      */
     this.isElsePresent = function(text) {
         //var regex = new RegExp("^.*else*$", "m");
-        var regex = new RegExp("^.*[^[[:alpha:]]]*else[^[[:alpha:]]]*.*$", "m");
+        var regex = new RegExp('^.*[^[[:alpha:]]]*else[^[[:alpha:]]]*.*$', 'm')
         //var regex  = new RegExp("^.*\\s*[^[[:alpha:]]]else[^[[:alpha:]]]*", "m");
         //^.*[^[[:alpha:]]]*else[^[[:alpha:]]]*.*$
-        console.log("Regex : " + regex.toString() + " -- Verif : " + regex.test(text) + " -- Text : " + text);
+        console.log('Regex : ' + regex.toString() + ' -- Verif : ' + regex.test(text) + ' -- Text : ' + text)
 
-        return regex.test(text);
-    };
+        return regex.test(text)
+    }
 
     /**
      * Add quote delimiter to quotes.</br>
@@ -695,23 +695,23 @@ var TUtils = function() {
      */
     this.addQuoteDelimiters = function(text) {
         try {
-            var leftPart = "";
-            var newPart = "";
-            var oldQuoteIndex = 0;
-            var newQuoteIndex = text.indexOf('\"', 0);
-            var level = 0;
+            var leftPart = ''
+            var newPart = ''
+            var oldQuoteIndex = 0
+            var newQuoteIndex = text.indexOf('"', 0)
+            var level = 0
 
             while (true) //we scan the String until we got sure there are no more quotation marks to find
             {
                 //We search from the left the next index of a quotation mark (").
                 //We stop if there is no more quotation mark (")
                 if (newQuoteIndex === -1) {
-                    leftPart += text.substring(oldQuoteIndex, text.length);
-                    return leftPart;
+                    leftPart += text.substring(oldQuoteIndex, text.length)
+                    return leftPart
                 }
                 //We add to the left part the text preceding this new quotation mark.
-                newPart = text.substring(oldQuoteIndex, newQuoteIndex);
-                leftPart += newPart;
+                newPart = text.substring(oldQuoteIndex, newQuoteIndex)
+                leftPart += newPart
                 /* Now we have to to add some sharp symbols.
                  * There are three possible cases:
                  * 1.    #" or \"     There is already a delimiter before the quotation mark. In this case, no more delimiters should be added.
@@ -732,28 +732,28 @@ var TUtils = function() {
                     (this.isNewInstanceStringed(newPart)) ||
                     (this.isComparison(newPart)) ||
                     (this.isStringElement(newPart))) {
-                    leftPart += this.someDelimiters(level, QUOTE_DELIMITER);
-                    level++;
+                    leftPart += this.someDelimiters(level, QUOTE_DELIMITER)
+                    level++
                 }
                 else if (level > 0) {
-                    level--;
-                    leftPart += this.someDelimiters(level, QUOTE_DELIMITER);
+                    level--
+                    leftPart += this.someDelimiters(level, QUOTE_DELIMITER)
                 }
                 else // (level == 0 -> abnormal case)
                 {
-                    leftPart += this.someDelimiters(level, QUOTE_DELIMITER);
-                    level++;
+                    leftPart += this.someDelimiters(level, QUOTE_DELIMITER)
+                    level++
                 }
                 //We set the old index that will let us know from where there is some text to copy.
-                oldQuoteIndex = newQuoteIndex;
-                newQuoteIndex = text.indexOf('\"', oldQuoteIndex + 1);
+                oldQuoteIndex = newQuoteIndex
+                newQuoteIndex = text.indexOf('"', oldQuoteIndex + 1)
             }
         }
         catch (e) {
-            TEnvironment.error("addQuoteDelimiters error: " + e);
-            return text;
+            TEnvironment.error('addQuoteDelimiters error: ' + e)
+            return text
         }
-    };
+    }
 
     /**
      * Add escaping slashes.
@@ -768,8 +768,8 @@ var TUtils = function() {
         replace(/\f/g, '\\f').
         replace(/\r/g, '\\r').
         replace(/'/g, '\\\'').
-        replace(/"/g, '\\"');
-    };
+        replace(/"/g, '\\"')
+    }
 
     /**
      * Get function name.
@@ -777,11 +777,11 @@ var TUtils = function() {
      * @returns {String}
      */
     this.getFunctionName = function(object) {
-        var string = object.toString();
-        string = string.substr('function '.length);
-        string = string.substr(0, string.indexOf('('));
-        return string;
-    };
+        var string = object.toString()
+        string = string.substr('function '.length)
+        string = string.substr(0, string.indexOf('('))
+        return string
+    }
 
     /**
      * Merge contents of two objects into the first object.
@@ -791,8 +791,8 @@ var TUtils = function() {
      */
     this.extend = function(dest, source) {
         // just use jQuery extend
-        return $.extend(dest, source);
-    };
+        return $.extend(dest, source)
+    }
 
     /**
      * Checks if two numbers have the same value.
@@ -802,9 +802,9 @@ var TUtils = function() {
      */
     this.equalNumbers = function(x, y) {
         if (Math.abs(x - y) < 0.0000000001) {
-            return true;
+            return true
         }
-        return false;
+        return false
     }
 }
 

@@ -10,52 +10,52 @@ import TRuntime from '@/run/TRuntime'
  * @exports TObject
  */
 function TObject() {
-    TRuntime.addObject(this);
+    TRuntime.addObject(this)
 }
 
-TObject.prototype.objectName = "";
-TObject.prototype.className = "TObject";
-TObject.prototype.objectPath = "tobject";
+TObject.prototype.objectName = ''
+TObject.prototype.className = 'TObject'
+TObject.prototype.objectPath = 'tobject'
 
 TObject.prototype.deleteObject = function() {
-    TRuntime.removeObject(this);
-};
+    TRuntime.removeObject(this)
+}
 
 TObject.prototype.getResource = function(location) {
-    return this.objectPath + "/resources/" + location;
-};
+    return this.objectPath + '/resources/' + location
+}
 
 TObject.prototype.loadJSON = function(location, callback, errorCallback) {
-    TResource.get(location, [], callback, errorCallback);
+    TResource.get(location, [], callback, errorCallback)
 }
 
 TObject.prototype.loadFile = function(location, callback, errorCallback) {
-    TResource.getPlain(location, [], callback, errorCallback);
+    TResource.getPlain(location, [], callback, errorCallback)
 }
 
 TObject.prototype.getMessage = function(code) {
     if (typeof this.constructor.messages[code] !== 'undefined') {
-        var message = this.constructor.messages[code];
+        var message = this.constructor.messages[code]
         if (arguments.length > 1) {
             // message has to be parsed
-            var elements = arguments;
+            var elements = arguments
             message = message.replace(/{(\d+)}/g, function(match, number) {
-                number = parseInt(number) + 1;
-                return typeof elements[number] !== 'undefined' ? elements[number] : match;
-            });
+                number = parseInt(number) + 1
+                return typeof elements[number] !== 'undefined' ? elements[number] : match
+            })
         }
-        return message;
+        return message
     } else {
-        return code;
+        return code
     }
-};
+}
 
 /**
  * Delete TObject.
  */
 TObject.prototype._delete = function() {
-    this.deleteObject();
-};
+    this.deleteObject()
+}
 
 /**
  * To be defined in sub-objects, so they can have actions to freeze.
@@ -63,14 +63,14 @@ TObject.prototype._delete = function() {
  */
 TObject.prototype.freeze = function(value) {
     // every object may add actions to take to freeze
-};
+}
 
 /**
  * Get a String containing "TObject " and the class of the object.
  * @returns {String}
  */
 TObject.prototype.toString = function() {
-    return "TObject " + this.className;
-};
+    return 'TObject ' + this.className
+}
 
 export default TObject

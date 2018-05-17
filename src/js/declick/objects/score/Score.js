@@ -14,25 +14,25 @@ import TUtils from '@/utils/TUtils'
  */
 var Score = function(string) {
     if (typeof string === 'undefined') {
-        string = "Score : ";
+        string = 'Score : '
     }
-    var displayedText = string + this.score;
-    Text.call(this, displayedText);
-};
+    var displayedText = string + this.score
+    Text.call(this, displayedText)
+}
 
-Score.prototype = Object.create(Text.prototype);
-Score.prototype.constructor = Score;
-Score.prototype.className = "Score";
-Score.prototype.label = "Score : ";
-Score.prototype.score = 0;
+Score.prototype = Object.create(Text.prototype)
+Score.prototype.constructor = Score
+Score.prototype.className = 'Score'
+Score.prototype.label = 'Score : '
+Score.prototype.score = 0
 
 /**
  * Reset score to 0.
  */
 Score.prototype._eraseScoreNumber = function() {
-    this.score = 0;
-    this._setText(this.label + this.score);
-};
+    this.score = 0
+    this._setText(this.label + this.score)
+}
 
 /**
  * Increase score with integer step defined.
@@ -41,11 +41,11 @@ Score.prototype._eraseScoreNumber = function() {
  */
 Score.prototype._increaseScore = function(step) {
     if (typeof step === 'undefined') {
-        step = 1;
+        step = 1
     }
-    this.score += TUtils.getInteger(step);
-    this._setText(this.label + this.score);
-};
+    this.score += TUtils.getInteger(step)
+    this._setText(this.label + this.score)
+}
 
 /**
  * Decrease score with integer step defined.
@@ -54,11 +54,11 @@ Score.prototype._increaseScore = function(step) {
  */
 Score.prototype._decreaseScore = function(step) {
     if (typeof step === 'undefined') {
-        step = 1;
+        step = 1
     }
-    this.score -= TUtils.getInteger(step);
-    this._setText(this.label + this.score);
-};
+    this.score -= TUtils.getInteger(step)
+    this._setText(this.label + this.score)
+}
 
 /**
  * Defines a string label displayed before score number
@@ -67,12 +67,12 @@ Score.prototype._decreaseScore = function(step) {
  */
 Score.prototype._setLabel = function(label) {
     if (typeof label === 'undefined') {
-        this.label = "Score : ";
+        this.label = 'Score : '
     }
     else
-        this.label = label;
-    this._setText(this.label + this.score);
-};
+        this.label = label
+    this._setText(this.label + this.score)
+}
 
 /**
  * Defines score with integer given.
@@ -80,34 +80,34 @@ Score.prototype._setLabel = function(label) {
  * @param {Number} number
  */
 Score.prototype._setScoreNumber = function(number) {
-    this.score = TUtils.getInteger(number);
-    this._setText(this.label + this.score);
-};
+    this.score = TUtils.getInteger(number)
+    this._setText(this.label + this.score)
+}
 
 /**
  * Get Label.
  * @returns {String}    Returns Label.
  */
 Score.prototype._getLabel = function() {
-    var string = this.label;
-    return string;
-};
+    var string = this.label
+    return string
+}
 
 /**
  * Get score.
  * @returns {String} Return the score.
  */
 Score.prototype._getScoreNumber = function() {
-    var string = this.score + ""; // "" to convert in string
-    return string;
-};
+    var string = this.score + '' // "" to convert in string
+    return string
+}
 /**
  * Get score's string.
  * @returns {String} Returns label and score.
  */
 Score.prototype._getScore = function() {
-    var string = this.label + this.score;
-    return string;
-};
+    var string = this.label + this.score
+    return string
+}
 
 export default Score

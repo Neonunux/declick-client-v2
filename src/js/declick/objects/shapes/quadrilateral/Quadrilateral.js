@@ -10,31 +10,31 @@ import TUtils from '@/utils/TUtils'
  * @exports Quadrilateral
  */
 var Quadrilateral = function (p1, p2, p3, p4) {
-    Polygon.call(this, p1, p2, p3, p4);
-};
+    Polygon.call(this, p1, p2, p3, p4)
+}
 
-Quadrilateral.prototype = Object.create(Polygon.prototype);
-Quadrilateral.prototype.constructor = Quadrilateral;
-Quadrilateral.prototype.className = "Quadrilateral";
+Quadrilateral.prototype = Object.create(Polygon.prototype)
+Quadrilateral.prototype.constructor = Quadrilateral
+Quadrilateral.prototype.className = 'Quadrilateral'
 
-var graphics = Quadrilateral.prototype.graphics;
+var graphics = Quadrilateral.prototype.graphics
 
-Quadrilateral.prototype.gClass = graphics.addClass("TPolygon", "TQuadrilateral", {
+Quadrilateral.prototype.gClass = graphics.addClass('TPolygon', 'TQuadrilateral', {
     init: function (props, defaultProps) {
         this._super(TUtils.extend({
-        }, props), defaultProps);
+        }, props), defaultProps)
     },
     setVertices: function (value) {
-        this.p.vertices = [];
+        this.p.vertices = []
         if (value.length === 4) {
             for (var i = 0; i < value.length; i++) {
-                this.p.vertices.push(value[i]);
+                this.p.vertices.push(value[i])
             }
-            this.p.initVertices = true;
+            this.p.initVertices = true
         } else {
-            throw new Error(this.getMessage("Bad vertices"));
+            throw new Error(this.getMessage('Bad vertices'))
         }
     }
-});
+})
 
 export default Quadrilateral

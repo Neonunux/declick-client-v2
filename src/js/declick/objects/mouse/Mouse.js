@@ -11,27 +11,27 @@ import TUI from '@/ui/TUI'
  */
 var Mouse = function () {
     this.getX = function () {
-        return TUI.getCanvasCursorX();
+        return TUI.getCanvasCursorX()
     }
     this.getY = function () {
-        return TUI.getCanvasCursorY();
+        return TUI.getCanvasCursorY()
     }
-};
-Mouse.prototype = Object.create(TObject.prototype);
-Mouse.prototype.constructor = Mouse;
-Mouse.prototype.className = "Mouse";
+}
+Mouse.prototype = Object.create(TObject.prototype)
+Mouse.prototype.constructor = Mouse
+Mouse.prototype.className = 'Mouse'
 /**
  * Get mouse X "value".
  */
 Mouse.prototype._getX = function () {
-    return this.getX();
-};
+    return this.getX()
+}
 /**
  * Get mouse Width "value" in logs.
  */
 Mouse.prototype._getY = function () {
-    return this.getY();
-};
+    return this.getY()
+}
 
-var mouseInstance = new Mouse();
+var mouseInstance = new Mouse()
 export default mouseInstance

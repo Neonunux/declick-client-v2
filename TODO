@@ -1,9 +1,10 @@
-bug on TUI.execute()
-remove jquery
-same class declaration style
-
-
-
-TFrame 
-	variable is named 'console'
-
+ - default text in editor to ease manual test
+ - bug on execute
+ - remove jquery
+ - same class declaration style && functional programming
+ - Screen/Mouse/Declick
+		 - remove call to TObject constructor
+ - TUI
+	this.clear, delete,
+ - TFrame 
+	 - variable is named 'console'

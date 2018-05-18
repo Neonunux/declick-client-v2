@@ -11,7 +11,7 @@ class TTextEditor extends TComponent {
         let $main
         let resourceName = ''
 
-        super('TTextEditor.html', function(component) {
+        super('TTextEditor.html', function (component) {
             const $buttonClose = component.find('.tviewer-button-close')
             $buttonClose.prop('title', TEnvironment.getMessage('texteditor-close'))
             $buttonClose.click(e => {

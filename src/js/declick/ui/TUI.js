@@ -220,7 +220,7 @@ class TUI {
         }
         this.toggleEditor = function () {
             if (editorEnabled) {
-                this.disableEditor()
+                this.execute()
             } else {
                 this.enableEditor()
             }

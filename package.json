@@ -10,12 +10,11 @@
   "scripts": {
     "install_declick": "npm install && grunt install_declick",
     "dev": "webpack --mode development --module-bind js=babel-loader",
-    "dev2": "webpack-dev-server --mode=development",
+    "server": "webpack-dev-server --mode=development",
     "build:main": "babel-node build main"
   },
   "dependencies": {
     "ace-builds": "^1.2.2",
-    "babylonjs": "~2.0.1",
     "intro.js": "^2.2.0",
     "jquery": "1.11.1",
     "requirejs": "2.1.15"

@@ -7,7 +7,6 @@ const lib = (...paths) => src(path.join('js', 'libs', ...paths))
 const nodeModule = (...paths) => path.resolve(__dirname, '..', 'node_modules', ...paths)
 
 module.exports = {
-	// contentBase: 'dist/',
 	mode: 'development',
 	resolve: {
 		alias: {

@@ -10,7 +10,7 @@
   "scripts": {
     "install_declick": "npm install && grunt install_declick",
     "dev": "webpack --mode development --module-bind js=babel-loader",
-    "server": "webpack-dev-server --config build/config.dev.js",
+    "server": "webpack-dev-server --content-base dist/ --config build/config.dev.js",
     "build:main": "babel-node build main"
   },
   "dependencies": {

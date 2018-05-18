@@ -26,7 +26,8 @@ import TRuntime from '@/run/TRuntime'
  * @exports {TConsole}
  */
 function TConsole(callback) {
-    var $console, $consoleText
+    var $console
+    var $consoleText
 
     TComponent.call(this, 'TConsole.html', function(component) {
         $console = component

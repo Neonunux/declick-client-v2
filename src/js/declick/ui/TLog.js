@@ -7,7 +7,10 @@ import TUI from '@/ui/TUI'
 
 function TLog(callback) {
     var designLog
-    var $main, $log, $designLog, $innerLog
+    var $main
+    var $log
+    var $designLog
+    var $innerLog
     var rowCount = 0
     var currentRow = 0
     var scrollTop = 0
@@ -53,7 +56,8 @@ function TLog(callback) {
     }
 
     this.addError = function(error) {
-        var code, message
+        var code
+        var message
         if (typeof error.getCode !== 'undefined') {
             code = error.getCode()
         }
@@ -206,7 +210,6 @@ function TLog(callback) {
         }
         return currentHeight
     }
-
 }
 
 TLog.prototype = Object.create(TComponent.prototype)

@@ -4,7 +4,10 @@ import TComponent from '@/ui/TComponent'
 import TRuntime from '@/ui/TRuntime'
 
 function TLearnCanvas(callback) {
-    var $main, $canvas, $canvasLoading, $canvasLoadingValue
+    var $main
+    var $canvas
+    var $canvasLoading
+    var $canvasLoadingValue
 
     TComponent.call(this, 'TLearnCanvas.html', function(component) {
         $main = component

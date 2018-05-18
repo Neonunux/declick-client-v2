@@ -181,7 +181,8 @@ Sprite.prototype.gClass = graphics.addClass('TGraphicalObject', 'TSprite', {
         var wasMoving = p.moving
         if (!p.dragging && !p.frozen) {
             if (p.direction === Sprite.DIRECTION_NONE) {
-                var movingX = false, movingY = false
+                var movingX = false
+                var movingY = false
                 if (p.x < p.destinationX) {
                     p.x = Math.min(p.x + p.vx * dt, p.destinationX)
                     movingX = true

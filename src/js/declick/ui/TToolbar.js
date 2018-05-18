@@ -5,8 +5,14 @@ import TEnvironment from '@/env/TEnvironment'
 import TUI from '@/ui/TUI'
 
 function TToolbar(callback) {
-    var $main, $buttonExecute
-    var $buttonFloatingController, $buttonDesignMode, $buttonConsole, $buttonSaveProgram, $buttonHints, $buttonWiki
+    var $main
+    var $buttonExecute
+    var $buttonFloatingController
+    var $buttonDesignMode
+    var $buttonConsole
+    var $buttonSaveProgram
+    var $buttonHints
+    var $buttonWiki
     var editorMode = false
     var saveEnabled = false
     var currentHeight = -1

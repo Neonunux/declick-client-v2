@@ -148,7 +148,12 @@ Button.prototype._setTextSize = function(size) {
  */
 Button.prototype._setColor = function(red, green, blue) {
     var color = TUtils.getColor(red, green, blue)
-    var r, g, b, ra, ga, ba
+    var r
+    var g
+    var b
+    var ra
+    var ga
+    var ba
     r = color[0]
     g = color[1]
     b = color[2]

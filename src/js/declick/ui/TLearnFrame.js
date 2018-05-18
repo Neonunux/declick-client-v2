@@ -13,8 +13,26 @@ import TRuntime from '@/run/TRuntime'
 import TError from '@/utils/TError'
 
 function TLearnFrame(callback) {
-    var $text, $message, $textMessage, $textMessageContent, $messageContent, $instruction, $instructions, $solution, $solutionContent, $input, $loading, $right, $success, $successText, $slide, $slideContent, $buttonNext, $buttonOk
-    var canvas, editor
+    var $text
+    var $message
+    var $textMessage
+    var $textMessageContent
+    var $messageContent
+    var $instruction
+    var $instructions
+    var $solution
+    var $solutionContent
+    var $input
+    var $loading
+    var $right
+    var $success
+    var $successText
+    var $slide
+    var $slideContent
+    var $buttonNext
+    var $buttonOk
+    var canvas
+    var editor
 
     var exercise = new TExerciseProject()
     var bottomSolution = 0
@@ -629,7 +647,6 @@ function TLearnFrame(callback) {
             }
         })
     }
-
 }
 
 TLearnFrame.prototype = Object.create(TComponent.prototype)

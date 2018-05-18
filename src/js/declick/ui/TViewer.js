@@ -18,8 +18,19 @@ function TViewer(callback) {
     var currentHeight = 0
     var nextHandler = null
     var prevHandler = null
-    var $main, $title, $imageContainer, $image, $editor, $editorImage, $creation, $message, $creationMessage, $buttonCreate
-    var $name, $width, $height
+    var $main
+    var $title
+    var $imageContainer
+    var $image
+    var $editor
+    var $editorImage
+    var $creation
+    var $message
+    var $creationMessage
+    var $buttonCreate
+    var $name
+    var $width
+    var $height
     var image
     var editorInitialized = false
     var imageDisplayed = false

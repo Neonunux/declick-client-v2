@@ -8,9 +8,11 @@ import TSidebarPrograms from '@/ui/TSidebarPrograms'
 import TSidebarResources from '@/ui/TSidebarResources'
 
 function TSidebar(callback) {
-
-    var $sidebar, $switchPrograms, $switchResources
-    var programs, resources
+    var $sidebar
+    var $switchPrograms
+    var $switchResources
+    var programs
+    var resources
 
     TComponent.call(this, 'TSidebar.html', function(component) {
         $sidebar = component
@@ -163,7 +165,6 @@ function TSidebar(callback) {
     this.setResourcesEditionEnabled = function(value) {
         resources.setEditionEnabled(value)
     }
-
 }
 
 TSidebar.prototype = Object.create(TComponent.prototype)

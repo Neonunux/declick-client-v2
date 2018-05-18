@@ -135,7 +135,8 @@ KeyStroke.prototype._removeCommands = function(key) {
  * @param {String} param2
  */
 KeyStroke.prototype._addCommandRelease = function(param1, param2) {
-    var key, command
+    var key
+    var command
     if (typeof param2 !== 'undefined') {
         key = param1
         command = param2
@@ -158,7 +159,7 @@ KeyStroke.prototype._addCommandRelease = function(param1, param2) {
     //TODO: find a better way
     if (!this.keyboardEnabled) {
         this.enableKeyboard()
-    }        
+    }
 }
 
 /**

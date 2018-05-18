@@ -37,7 +37,6 @@ Block.prototype.gClass = graphics.addClass('TSprite', 'TBlock', {
         }, [data])
     },
     checkTransparency: function(object, col) {
-
         if (this.p.transparencyMask === null) {
             return false
         }
@@ -56,7 +55,10 @@ Block.prototype.gClass = graphics.addClass('TSprite', 'TBlock', {
         var deltaX = actualObjectX - objectX
         var deltaY = actualObjectY - objectY
 
-        var separateXL = 0, separateXR = 0, separateYT = 0, separateYB = 0
+        var separateXL = 0
+        var separateXR = 0
+        var separateYT = 0
+        var separateYB = 0
 
         var clear = true
         var index
@@ -172,7 +174,8 @@ Block.prototype.computeTransparencyMask = function(name) {
     canvas.height = height
     this.gObject.p.transparencyMask = new Array()
     var mask = this.gObject.p.transparencyMask
-    var row = -1, col = width
+    var row = -1
+    var col = width
     ctx.drawImage(image, 0, 0)
     var imageData = ctx.getImageData(0, 0, width, height)
     var data = imageData.data

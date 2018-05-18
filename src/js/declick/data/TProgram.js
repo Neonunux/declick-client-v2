@@ -247,7 +247,10 @@ function TProgram(value) {
  * @returns {String|Number}
  */
 function hashCode(value) {
-    var hash = 0, i, chr, len
+    var hash = 0
+    var i
+    var chr
+    var len
     if (value.length === 0)
         return hash
     for (i = 0, len = value.length; i < len; i++) {

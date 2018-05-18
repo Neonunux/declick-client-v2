@@ -7,7 +7,8 @@ import TUtils from '@/utils/TUtils'
 function TInterpreter() {
     var MAX_STEP = 100
 
-    var log, errorHandler
+    var log
+    var errorHandler
     var classes = {}
     var translatedClasses = {}
     var instances  = {}
@@ -112,7 +113,8 @@ function TInterpreter() {
     this.initialize = function() {
 
         var initFunc = function(interpreter, scope) {
-            var name, object
+            var name
+            var object
 
             // #1 Declare translated Instances
             var getInstanceMethodWrapper = function(className, methodName) {
@@ -254,7 +256,8 @@ function TInterpreter() {
             }
             //logCommand(interpreter.stateStack);
         } catch (err) {
-            var state, error
+            var state
+            var error
             if (!(err instanceof TError)) {
                 error = new TError(err)
                 if (interpreter.stateStack.length > 0) {

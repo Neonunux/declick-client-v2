@@ -7,9 +7,18 @@ import TComponent from '@/ui/TComponent'
 import TFloatingController from '@/ui/TFloatingController'
 
 function TCanvas(callback) {
-    var $main, $canvas, $canvasDesign, $canvasDesignMouse, $canvasLoading, $canvasLoadingValue, $popup, $popupContent, $floatingController
+    var $main
+    var $canvas
+    var $canvasDesign
+    var $canvasDesignMouse
+    var $canvasLoading
+    var $canvasLoadingValue
+    var $popup
+    var $popupContent
+    var $floatingController
     var popupCallback = null
-    var cursorX, cursorY
+    var cursorX
+    var cursorY
 
     TComponent.call(this, 'TCanvas.html', function(component) {
         $main = component

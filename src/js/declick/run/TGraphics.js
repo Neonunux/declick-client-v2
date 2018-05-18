@@ -64,7 +64,9 @@ function TGraphics() {
             skip = 0
         }
 
-        var grid = obj.grid, gridCell, col
+        var grid = obj.grid
+        var gridCell
+        var col
 
         for (var y = grid.Y1; y <= grid.Y2; y++) {
             if (this.grid[y]) {
@@ -95,7 +97,9 @@ function TGraphics() {
     Q.touchType = 0
 
     Q._TdetectTouch = function(obj, iterator, context, arg1, arg2) {
-        var result = false, id = -1, col
+        var result = false
+        var id = -1
+        var col
         if (obj == null) {
             return
         }
@@ -146,7 +150,9 @@ function TGraphics() {
             this.regrid(obj, obj.stage !== this)
         }
 
-        var grid = obj.grid, gridCell, col
+        var grid = obj.grid
+        var gridCell
+        var col
 
         for (var y = grid.Y1; y <= grid.Y2; y++) {
             if (this.grid[y]) {
@@ -170,8 +176,8 @@ function TGraphics() {
         for (var i = 0; i < touches.length; i++) {
 
             for (var stageIdx = 0; stageIdx < Q.touchStage.length; stageIdx++) {
-                var touch = touches[i],
-                        stage = Q.stage(Q.touchStage[stageIdx])
+                var touch = touches[i]
+                var stage = Q.stage(Q.touchStage[stageIdx])
 
                 if (!stage) {
                     continue
@@ -181,7 +187,8 @@ function TGraphics() {
                 var pos = this.normalizeTouch(touch, stage)
 
                 stage.regrid(pos, true)
-                var col = stage.TsearchTouch(pos, Q.touchType), obj
+                var col = stage.TsearchTouch(pos, Q.touchType)
+                var obj
 
                 if (col || stageIdx === Q.touchStage.length - 1) {
                     obj = col && col.obj
@@ -205,7 +212,6 @@ function TGraphics() {
                     obj.trigger('touch', this.activeTouches[touch.identifier])
                     break
                 }
-
             }
 
         }
@@ -251,7 +257,9 @@ function TGraphics() {
     }
 
     this.addClass = function(param1, param2, param3) {
-        var ancestor, name, object
+        var ancestor
+        var name
+        var object
         if (typeof param3 !== 'undefined') {
             ancestor = param1
             name = param2
@@ -293,7 +301,8 @@ function drawGrid(context)
     }
     context.beginPath()
     var interval = 40
-    var linesCount, index
+    var linesCount
+    var index
     // mark vertical lines
     var offset = interval - (position.X % interval)
     if (offset > interval)

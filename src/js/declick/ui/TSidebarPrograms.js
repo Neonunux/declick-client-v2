@@ -6,8 +6,9 @@ import TEnvironment from '@/env/TEnvironment'
 import TProgram from '@/data/TProgram'
 
 function TSidebarPrograms(callback) {
-
-    var $programs, $list, $buttonDelete
+    var $programs
+    var $list
+    var $buttonDelete
     var programEdited = false
     TComponent.call(this, 'TSidebarPrograms.html', function(component) {
         $programs = component

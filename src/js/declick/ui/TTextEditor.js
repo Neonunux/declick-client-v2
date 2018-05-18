@@ -5,7 +5,9 @@ import TComponent from '@/ui/TComponent'
 import TUI from '@/ui/TUI'
 
 function TTextEditor(callback) {
-    var $name, $textArea, $main
+    var $name
+    var $textArea
+    var $main
     var resourceName = ''
 
     TComponent.call(this, 'TTextEditor.html', function(component) {

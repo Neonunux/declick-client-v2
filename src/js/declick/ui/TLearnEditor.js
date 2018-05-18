@@ -23,7 +23,8 @@ import TRuntime from '@/run/TRuntime'
  * @exports TLearnEditor
  */
 function TLearnEditor(callback) {
-    var $editor, $editorText
+    var $editor
+    var $editorText
 
     TComponent.call(this, 'TLearnEditor.html', function(component) {
         $editor = component

@@ -91,8 +91,12 @@ CommandManager.prototype.executeCommands = function(parameters, allowSimultaneou
     if (typeof allowSimultaneousExecutions === 'undefined') {
         allowSimultaneousExecutions = false
     }
+
     // TODO: handle parameters
-    var i, cmdParameters, field
+    var i
+
+    var cmdParameters
+    var field
     var self = this
     if (typeof parameters !== 'undefined') {
         if (typeof parameters.field !== 'undefined') {

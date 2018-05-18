@@ -4,7 +4,8 @@ import TComponent from '@/ui/TComponent'
 import TUI from '@/ui/TUI'
 
 function TMessage(callback) {
-    var $main, $content
+    var $main
+    var $content
 
     TComponent.call(this, 'TMessage.html', function(component) {
         var $buttonClose = component.find('#tmessage-close')

@@ -267,9 +267,10 @@ empty: function ()
     },
     drawBlock: function(ctx, blockX, blockY) {
         // Fixed a bug in Quintus(?): startX and startY should not hold references to p.x and p.y
-        var p = this.p,
-            startX = Math.floor(blockX * p.blockW),
-            startY = Math.floor(blockY * p.blockH)
+        var p = this.p
+
+        var startX = Math.floor(blockX * p.blockW)
+        var startY = Math.floor(blockY * p.blockH)
 
         if(!this.blocks[blockY] || !this.blocks[blockY][blockX]) {
           this.prerenderBlock(blockX,blockY)
@@ -278,7 +279,7 @@ empty: function ()
         if(this.blocks[blockY]  && this.blocks[blockY][blockX]) {
           ctx.drawImage(this.blocks[blockY][blockX],startX,startY)
         }
-},
+    },
     addCollidable:function() {
         this.p.collidable.push(true)
     },
@@ -451,7 +452,8 @@ Platform.prototype._addColumn = function(col) {
  * @param {Number[][]} structure
  */
 Platform.prototype._loadStructure = function(structure) {
-    var newRows = [],i
+    var newRows = []
+    var i
     if (TUtils.checkArray(structure)) {
         if (!TUtils.checkArray(structure[0])) {
             throw new Error(this.getMessage('structure incorrect'))
@@ -548,7 +550,8 @@ Platform.prototype._setTile = function(x, y, number) {
 }
 
 Platform.prototype.setTile = function (x, y, number) {
-    var i,j
+    var i
+    var j
     if (x < 0) {
         throw new Error(this.getMessage('x value incorrect', x))
     }
@@ -757,7 +760,8 @@ Platform.prototype.addExitLocation = function(x,y) {
  * @param {Number[]} row
  */
 Platform.prototype._setRow = function(x, y, row) {
-    var i,j
+    var i
+    var j
     if (this.nbCols === 0 && this.nbRows === 0) {
         this.nbCols = row.length + x
     }

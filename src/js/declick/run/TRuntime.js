@@ -107,7 +107,8 @@ function TRuntime() {
                 if (typeof val.translations[language] !== 'undefined') {
                     TEnvironment.log('adding ' + lib)
                     var translatedName = val.translations[language]
-                    var parents, instance
+                    var parents
+                    var instance
                     if (typeof val.parents === 'undefined') {
                         parents = false
                     } else {
@@ -121,26 +122,26 @@ function TRuntime() {
 
                     // require([lib], function(aClass) {
                     const aClass = Api[key]
-                        // set Object path
-                        var aConstructor = aClass
+                    // set Object path
+                    var aConstructor = aClass
+                    if (instance) {
+                        // in case class is in fact an instance (e.g. special object declick),
+                        // get its constructor
+                        aConstructor = aClass.constructor
+                    }
+                    aConstructor.prototype.objectPath = val.path
+                    TI18n.internationalize(aConstructor, parents, language, function() {
+                        TEnvironment.log('Declaring translated object \'' + translatedName + '\'')
                         if (instance) {
-                            // in case class is in fact an instance (e.g. special object declick),
-                            // get its constructor
-                            aConstructor = aClass.constructor
+                            interpreter.addInstance(aClass, translatedName)
+                        } else {
+                            interpreter.addClass(aClass, translatedName)
                         }
-                        aConstructor.prototype.objectPath = val.path
-                        TI18n.internationalize(aConstructor, parents, language, function() {
-                            TEnvironment.log('Declaring translated object \'' + translatedName + '\'')
-                            if (instance) {
-                                interpreter.addInstance(aClass, translatedName)
-                            } else {
-                                interpreter.addClass(aClass, translatedName)
-                            }
-                            classesToLoad--
-                            if (classesToLoad === 0 && typeof callback !== 'undefined') {
-                                callback.call(self)
-                            }
-                        })
+                        classesToLoad--
+                        if (classesToLoad === 0 && typeof callback !== 'undefined') {
+                            callback.call(self)
+                        }
+                    })
                     // });
                 }
             } else {

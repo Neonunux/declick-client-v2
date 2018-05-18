@@ -56,19 +56,20 @@ Declick.prototype.delay = function (callback, arguments_, duration) {
 }
 
     Declick.prototype.loop = function (callback) {
-    var loop = new CommandManager()
-    loop.addCommand(callback)
-    var previousTime = Date.now(), currentTime
-    var context = this
-    var repeater = function () {
-        currentTime = Date.now()
-        var delay = currentTime - previousTime
-        loop.executeCommands({parameters: [delay]})
-        previousTime = currentTime
-        context.delay(repeater, 0)
+        var loop = new CommandManager()
+        loop.addCommand(callback)
+        var previousTime = Date.now()
+        var currentTime
+        var context = this
+        var repeater = function () {
+            currentTime = Date.now()
+            var delay = currentTime - previousTime
+            loop.executeCommands({parameters: [delay]})
+            previousTime = currentTime
+            context.delay(repeater, 0)
+        }
+        repeater()
     }
-    repeater()
-}
 
 /**
  * Write "value" in logs.

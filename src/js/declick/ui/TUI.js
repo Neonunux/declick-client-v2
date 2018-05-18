@@ -585,7 +585,8 @@ var TUI = function() {
     }
 
     this.delete = function() {
-        var goOn, name
+        var goOn
+        var name
         var self = this
         var project = TEnvironment.getProject()
         if (programsDisplayed) {

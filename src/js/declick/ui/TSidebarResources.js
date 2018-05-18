@@ -12,7 +12,11 @@ import TUI from '@/ui/TUI'
 import TViewer from '@/ui/TViewer'
 
 function TSidebarResources(callback) {
-    var $resources, $upload, $files, $emptyMedia, $buttonDelete
+    var $resources
+    var $upload
+    var $files
+    var $emptyMedia
+    var $buttonDelete
     var viewer
     var textEditor
     var empty = true
@@ -427,7 +431,6 @@ function TSidebarResources(callback) {
             $buttonDelete.prop('disabled', true)
         }
     }
-
 }
 
 TSidebarResources.prototype = Object.create(TComponent.prototype)

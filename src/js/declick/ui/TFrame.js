@@ -16,8 +16,19 @@ import TRuntime from '@/run/TRuntime'
 
 function TFrame(callback) {
     var initialized = false
-    var canvas, editor, sidebar, toolbar, console, log, message
-    var $frame, $main, $top, $separator, $bottom, $loading
+    var canvas
+    var editor
+    var sidebar
+    var toolbar
+    var console
+    var log
+    var message
+    var $frame
+    var $main
+    var $top
+    var $separator
+    var $bottom
+    var $loading
 
     var frame = this
     var separatorEnabled = true
@@ -220,7 +231,6 @@ function TFrame(callback) {
             return TEnvironment.getProject().isUnsaved();
         };
     }*/
-
 }
 
 TFrame.prototype = Object.create(TComponent.prototype)

@@ -207,13 +207,15 @@ Robot.prototype.gClass = graphics.addClass('TCharacter', 'TRobot', {
     },
     consumeMove: function ()
     {
-        var direction = this.move[0], intensity = this.move[1]
+        var direction = this.move[0]
+        var intensity = this.move[1]
         if (intensity === 0)
         {
             this.endMove()
             return
         }
-        var XMultiplier = 0, YMultiplier = 0
+        var XMultiplier = 0
+        var YMultiplier = 0
         switch (direction)
         {
             case Sprite.DIRECTION_UP:    YMultiplier = -1; break

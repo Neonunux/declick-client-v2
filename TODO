@@ -1,0 +1,9 @@
+bug on TUI.execute()
+remove jquery
+same class declaration style
+
+
+
+TFrame 
+	variable is named 'console'
+

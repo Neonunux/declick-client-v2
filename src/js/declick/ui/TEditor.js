@@ -102,14 +102,6 @@ class TEditor extends TComponent {
                 }
             })
 
-            aceEditor.commands.addCommand({
-                name: 'execute',
-                bindKey: {win: 'Ctrl-Return', mac: 'Command-Return'},
-                exec(arg) {
-                    TUI.execute()
-                }
-            })
-
             aceEditor.completers = [editorCompleter]
             aceEditor.setBehavioursEnabled(false)
 

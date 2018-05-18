@@ -76,8 +76,7 @@ class TUI {
                 if (hideLog) {
                     frame.setSeparatorPosition(`${toolbar.getHeight()}px`)
                     frame.disableSeparator()
-                }
-                else {
+                } else {
                     frame.lowerSeparator(console.getHeight())
                 }
                 THints.setPage('preview')
@@ -95,8 +94,7 @@ class TUI {
                     //frame.raiseSeparator(console.getHeight());
                     log.restoreScroll()
                     frame.raiseSeparator(console.getHeight())
-                }
-                else {
+                } else {
                     log.show()
                     frame.enableSeparator()
                     frame.raiseSeparator(log.getHeight() + console.getHeight())
@@ -109,8 +107,7 @@ class TUI {
         this.toggleConsole = function () {
             if (consoleDisplayed) {
                 this.hideConsole()
-            }
-            else {
+            } else {
                 this.showConsole()
             }
         }
@@ -124,8 +121,7 @@ class TUI {
                 if (consoleDisplayed) {
                     // log already displayed, with console: hide console
                     this.hideConsole(false)
-                }
-                else {
+                } else {
                     // log not displayed: show it
                     log.show()
                     frame.enableSeparator()
@@ -172,16 +168,14 @@ class TUI {
         this.toggleDesignMode = function () {
             if (designModeEnabled) {
                 this.disableDesignMode()
-            }
-            else {
+            } else {
                 this.enableDesignMode()
             }
         }
         this.toggleFloatingController = function () {
             if (floatingControllerEnabled) {
                 this.disableFloatingController()
-            }
-            else {
+            } else {
                 this.enableFloatingController()
             }
         }
@@ -227,8 +221,7 @@ class TUI {
         this.toggleEditor = function () {
             if (editorEnabled) {
                 this.disableEditor()
-            }
-            else {
+            } else {
                 this.enableEditor()
             }
         }
@@ -249,8 +242,7 @@ class TUI {
         this.addLogMessage = text => {
             if (typeof log !== 'undefined') {
                 log.addMessage(text)
-            }
-            else {
+            } else {
                 TEnvironment.log(text)
             }
         }
@@ -262,8 +254,7 @@ class TUI {
         this.addLogError = error => {
             if (typeof log !== 'undefined') {
                 log.addError(error)
-            }
-            else {
+            } else {
                 TEnvironment.error(error)
             }
         }
@@ -300,8 +291,7 @@ class TUI {
                 // execution from console
                 TRuntime.executeFrom(console)
                 console.clear()
-            }
-            else if (editorEnabled) {
+            } else if (editorEnabled) {
                 // execution from editor
                 this.clear(false)
                 this.disableEditor()
@@ -323,8 +313,7 @@ class TUI {
                     console.setValue(error.getCode())
                     console.focus()
                 }
-            }
-            else {
+            } else {
                 // error from program
                 this.enableEditor()
                 this.editProgram(error.getProgramName())
@@ -340,8 +329,7 @@ class TUI {
             project.saveProgram(program, error => {
                 if (typeof error !== 'undefined') {
                     self.addLogError(error)
-                }
-                else {
+                } else {
                     self.addLogMessage(TEnvironment.getMessage('program-saved', program.getName()))
                     self.updateProgramInfo(program)
                     self.setSaveAvailable(false)
@@ -374,8 +362,7 @@ class TUI {
                 project.editProgram(name, error => {
                     if (typeof error !== 'undefined') {
                         self.addLogError(error)
-                    }
-                    else {
+                    } else {
                         const newProgram = project.getEditedProgram(name)
                         project.setSession(newProgram, editor.createSession(newProgram))
                         editor.setProgram(newProgram)
@@ -385,8 +372,7 @@ class TUI {
                         editor.giveFocus()
                     }
                 })
-            }
-            else {
+            } else {
                 const newProgram = project.getEditedProgram(name)
                 editor.setProgram(newProgram)
                 editor.setSession(project.getSession(newProgram))
@@ -403,8 +389,7 @@ class TUI {
                 editor.setSession(project.getSession(program))
                 editor.giveFocus()
                 return true
-            }
-            else {
+            } else {
                 editor.disable()
                 return false
             }
@@ -420,8 +405,7 @@ class TUI {
                     if (result) {
                         this.setSaveEnabled(true)
                         sidebar.setProgramsEditionEnabled(true)
-                    }
-                    else {
+                    } else {
                         this.setSaveAvailable(false)
                         this.setSaveEnabled(false)
                         sidebar.setProgramsEditionEnabled(false)
@@ -429,8 +413,7 @@ class TUI {
                 }
                 // update sidebar
                 this.updateSidebarPrograms()
-            }
-            else {
+            } else {
                 // close cancelled
                 editor.giveFocus()
             }
@@ -458,8 +441,7 @@ class TUI {
                 project.renameResource(name, newBaseName, name => {
                     if (name instanceof TError) {
                         self.addLogError(name)
-                    }
-                    else {
+                    } else {
                         newName = name
                     }
                     self.updateSidebarResources()
@@ -474,8 +456,7 @@ class TUI {
             if (value && TEnvironment.isProjectAvailable()) {
                 toolbar.setSaveEnabled(true)
                 editor.setSaveEnabled(true)
-            }
-            else {
+            } else {
                 toolbar.setSaveEnabled(false)
                 editor.setSaveEnabled(false)
             }
@@ -502,8 +483,7 @@ class TUI {
             if (programsDisplayed) {
                 sidebar.close()
                 programsDisplayed = false
-            }
-            else {
+            } else {
                 this.displayPrograms()
             }
         }
@@ -517,8 +497,7 @@ class TUI {
             if (resourcesDisplayed) {
                 sidebar.close()
                 resourcesDisplayed = false
-            }
-            else {
+            } else {
                 this.displayResources()
             }
         }
@@ -539,14 +518,12 @@ class TUI {
                     project.deleteProgram(name, error => {
                         if (typeof error !== 'undefined') {
                             self.addLogError(error)
-                        }
-                        else {
+                        } else {
                             const result = nextProgram(name)
                             if (result) {
                                 self.setSaveEnabled(true)
                                 sidebar.setProgramsEditionEnabled(true)
-                            }
-                            else {
+                            } else {
                                 self.setSaveAvailable(false)
                                 self.setSaveEnabled(false)
                                 sidebar.setProgramsEditionEnabled(false)
@@ -558,8 +535,7 @@ class TUI {
                     })
                 }
                 editor.giveFocus()
-            }
-            else {
+            } else {
                 // Resource deletion
                 name = sidebar.getCurrentResourceName()
                 if (name !== '') {

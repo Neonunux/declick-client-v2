@@ -1,6 +1,7 @@
 import $ from 'jquery'
 
 import TResource from '@/data/TResource'
+import TUI from '@/ui/TUI'
 
 /**
  * TEnvironment defines the environment variables (language, project,
@@ -75,6 +76,11 @@ const TEnvironment = function () {
         window.addEventListener('message', event => {
             propagateMessage(event)
         }, false)
+        window.addEventListener('keydown', event => {
+            if (event.keyCode === 13 && event.ctrlKey) {
+                TUI.toggleEditor()
+            }
+        })        
     })
 
     /**

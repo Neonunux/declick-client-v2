@@ -1,28 +1,28 @@
 import $ from 'jquery'
 import 'platform-pr'
 
-var Task = function(aFrame) {
+const Task = function(aFrame) {
     
-    var frame = aFrame
-    var views = {task:{}}
+    const frame = aFrame
+    const views = {task:{}}
     
-    this.addViews = function(value) {
+    this.addViews = value => {
         $.extend(views, value)
     }
     
-    this.showViews = function(views, callback) {
-        if (typeof views.task !== 'undefined' && views.task) {
+    this.showViews = ({task, solution}, callback) => {
+        if (typeof task !== 'undefined' && task) {
             // show task view
             frame.displaySolution(false)
-        } else if (typeof views.solution !== 'undefined' && views.solution) {
+        } else if (typeof solution !== 'undefined' && solution) {
             // show solution
             frame.displaySolution(true)
         }
         callback()
     }
     
-    this.getViews = function(callback) {
-        var views = {
+    this.getViews = callback => {
+        const views = {
             task: {},
             solution: {}
 /*                , hint: {requires: "task"},
@@ -32,36 +32,36 @@ var Task = function(aFrame) {
         callback(views)
     }
     
-    this.updateToken = function (token, callback) {
+    this.updateToken = (token, callback) => {
         // do nothing
         callback()
     }
 
 
-    this.getHeight = function (callback) {
+    this.getHeight = callback => {
         callback($('html').outerHeight(true))
     }
 
-    this.getState = function (callback) {
+    this.getState = callback => {
         callback(frame.getAnswer())
     }
     
-    this.reloadState = function (state, callback) {
+    this.reloadState = (state, callback) => {
         frame.setAnswer(state)
         callback()
     }
     
-    this.getAnswer = function (callback) {
-        var res = JSON.stringify(
+    this.getAnswer = callback => {
+        const res = JSON.stringify(
             {score : frame.getScore(),
             value : frame.getLastSubmission()})
         callback(res)
     }
     
-    this.reloadAnswer = function (strAnswer, callback) {
+    this.reloadAnswer = (strAnswer, callback) => {
         if(strAnswer !== '') {
             try {
-                var answer = JSON.parse(strAnswer)
+                const answer = JSON.parse(strAnswer)
                 frame.setScore(answer.score)
                 frame.setAnswer(answer.value)
             } catch(e) {
@@ -75,17 +75,17 @@ var Task = function(aFrame) {
         callback()
     }
 
-    this.load = function (views, callback) {
+    this.load = (views, callback) => {
         frame.load(callback)
     }
 
-    this.unload = function (callback) {
+    this.unload = callback => {
         callback()
     }
     
-    this.getMetaData = function (callback) {
-        var link = document.location.href
-        var metaData = {
+    this.getMetaData = callback => {
+        const link = document.location.href
+        const metaData = {
             id : link.substring(0, link.lastIndexOf('#')),
             language : 'fr',
             version : 1.0,

@@ -12,18 +12,65 @@ import TUtils from '@/utils/TUtils'
  * @param {String} name Block's name
  * @exports Block
  */
-var Block = function(name) {
-    Sprite.call(this, name)
+class Block extends Sprite {
+    constructor(name) {
+        super(name)
+    }
+
+    /**
+     * Set the image to be displayed.
+     * If the image is ready, set it and compute Transparency Mask on it.
+     * @param {String} name
+     * @returns {Boolean}   Return true is the image is ready, else false.
+     */
+    setDisplayedImage(name) {
+        if (Sprite.prototype.setDisplayedImage.call(this, name)) {
+            // compute transparency mask
+            this.computeTransparencyMask(name)
+            return true
+        } else {
+            return false
+        }
+    }
+
+    /**
+     * Execute a Transparency Mask on the image.
+     * Walker will be able to move on transparent areas.
+     * @param {String} name Image's name
+     */
+    computeTransparencyMask(name) {
+        const image = this.resources.get(name)
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        const width = image.width
+        const height = image.height
+        canvas.width = width
+        canvas.height = height
+        this.gObject.p.transparencyMask = new Array()
+        const mask = this.gObject.p.transparencyMask
+        let row = -1
+        let col = width
+        ctx.drawImage(image, 0, 0)
+        const imageData = ctx.getImageData(0, 0, width, height)
+        const data = imageData.data
+        for (let i = 0; i < data.length; i += 4) {
+            col++
+            if (col >= width) {
+                col = 0
+                row++
+                mask[row] = new Array()
+            }
+            mask[row][col] = (data[i + 3] === 0) ? true : false
+        }
+    }
 }
 
-Block.prototype = Object.create(Sprite.prototype)
-Block.prototype.constructor = Block
 Block.prototype.className = 'Block'
 
-var graphics = Block.prototype.graphics
+const graphics = Block.prototype.graphics
 
 Block.prototype.gClass = graphics.addClass('TSprite', 'TBlock', {
-    init: function(props, defaultProps) {
+    init(props, defaultProps) {
         this._super(TUtils.extend({
             type: TGraphicalObject.TYPE_BLOCK,
             collisionMask: TGraphicalObject.TYPE_SPRITE,
@@ -31,43 +78,43 @@ Block.prototype.gClass = graphics.addClass('TSprite', 'TBlock', {
             transparencyMask: null
         }, props), defaultProps)
     },
-    setImageData: function(data) {
+    setImageData(data) {
         this.perform(function(value) {
             this.p.imageData = value
         }, [data])
     },
-    checkTransparency: function(object, col) {
+    checkTransparency({p}, col) {
         if (this.p.transparencyMask === null) {
             return false
         }
 
         // get coordinates of bounding box, relative to this object
-        var objectWidth = object.p.w
-        var objectHeight = object.p.h
-        var thisWidth = this.p.w
-        var thisHeight = this.p.h
-        var actualObjectX = object.p.x - objectWidth / 2 - this.p.x + thisWidth / 2
-        var actualObjectY = object.p.y - objectHeight / 2 - this.p.y + thisHeight / 2
+        const objectWidth = p.w
+        const objectHeight = p.h
+        const thisWidth = this.p.w
+        const thisHeight = this.p.h
+        const actualObjectX = p.x - objectWidth / 2 - this.p.x + thisWidth / 2
+        const actualObjectY = p.y - objectHeight / 2 - this.p.y + thisHeight / 2
 
-        var objectX = Math.round(actualObjectX)
-        var objectY = Math.round(actualObjectY)
+        const objectX = Math.round(actualObjectX)
+        const objectY = Math.round(actualObjectY)
 
-        var deltaX = actualObjectX - objectX
-        var deltaY = actualObjectY - objectY
+        const deltaX = actualObjectX - objectX
+        const deltaY = actualObjectY - objectY
 
-        var separateXL = 0
-        var separateXR = 0
-        var separateYT = 0
-        var separateYB = 0
+        let separateXL = 0
+        let separateXR = 0
+        let separateYT = 0
+        let separateYB = 0
 
-        var clear = true
-        var index
-        var mask = this.p.transparencyMask
+        let clear = true
+        let index
+        const mask = this.p.transparencyMask
 
         // CHECK HORIZONTALLY
-        var middleY = Math.max(0, Math.min(Math.round(objectY + objectHeight / 2), thisHeight - 1))
+        const middleY = Math.max(0, Math.min(Math.round(objectY + objectHeight / 2), thisHeight - 1))
         if (typeof mask[middleY] !== 'undefined') {
-            for (var i = 0; i < objectWidth / 2; i++) {
+            for (let i = 0; i < objectWidth / 2; i++) {
                 index = objectX + i
                 if ((typeof mask[middleY][index] !== 'undefined') && !mask[middleY][index]) {
                     separateXL = i + 1
@@ -82,8 +129,8 @@ Block.prototype.gClass = graphics.addClass('TSprite', 'TBlock', {
         }
 
         // CHECK VERTICALLY
-        var middleX = Math.max(0, Math.min(Math.round(objectX + objectWidth / 2), thisWidth - 1))
-        for (var j = 0; j < objectHeight / 2; j++) {
+        const middleX = Math.max(0, Math.min(Math.round(objectX + objectWidth / 2), thisWidth - 1))
+        for (let j = 0; j < objectHeight / 2; j++) {
             index = objectY + j
             if ((typeof mask[index] !== 'undefined') && (typeof mask[index][middleX] !== 'undefined') && !mask[index][middleX]) {
                 separateYT = j + 1
@@ -125,12 +172,12 @@ Block.prototype.gClass = graphics.addClass('TSprite', 'TBlock', {
         //return false;
 
         // calculate normal
-        var normalX = col.separate[0]
-        var normalY = -col.separate[1]
+        let normalX = col.separate[0]
+        let normalY = -col.separate[1]
 
 
 
-        var dist = Math.sqrt(normalX * normalX + normalY * normalY)
+        const dist = Math.sqrt(normalX * normalX + normalY * normalY)
         if (dist > 0) {
             normalX /= dist
             normalY /= dist
@@ -142,52 +189,5 @@ Block.prototype.gClass = graphics.addClass('TSprite', 'TBlock', {
         return false
     }
 })
-
-/**
- * Set the image to be displayed.
- * If the image is ready, set it and compute Transparency Mask on it.
- * @param {String} name
- * @returns {Boolean}   Return true is the image is ready, else false.
- */
-Block.prototype.setDisplayedImage = function(name) {
-    if (Sprite.prototype.setDisplayedImage.call(this, name)) {
-        // compute transparency mask
-        this.computeTransparencyMask(name)
-        return true
-    } else {
-        return false
-    }
-}
-
-/**
- * Execute a Transparency Mask on the image.
- * Walker will be able to move on transparent areas.
- * @param {String} name Image's name
- */
-Block.prototype.computeTransparencyMask = function(name) {
-    var image = this.resources.get(name)
-    var canvas = document.createElement('canvas')
-    var ctx = canvas.getContext('2d')
-    var width = image.width
-    var height = image.height
-    canvas.width = width
-    canvas.height = height
-    this.gObject.p.transparencyMask = new Array()
-    var mask = this.gObject.p.transparencyMask
-    var row = -1
-    var col = width
-    ctx.drawImage(image, 0, 0)
-    var imageData = ctx.getImageData(0, 0, width, height)
-    var data = imageData.data
-    for (var i = 0; i < data.length; i += 4) {
-        col++
-        if (col >= width) {
-            col = 0
-            row++
-            mask[row] = new Array()
-        }
-        mask[row][col] = (data[i + 3] === 0) ? true : false
-    }
-}
 
 export default Block

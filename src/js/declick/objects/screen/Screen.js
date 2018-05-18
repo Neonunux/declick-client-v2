@@ -9,41 +9,41 @@ import TRuntime from '@/run/TRuntime'
  * It allows several interactions.
  * @exports Screen
  */
-var Screen = function () {
-    this.w = window
-    this.d = document
-    this.e = this.d.documentElement
-    this.g = this.d.getElementsByTagName('body')[0]
+class Screen extends TObject {
+ constructor() {
+     this.w = window
+     this.d = document
+     this.e = this.d.documentElement
+     this.g = this.d.getElementsByTagName('body')[0]
+ }
+
+ /**
+  * Get screen Height "value" in logs.
+  * @param {String} value
+  */
+ _getHeight() {
+     return this.w.innerHeight || this.e.clientHeight || this.g.clientHeight
+ }
+
+ /**
+  * Get screen Width "value" in logs.
+  * @param {String} value
+  */
+ _getWidth() {
+     return this.w.innerWidth || this.e.clientWidth || this.g.clientWidth
+ }
+
+ /**
+  * Clear all graphical objects.
+  * @param {String} value
+  */
+ _clear() {
+     TRuntime.clearGraphics()
+ }
 }
 
-Screen.prototype = Object.create(TObject.prototype)
-Screen.prototype.constructor = Screen
 Screen.prototype.className = 'Screen'
 
-/**
- * Get screen Height "value" in logs.
- * @param {String} value
- */
-Screen.prototype._getHeight = function () {
-    return this.w.innerHeight || this.e.clientHeight || this.g.clientHeight
-}
-
-/**
- * Get screen Width "value" in logs.
- * @param {String} value
- */
-Screen.prototype._getWidth = function () {
-    return this.w.innerWidth || this.e.clientWidth || this.g.clientWidth
-}
-
-/**
- * Clear all graphical objects.
- * @param {String} value
- */
-Screen.prototype._clear = function () {
-    TRuntime.clearGraphics()
-}
-
-var screenInstance = new Screen()
+const screenInstance = new Screen()
 
 export default screenInstance

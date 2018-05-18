@@ -1,40 +1,36 @@
-const acorn = require('acorn')
-const Interpreter = require('js-interpreter')
+import acorn from 'acorn'
+import Interpreter from 'js-interpreter'
 
 import TError from '@/utils/TError'
 import TUtils from '@/utils/TUtils'
 
 function TInterpreter() {
-    var MAX_STEP = 100
+    const MAX_STEP = 100
 
-    var log
-    var errorHandler
-    var classes = {}
-    var translatedClasses = {}
-    var instances  = {}
-    var stored  = {}
-    var stepCount = 0
+    let log
+    let errorHandler
+    const classes = {}
+    const translatedClasses = {}
+    const instances  = {}
+    const stored  = {}
+    let stepCount = 0
 
-    var interpreter
-    var running = false
+    let interpreter
+    let running = false
 
-    var priorityStatementsAllowed = true
+    let priorityStatementsAllowed = true
 
     Object.defineProperty(this, 'output',
     {
-        get: function ()
-        {
+        get() {
             return interpreter.value
         }
     })
 
-    this.convertToNative = function (data)
-    {
-        return getNativeData(data)
-    }
+    this.convertToNative = data => getNativeData(data)
 
-    var getNativeData = function(data) {
-        var result
+    var getNativeData = data => {
+        let result
         if (data.type) {
             if (data.type === 'function') {
                 return data
@@ -45,13 +41,13 @@ function TInterpreter() {
                 if (typeof data.length !== 'undefined') {
                     // we are in an array
                     result = []
-                    for (var i = 0; i < data.length; i++) {
+                    for (let i = 0; i < data.length; i++) {
                         result.push(getNativeData(data.properties[i]))
                     }
                     return result
                 } else {
                     result = {}
-                    for (var member in data.properties) {
+                    for (const member in data.properties) {
                         result[member] = getNativeData(data.properties[member])
                     }
                     return result
@@ -61,12 +57,12 @@ function TInterpreter() {
         return data
     }
 
-    var getInterpreterData = function(data) {
-        var result
+    const getInterpreterData = data => {
+        let result
         if (data instanceof Array) {
             // Array
             result = interpreter.createObject(interpreter.ARRAY)
-            for (var i = 0; i < data.length;i++) {
+            for (let i = 0; i < data.length;i++) {
                 interpreter.setProperty(result, i, getInterpreterData(data[i]))
             }
             return result
@@ -87,53 +83,49 @@ function TInterpreter() {
         return data
     }
 
-    var getClassMethodWrapper = function(className, methodName) {
-        return function() {
-            // transform data from interpreter into actual data
-            var args = []
-            for (var i = 0; i < arguments.length;i++) {
-                args.push(getNativeData(arguments[i]))
-            }
-            return getInterpreterData(classes[className].prototype[methodName].apply(this.data, args))
+    const getClassMethodWrapper = (className, methodName) => function() {
+        // transform data from interpreter into actual data
+        const args = []
+        for (let i = 0; i < arguments.length;i++) {
+            args.push(getNativeData(arguments[i]))
         }
+        return getInterpreterData(classes[className].prototype[methodName].apply(this.data, args))
     }
 
     //TODO: store classes
-    var getClass = function(name) {
-        var parent = interpreter.createObject(interpreter.FUNCTION)
+    var getClass = name => {
+        const parent = interpreter.createObject(interpreter.FUNCTION)
         if (typeof classes[name].prototype !== 'undefined' && typeof classes[name].prototype.translatedMethods !== 'undefined') {
-            var translated = classes[name].prototype.translatedMethods
-            for (var methodName in translated) {
+            const translated = classes[name].prototype.translatedMethods
+            for (const methodName in translated) {
                 interpreter.setProperty(parent.properties.prototype, translated[methodName], interpreter.createNativeFunction(getClassMethodWrapper(name, methodName)))
             }
         }
         return parent
     }
 
-    this.initialize = function() {
+    this.initialize = () => {
 
-        var initFunc = function(interpreter, scope) {
-            var name
-            var object
+        const initFunc = (interpreter, scope) => {
+            let name
+            let object
 
             // #1 Declare translated Instances
-            var getInstanceMethodWrapper = function(className, methodName) {
-                return function() {
-                    // transform data from interpreter into actual data
-                    var args = []
-                    for (var i = 0; i < arguments.length;i++) {
-                        args.push(getNativeData(arguments[i]))
-                    }
-                    return getInterpreterData(instances[className][methodName].apply(this.data, args))
+            const getInstanceMethodWrapper = (className, methodName) => function() {
+                // transform data from interpreter into actual data
+                const args = []
+                for (let i = 0; i < arguments.length;i++) {
+                    args.push(getNativeData(arguments[i]))
                 }
+                return getInterpreterData(instances[className][methodName].apply(this.data, args))
             }
 
-            var getInstance = function(name) {
-                var object = interpreter.createObject(interpreter.FUNCTION)
+            const getInstance = name => {
+                const object = interpreter.createObject(interpreter.FUNCTION)
                 object.data = instances[name]
                 if (typeof instances[name].translatedMethods !== 'undefined') {
-                    var translated = instances[name].translatedMethods
-                    for (var methodName in translated) {
+                    const translated = instances[name].translatedMethods
+                    for (const methodName in translated) {
                         interpreter.setProperty(object, translated[methodName], interpreter.createNativeFunction(getInstanceMethodWrapper(name, methodName)))
                     }
                 }
@@ -153,20 +145,20 @@ function TInterpreter() {
             // #2 Declare translated Classes
             // generate wrapper for translated methods
 
-            var getObject = function(name) {
-                var wrapper = function() {
-                    var obj = interpreter.createObject(getClass(name))
-                    var declickObj = Object.create(classes[name].prototype)
+            const getObject = name => {
+                const wrapper = function() {
+                    const obj = interpreter.createObject(getClass(name))
+                    const declickObj = Object.create(classes[name].prototype)
                     // transform data from interpreter into actual data
-                    var args = []
-                    for (var i = 0; i < arguments.length;i++) {
+                    const args = []
+                    for (let i = 0; i < arguments.length;i++) {
                         args.push(getNativeData(arguments[i]))
                     }
                     classes[name].apply(declickObj, args)
                     obj.data = declickObj
                     return obj
                 }
-                var obj = interpreter.createNativeFunction(wrapper)
+                const obj = interpreter.createNativeFunction(wrapper)
                 return obj
             }
             for (name in classes) {
@@ -183,54 +175,54 @@ function TInterpreter() {
         interpreter =  new Interpreter('', initFunc)
     }
 
-    this.setLog = function(element) {
+    this.setLog = element => {
         log = element
     }
 
-    this.setErrorHandler = function(handler) {
+    this.setErrorHandler = handler => {
         errorHandler = handler
     }
 
     /* Lifecycle management */
 
-    var clear = function() {
+    const clear = () => {
         stop()
     }
 
-    this.clear = function() {
+    this.clear = () => {
         clear()
     }
 
-    this.suspend = function() {
+    this.suspend = () => {
         interpreter.paused_ = true
     }
 
-    this.resume = function() {
+    this.resume = () => {
         if (interpreter.paused_) {
             interpreter.paused_ = false
             run()
         }
     }
 
-    this.stop = function() {
+    this.stop = () => {
         stop()
     }
 
-    var logCommand = function(command) {
+    const logCommand = command => {
         if (typeof log !== 'undefined') {
             log.addCommand(command)
         }
     }
 
-    var stop = function(scope) {
+    var stop = scope => {
         running = false
-        var emptyAST = acorn.parse('')
+        const emptyAST = acorn.parse('')
         if (!scope) {
             scope = interpreter.createScope(emptyAST, null)
         }
         interpreter.stateStack = [{
             node: emptyAST,
-            scope: scope,
+            scope,
             thisExpression: scope,
             done: false
         }]
@@ -239,7 +231,7 @@ function TInterpreter() {
     }
 
 
-    var nextStep = function() {
+    const nextStep = () => {
         try {
             if (interpreter.step()) {
                 stepCount++
@@ -256,8 +248,8 @@ function TInterpreter() {
             }
             //logCommand(interpreter.stateStack);
         } catch (err) {
-            var state
-            var error
+            let state
+            let error
             if (!(err instanceof TError)) {
                 error = new TError(err)
                 if (interpreter.stateStack.length > 0) {
@@ -279,7 +271,7 @@ function TInterpreter() {
                     error.setProgramName(state.node.loc.source)
                 }
             }
-            var baseState = interpreter.stateStack.pop()
+            const baseState = interpreter.stateStack.pop()
             stop(baseState.scope)
 
             if (typeof errorHandler !== 'undefined') {
@@ -290,12 +282,12 @@ function TInterpreter() {
         }
     }
 
-    var run = function() {
+    var run = () => {
         running = true
         nextStep()
     }
 
-    this.start = function() {
+    this.start = () => {
         if (!running) {
             stepCount = 0
             run()
@@ -334,7 +326,7 @@ function TInterpreter() {
     this.addPriorityStatements = function(statements, parameters, log, callback) {
         if (priorityStatementsAllowed) {
             if (typeof parameters !== 'undefined') {
-                for (var i = 0; i < parameters.length; i++) {
+                for (let i = 0; i < parameters.length; i++) {
                     parameters[i] = getInterpreterData(parameters[i])
                 }
             }
@@ -349,18 +341,18 @@ function TInterpreter() {
         }
     }
 
-    this.addClass = function(func, name) {
+    this.addClass = (func, name) => {
         classes[name] = func
         if (func.prototype.className) {
             translatedClasses[func.prototype.className] = name
         }
     }
 
-    this.addInstance = function(func, name) {
+    this.addInstance = (func, name) => {
         instances[name] = func
     }
 
-    this.getClass = function(name) {
+    this.getClass = name => {
         if (classes[name]) {
             return classes[name]
         } else {
@@ -368,9 +360,9 @@ function TInterpreter() {
         }
     }
 
-    this.getObject = function(name) {
+    this.getObject = name => {
         try {
-            var obj = interpreter.getValueFromScope(name)
+            const obj = interpreter.getValueFromScope(name)
             if (obj && obj.data) {
                 return obj.data
             }
@@ -380,11 +372,11 @@ function TInterpreter() {
         }
     }
 
-    this.getObjectName = function(reference) {
-        var scope = interpreter.getScope()
+    this.getObjectName = reference => {
+        let scope = interpreter.getScope()
         while (scope) {
-            for (var name in scope.properties) {
-                var obj = scope.properties[name]
+            for (const name in scope.properties) {
+                const obj = scope.properties[name]
                 if (obj.data && obj.data === reference) {
                     return name
                 }
@@ -394,11 +386,11 @@ function TInterpreter() {
         return null
     }
 
-    this.deleteObject = function(reference) {
-        var scope = interpreter.getScope()
+    this.deleteObject = reference => {
+        let scope = interpreter.getScope()
         while (scope) {
-            for (var name in scope.properties) {
-                var obj = scope.properties[name]
+            for (const name in scope.properties) {
+                const obj = scope.properties[name]
                 if (!scope.fixed[name] && obj.data) {
                     if (obj.data === reference) {
                         interpreter.deleteProperty(scope, name)
@@ -411,16 +403,16 @@ function TInterpreter() {
         return false
     }
 
-    this.exposeProperty = function(reference, property, propertyName) {
-        var scope = interpreter.getScope()
-        var wrapper = function() {
+    this.exposeProperty = (reference, property, propertyName) => {
+        let scope = interpreter.getScope()
+        const wrapper = function() {
             return getInterpreterData(this.data[property])
         }
         while (scope) {
-            for (var name in scope.properties) {
-                var obj = scope.properties[name]
+            for (const name in scope.properties) {
+                const obj = scope.properties[name]
                 if (obj.data === reference) {
-                    var prop = interpreter.createObject(null)
+                    const prop = interpreter.createObject(null)
                     prop.dynamic = wrapper
                     //window.console.log(typeof property);
                     interpreter.setProperty(obj, propertyName, prop)
@@ -433,34 +425,34 @@ function TInterpreter() {
     }
 
     this.createCallStatement = function(functionStatement) {
-        var state = [{type: 'InnerCallExpression',arguments: [], func_: functionStatement, loc: functionStatement.node.loc}]
+        const state = [{type: 'InnerCallExpression',arguments: [], func_: functionStatement, loc: functionStatement.node.loc}]
         return state
     }
 
-    this.createCallbackStatement = function(callback) {
-        var statement = {type: 'CallbackStatement', callback: callback}
+    this.createCallbackStatement = callback => {
+        const statement = {type: 'CallbackStatement', callback}
         return statement
     }
 
-    this.createFunctionStatement = function(body, parameters) {
+    this.createFunctionStatement = (body, parameters) => {
         if (typeof parameters === 'undefined') {
             parameters = []
         }
-        var node = {type:'FunctionExpression', body:{type:'BlockStatement', body:body}, params:parameters}
-        var statement = interpreter.createFunction(node)
+        const node = {type:'FunctionExpression', body:{type:'BlockStatement', body}, params:parameters}
+        const statement = interpreter.createFunction(node)
         return statement
     }
 
-    this.interrupt = function() {
+    this.interrupt = () => {
         interpreter.stateStack.shift()
         interpreter.stateStack.unshift({node:{type: 'InterruptStatement'}, priority:true, done:false})
     }
 
-    this.allowPriorityStatements = function() {
+    this.allowPriorityStatements = () => {
         priorityStatementsAllowed = true
     }
 
-    this.refusePriorityStatements = function() {
+    this.refusePriorityStatements = () => {
         priorityStatementsAllowed = false
     }
 }
@@ -468,32 +460,32 @@ function TInterpreter() {
 
 // Modify Interpreter to handle function declaration
 Interpreter.prototype.stepFunctionDeclaration = function() {
-    var state = this.stateStack.shift()
+    const state = this.stateStack.shift()
     this.setValue(this.createPrimitive(state.node.id.name), this.createFunction(state.node))
 }
 
 // Modify Interpreter to throw exception when trying to redefining fixed property
 Interpreter.prototype.setValueToScope = function(name, value) {
-    var scope = this.getScope()
-    var strict = scope.strict
-    var nameStr = name.toString()
+    let scope = this.getScope()
+    const strict = scope.strict
+    const nameStr = name.toString()
     while (scope) {
         if ((nameStr in scope.properties) || (!strict && !scope.parentScope)) {
             if (!scope.fixed[nameStr]) {
                 scope.properties[nameStr] = value
             } else {
-                this.throwException(this.REFERENCE_ERROR, nameStr + ' is alderady defined')
+                this.throwException(this.REFERENCE_ERROR, `${nameStr} is alderady defined`)
             }
             return
         }
         scope = scope.parentScope
     }
-    this.throwException(this.REFERENCE_ERROR, nameStr + ' is not defined')
+    this.throwException(this.REFERENCE_ERROR, `${nameStr} is not defined`)
 }
 
 // Modify Interpreter to not delete statements when looking for a try
 Interpreter.prototype.throwException = function(errorClass, opt_message) {
-    var error
+    let error
     if (this.stateStack[0].interpreter) {
         // This is the wrong interpreter, we are spinning on an eval.
         try {
@@ -512,15 +504,15 @@ Interpreter.prototype.throwException = function(errorClass, opt_message) {
         this.createPrimitive(opt_message), false, true)
     }
     // Search for a try statement.
-    var i = 0
-    var state
-    var length = this.stateStack.length
+    let i = 0
+    let state
+    const length = this.stateStack.length
     do {
         state = this.stateStack[i]
         i++
     } while (i < length && state.node.type !== 'TryStatement')
     if (state.node.type === 'TryStatement') {
-        for (var j = 0; j < i; j++) {
+        for (let j = 0; j < i; j++) {
             this.stateStack.shift()
         }
         // Error is being trapped.
@@ -530,9 +522,9 @@ Interpreter.prototype.throwException = function(errorClass, opt_message) {
         })
     } else {
         // Throw a real error.
-        var realError
+        let realError
         if (this.isa(error, this.ERROR)) {
-            var errorTable = {
+            const errorTable = {
                 'EvalError': EvalError,
                 'RangeError': RangeError,
                 'ReferenceError': ReferenceError,
@@ -540,7 +532,7 @@ Interpreter.prototype.throwException = function(errorClass, opt_message) {
                 'TypeError': TypeError,
                 'URIError': URIError
             }
-            var type = errorTable[this.getProperty(error, 'name')] || Error
+            const type = errorTable[this.getProperty(error, 'name')] || Error
             realError = type(this.getProperty(error, 'message'))
         } else {
             realError = error.toString()
@@ -551,9 +543,9 @@ Interpreter.prototype.throwException = function(errorClass, opt_message) {
 
 // add support for Repeat statement
 Interpreter.prototype.stepRepeatStatement = function() {
-    var state = this.stateStack[0]
+    const state = this.stateStack[0]
     state.isLoop = true
-    var node = state.node
+    const node = state.node
     if (state.countHandled) {
         if (node.body) {
             if (state.infinite) {
@@ -587,9 +579,9 @@ Interpreter.prototype.stepRepeatStatement = function() {
 
 // add support for inner call
 Interpreter.prototype.stepInnerCallExpression = function() {
-    var state = this.stateStack.shift()
-    var args = []
-    var n = 0
+    const state = this.stateStack.shift()
+    let args = []
+    let n = 0
     if (state.parameters) {
         args = state.parameters
         n = args.length
@@ -600,7 +592,7 @@ Interpreter.prototype.stepInnerCallExpression = function() {
 
 Interpreter.prototype.insertBlock = function(block, priority) {
     // Find index at which insertion has to be made
-    var index = this.stateStack.length - 1
+    let index = this.stateStack.length - 1
     while (index >= 0 && !this.stateStack[index].priority) {
         index--
     }
@@ -608,14 +600,14 @@ Interpreter.prototype.insertBlock = function(block, priority) {
 
     // Append the new statements
     block.type = 'BlockStatement'
-    this.stateStack.splice(index, 0, {node: block, priority:priority, done:false})
+    this.stateStack.splice(index, 0, {node: block, priority, done:false})
 }
 
 
 // add ability to insert code
 Interpreter.prototype.insertCode = function(code, priority, parameters, callbackStatement) {
     // Find index at which insertion has to be made
-    var index = this.stateStack.length - 1
+    let index = this.stateStack.length - 1
     while (index >= 0 && !this.stateStack[index].priority) {
         index--
     }
@@ -623,15 +615,15 @@ Interpreter.prototype.insertCode = function(code, priority, parameters, callback
 
     // Append the new statements
     if (typeof callbackStatement !== 'undefined') {
-        this.stateStack.splice(index, 0, {node: callbackStatement, priority:priority, done:false})
+        this.stateStack.splice(index, 0, {node: callbackStatement, priority, done:false})
     }
-    for (var i = code.length - 1; i >= 0; i--) {
-        var node = code[i]
+    for (let i = code.length - 1; i >= 0; i--) {
+        const node = code[i]
         if (priority && node.type === 'InnerCallExpression' && typeof parameters !== 'undefined') {
             // Add parameter
-            this.stateStack.splice(index, 0, {node: node, priority:priority, done:false, parameters:parameters})
+            this.stateStack.splice(index, 0, {node, priority, done:false, parameters})
         } else  {
-            this.stateStack.splice(index, 0, {node: node, priority:priority, done:false})
+            this.stateStack.splice(index, 0, {node, priority, done:false})
         }
     }
 }
@@ -641,14 +633,14 @@ Interpreter.prototype.getProperty = function(obj, name) {
     if (typeof (name))
     name = name.toString()
     if (obj == this.UNDEFINED || obj == this.NULL) {
-        this.throwException(this.TYPE_ERROR, 'Cannot read property \'' + name + '\' of ' + obj)
+        this.throwException(this.TYPE_ERROR, `Cannot read property '${name}' of ${obj}`)
     }
     // Special cases for magic length property.
     if (this.isa(obj, this.STRING)) {
         if (name == 'length') {
             return this.createPrimitive(obj.data.length)
         }
-        var n = this.arrayIndex(name)
+        const n = this.arrayIndex(name)
         if (!isNaN(n) && n < obj.data.length) {
             return this.createPrimitive(obj.data[n])
         }
@@ -657,7 +649,7 @@ Interpreter.prototype.getProperty = function(obj, name) {
     }
     while (true) {
         if (obj.properties && name in obj.properties) {
-            var prop = obj.properties[name]
+            const prop = obj.properties[name]
             if (prop.dynamic ) {
                 return prop.dynamic.apply(obj)
             }
@@ -675,9 +667,9 @@ Interpreter.prototype.getProperty = function(obj, name) {
 
 // change break management not to remove root program node
 Interpreter.prototype.stepBreakStatement = function() {
-    var state = this.stateStack.shift()
-    var node = state.node
-    var label = null
+    let state = this.stateStack.shift()
+    const node = state.node
+    let label = null
     if (node.label) {
         label = node.label.name
     }
@@ -699,14 +691,14 @@ Interpreter.prototype.stepBreakStatement = function() {
 
 // handle interrupt statements
 Interpreter.prototype.stepInterruptStatement = function() {
-    var state = this.stateStack.shift()
-    var node = state.node
-    var label = null
+    let state = this.stateStack.shift()
+    const node = state.node
+    let label = null
     if (node.label) {
         label = node.label.name
     }
     // Find index at which search has to start
-    var index = this.stateStack.length - 1
+    let index = this.stateStack.length - 1
     while (index >= 0 && !this.stateStack[index].priority) {
         index--
     }
@@ -730,8 +722,8 @@ Interpreter.prototype.stepInterruptStatement = function() {
 
 // handle interrupt statements
 Interpreter.prototype.stepCallbackStatement = function() {
-    var state = this.stateStack.shift()
-    var node = state.node
+    const state = this.stateStack.shift()
+    const node = state.node
     if (node.callback) {
         node.callback.apply(this)
     }

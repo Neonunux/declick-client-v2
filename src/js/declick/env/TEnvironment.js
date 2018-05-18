@@ -8,10 +8,10 @@ import TResource from '@/data/TResource'
  * interactions with the environment.
  * @exports TEnvironment
  */
-var TEnvironment = function () {
-    var project
-    var projectAvailable = false
-    var support3D = null
+const TEnvironment = function () {
+    let project
+    let projectAvailable = false
+    const support3D = null
 
     this.messages = {}
 
@@ -30,16 +30,16 @@ var TEnvironment = function () {
     }
     this.debug = false
 
-    var parameters = {}
-    var parametersHandlers = []
-    var messagesHandlers = []
+    let parameters = {}
+    const parametersHandlers = []
+    const messagesHandlers = []
 
-    this.registerParametersHandler = function (handler, callback) {
+    this.registerParametersHandler = (handler, callback) => {
         parametersHandlers.push(handler)
         propagateParameters(handler, callback)
     }
 
-    this.registerMessagesHandler = function (handler, callback) {
+    this.registerMessagesHandler = (handler, callback) => {
         messagesHandlers.push(handler)
     }
 
@@ -47,19 +47,19 @@ var TEnvironment = function () {
         handler(parameters, callback)
     }
 
-    function propagateMessage(event) {
-        for (var index = 0; index < messagesHandlers.length; index++) {
-            messagesHandlers[index](event.data)
+    function propagateMessage({data}) {
+        for (let index = 0; index < messagesHandlers.length; index++) {
+            messagesHandlers[index](data)
         }
     }
 
     function reloadParameters() {
         parameters = {}
-        var parts = window.location.hash.substring(1).split('&')
+        const parts = window.location.hash.substring(1).split('&')
         for (var index = 0; index < parts.length; index++) {
-            var subParts = parts[index].split('=')
-            var key = subParts[0]
-            var value = subParts[1]
+            const subParts = parts[index].split('=')
+            const key = subParts[0]
+            const value = subParts[1]
             parameters[key] = value
         }
         for (index = 0; index < parametersHandlers.length; index++) {
@@ -67,12 +67,12 @@ var TEnvironment = function () {
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(() => {
         reloadParameters()
-        window.addEventListener('hashchange', function() {
+        window.addEventListener('hashchange', () => {
             reloadParameters()
         }, false)
-        window.addEventListener('message', function(event) {
+        window.addEventListener('message', event => {
             propagateMessage(event)
         }, false)
     })
@@ -84,24 +84,24 @@ var TEnvironment = function () {
     this.load = function (callback) {
         window.console.log('*** Loading Declick Environment ***')
         window.console.log('* Loading config')
-        var configFile = this.getResource('config.json')
-        var self = this
-        TResource.get(configFile, [], function(data) {
+        const configFile = this.getResource('config.json')
+        const self = this
+        TResource.get(configFile, [], data => {
             $.extend(self.config, data)
             self.debug = self.config.debug
             TResource.setCacheEnabled(self.isCacheEnabled(), self.config['cache-version'])
-            window.console.log('* Cache revision: ' + self.config['cache-version'])
+            window.console.log(`* Cache revision: ${self.config['cache-version']}`)
             TResource.setLog(self.config.log)
             TResource.setError(self.config.error)
             self.log('* Retrieving translated messages')
-            var messageFile = self.getResource('messages.json')
-            var language = self.language
-            TResource.get(messageFile, [language], function (data) {
+            const messageFile = self.getResource('messages.json')
+            const language = self.language
+            TResource.get(messageFile, [language], data => {
                 if (typeof data[language] !== 'undefined') {
-                    self.log('found messages in language: ' + language)
+                    self.log(`found messages in language: ${language}`)
                     self.messages = data[language]
                 } else {
-                    self.log('found no messages for language: ' + language)
+                    self.log(`found no messages for language: ${language}`)
                 }
                 if (typeof callback !== 'undefined') {
                     callback.call(self)
@@ -114,25 +114,21 @@ var TEnvironment = function () {
      * Get the base URL.
      * @returns {String}
      */
-    this.getBaseUrl = function () {
-        return window.location.protocol + '//' + window.location.host + window.location.pathname.split('/').slice(0, -1).join('/')
-    }
+    this.getBaseUrl = () => `${window.location.protocol}//${window.location.host}${window.location.pathname.split('/').slice(0, -1).join('/')}`
 
     /**
      * Get the URL of objects.
      * @returns {String}
      */
     this.getObjectsUrl = function () {
-        return this.getBaseUrl() + '/js/declick/objects'
+        return `${this.getBaseUrl()}/js/declick/objects`
     }
 
     /**
      * Get the URL of the list of objects.
      * @returns {String}
      */
-    this.getObjectListUrl = function () {
-        return 'objects.json'
-    }
+    this.getObjectListUrl = () => 'objects.json'
 
     this.getBackendUrl = function (target) {
         return this.config['backend-path'] + target
@@ -159,19 +155,15 @@ var TEnvironment = function () {
      * @param {String} name
      * @returns {String} Returns the URL of the resource.
      */
-    this.getResource = function (name) {
-        // return this.getBaseUrl() + "/resources/" + name;
-        return `resources/${name}`
-    }
+    this.getResource = name => // return this.getBaseUrl() + "/resources/" + name;
+    `resources/${name}`
 
     /**
      * Get resource entered in parameter of var project.
      * @param {String} name
      * @returns {Resource}
      */
-    this.getProjectResource = function (name) {
-        return project.getResourceLocation(name)
-    }
+    this.getProjectResource = name => project.getResourceLocation(name)
 
     /**
      * Get a message. There are two possibilities :
@@ -184,11 +176,11 @@ var TEnvironment = function () {
      */
     this.getMessage = function (code) {
         if (typeof this.messages[code] !== 'undefined') {
-            var message = this.messages[code]
+            let message = this.messages[code]
             if (arguments.length > 1) {
                 // message has to be parsed
-                var elements = arguments
-                message = message.replace(/{(\d+)}/g, function (match, number) {
+                const elements = arguments
+                message = message.replace(/{(\d+)}/g, (match, number) => {
                     number = parseInt(number) + 1
                     return typeof elements[number] !== 'undefined' ? elements[number] : match
                 })
@@ -203,7 +195,7 @@ var TEnvironment = function () {
      * Set the project to the one entered in parameter.
      * @param {String} value
      */
-    this.setProject = function (value) {
+    this.setProject = value => {
         project = value
     }
 
@@ -211,15 +203,13 @@ var TEnvironment = function () {
      * Get the current project.
      * @returns {String}
      */
-    this.getProject = function () {
-        return project
-    }
+    this.getProject = () => project
 
     /**
      * Set the avaibility of the project.
      * @param {Boolean} value
      */
-    this.setProjectAvailable = function (value) {
+    this.setProjectAvailable = value => {
         projectAvailable = value
     }
 
@@ -227,9 +217,7 @@ var TEnvironment = function () {
      * Get the avaibility of the project.
      * @returns {Boolean}
      */
-    this.isProjectAvailable = function () {
-        return projectAvailable
-    }
+    this.isProjectAvailable = () => projectAvailable
 
     /**
      * Get the configuration of the value entered in parameter.
@@ -244,36 +232,34 @@ var TEnvironment = function () {
      * Checks the suppport of 3D and write a message in log.
      * @returns {Boolean}   Returns true if 3D is supported, else false.
      */
-    this.is3DSupported = function () {
-        return false
-        /*
-        var canvas, gl;
-        if (support3D !== null)
-            return support3D;
+    this.is3DSupported = () => false
+    /*
+    var canvas, gl;
+    if (support3D !== null)
+        return support3D;
+    try {
+        canvas = document.createElement('canvas');
+        gl = canvas.getContext('webgl');
+    } catch (e) {
+        gl = null;
+    }
+    if (gl === null) {
         try {
-            canvas = document.createElement('canvas');
-            gl = canvas.getContext('webgl');
-        } catch (e) {
+            gl = canvas.getContext("experimental-webgl");
+        }
+        catch (e) {
             gl = null;
         }
-        if (gl === null) {
-            try {
-                gl = canvas.getContext("experimental-webgl");
-            }
-            catch (e) {
-                gl = null;
-            }
-        }
-        if (gl === null) {
-            support3D = false;
-            this.log("3D functions not supported");
-        } else {
-            support3D = true;
-            this.log("3D functions supported");
-        }
-        return support3D;
-        */
     }
+    if (gl === null) {
+        support3D = false;
+        this.log("3D functions not supported");
+    } else {
+        support3D = true;
+        this.log("3D functions supported");
+    }
+    return support3D;
+    */
 
     /**
      * Checks if cache (i.e. localStorage) is enabled.
@@ -293,7 +279,7 @@ var TEnvironment = function () {
         if (this.config.error) {
             window.console.error(message)
         } else {
-            this.log('ERROR> ' + message)
+            this.log(`ERROR> ${message}`)
         }
     }
 
@@ -301,11 +287,11 @@ var TEnvironment = function () {
         return this.config.log
     }
 
-    this.getFirstBrowserLanguage = function () {
-        var nav = window.navigator
-        var browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage']
-        var i
-        var language
+    this.getFirstBrowserLanguage = () => {
+        const nav = window.navigator
+        const browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage']
+        let i
+        let language
         // support for HTML 5.1 "navigator.languages"
         if (Array.isArray(nav.languages)) {
             for (i = 0; i < nav.languages.length; i++) {
@@ -329,6 +315,6 @@ var TEnvironment = function () {
 
 }
 
-var environmentInstance = new TEnvironment()
+const environmentInstance = new TEnvironment()
 
 export default environmentInstance

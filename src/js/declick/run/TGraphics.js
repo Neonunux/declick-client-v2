@@ -1,18 +1,18 @@
 import $ from 'jquery'
-const Quintus = require('quintus')
+import Quintus from 'quintus'
 
 function TGraphics() {
-    var Q = Quintus()
+    const Q = Quintus()
     Q.include('Sprites, Scenes, 2D, UI, Anim, Input, Touch, Audio').enableSound()
 
     // Tweak Quintus to be able to look for sprites while skipping some of them
-    Q._TdetectSkip = function(obj, iterator, context, arg1, arg2, skip) {
-        var result
+    Q._TdetectSkip = (obj, iterator, context, arg1, arg2, skip) => {
+        let result
         if (obj == null) {
             return
         }
         if (obj.length === +obj.length) {
-            for (var i = 0, l = obj.length; i < l; i++) {
+            for (let i = 0, l = obj.length; i < l; i++) {
                 result = iterator.call(context, obj[i], i, arg1, arg2)
                 if (result) {
                     skip--
@@ -23,7 +23,7 @@ function TGraphics() {
             }
             return false
         } else {
-            for (var key in obj) {
+            for (const key in obj) {
                 result = iterator.call(context, obj[key], key, arg1, arg2)
                 if (result) {
                     skip--
@@ -38,9 +38,9 @@ function TGraphics() {
 
     Q.Stage.prototype._TgridCellCheckSkip = function(type, id, obj, collisionMask, skip) {
         if (Q._isUndefined(collisionMask) || collisionMask & type) {
-            var obj2 = this.index[id]
+            const obj2 = this.index[id]
             if (obj2 && obj2 !== obj && Q.overlap(obj, obj2)) {
-                var col = Q.collision(obj, obj2)
+                const col = Q.collision(obj, obj2)
                 if (col) {
                     col.obj = obj2
                     return col
@@ -64,13 +64,13 @@ function TGraphics() {
             skip = 0
         }
 
-        var grid = obj.grid
-        var gridCell
+        const grid = obj.grid
+        let gridCell
         var col
 
-        for (var y = grid.Y1; y <= grid.Y2; y++) {
+        for (let y = grid.Y1; y <= grid.Y2; y++) {
             if (this.grid[y]) {
-                for (var x = grid.X1; x <= grid.X2; x++) {
+                for (let x = grid.X1; x <= grid.X2; x++) {
                     gridCell = this.grid[y][x]
                     if (gridCell) {
                         col = Q._TdetectSkip(gridCell, this._TgridCellCheckSkip, this, obj, collisionMask, skip)
@@ -86,7 +86,7 @@ function TGraphics() {
 
     // Tweak Quintus to be able to remove a collisionlayer
     Q.Stage.prototype.removeCollisionLayer = function(layer) {
-    	var index = this._collisionLayers.indexOf(layer)
+    	const index = this._collisionLayers.indexOf(layer)
     	if (index !== -1) {
     		this._collisionLayers.splice(index, 1)
     	}
@@ -96,16 +96,16 @@ function TGraphics() {
     Q.touchStage = [0]
     Q.touchType = 0
 
-    Q._TdetectTouch = function(obj, iterator, context, arg1, arg2) {
-        var result = false
-        var id = -1
-        var col
+    Q._TdetectTouch = (obj, iterator, context, arg1, arg2) => {
+        let result = false
+        let id = -1
+        let col
         if (obj == null) {
             return
         }
 
         if (obj.length === +obj.length) {
-            for (var i = 0, l = obj.length; i < l; i++) {
+            for (let i = 0, l = obj.length; i < l; i++) {
                 col = iterator.call(context, obj[i], i, arg1, arg2, id)
                 if (col) {
                     id = col.obj.p.id
@@ -114,7 +114,7 @@ function TGraphics() {
             }
             return result
         } else {
-            for (var key in obj) {
+            for (const key in obj) {
                 col = iterator.call(context, obj[key], key, arg1, arg2, id)
                 if (col) {
                     id = col.obj.p.id
@@ -127,9 +127,9 @@ function TGraphics() {
 
     Q.Stage.prototype._TgridCellCheckTouch = function(type, id, obj, collisionMask, minId) {
         if (Q._isUndefined(collisionMask) || collisionMask & type) {
-            var obj2 = this.index[id]
+            const obj2 = this.index[id]
             if (obj2 && obj2 !== obj && !obj2.p.hidden && obj2.p.id > minId && Q.overlap(obj, obj2)) {
-                var col = Q.collision(obj, obj2)
+                const col = Q.collision(obj, obj2)
                 if (col) {
                     col.obj = obj2
                     return col
@@ -150,13 +150,13 @@ function TGraphics() {
             this.regrid(obj, obj.stage !== this)
         }
 
-        var grid = obj.grid
-        var gridCell
+        const grid = obj.grid
+        let gridCell
         var col
 
-        for (var y = grid.Y1; y <= grid.Y2; y++) {
+        for (let y = grid.Y1; y <= grid.Y2; y++) {
             if (this.grid[y]) {
-                for (var x = grid.X1; x <= grid.X2; x++) {
+                for (let x = grid.X1; x <= grid.X2; x++) {
                     gridCell = this.grid[y][x]
                     if (gridCell) {
                         col = Q._TdetectTouch(gridCell, this._TgridCellCheckTouch, this, obj, collisionMask)
@@ -171,24 +171,24 @@ function TGraphics() {
     }
 
     Q.TouchSystem.prototype.touch = function(e) {
-        var touches = e.changedTouches || [e]
+        const touches = e.changedTouches || [e]
 
-        for (var i = 0; i < touches.length; i++) {
+        for (let i = 0; i < touches.length; i++) {
 
-            for (var stageIdx = 0; stageIdx < Q.touchStage.length; stageIdx++) {
-                var touch = touches[i]
-                var stage = Q.stage(Q.touchStage[stageIdx])
+            for (let stageIdx = 0; stageIdx < Q.touchStage.length; stageIdx++) {
+                const touch = touches[i]
+                const stage = Q.stage(Q.touchStage[stageIdx])
 
                 if (!stage) {
                     continue
                 }
 
                 touch.identifier = touch.identifier || 0
-                var pos = this.normalizeTouch(touch, stage)
+                const pos = this.normalizeTouch(touch, stage)
 
                 stage.regrid(pos, true)
-                var col = stage.TsearchTouch(pos, Q.touchType)
-                var obj
+                const col = stage.TsearchTouch(pos, Q.touchType)
+                let obj
 
                 if (col || stageIdx === Q.touchStage.length - 1) {
                     obj = col && col.obj
@@ -205,8 +205,8 @@ function TGraphics() {
                         sx: pos.p.ox,
                         sy: pos.p.oy,
                         identifier: touch.identifier,
-                        obj: obj,
-                        stage: stage
+                        obj,
+                        stage
                     }
                     this.touchedObjects[obj.p.id] = true
                     obj.trigger('touch', this.activeTouches[touch.identifier])
@@ -218,7 +218,7 @@ function TGraphics() {
         //e.preventDefault();
     }
 
-    Q.touch = function(type, stage) {
+    Q.touch = (type, stage) => {
         Q.untouch()
         Q.touchType = type || Q.SPRITE_UI
         Q.touchStage = stage || [2, 1, 0]
@@ -232,34 +232,32 @@ function TGraphics() {
         return Q
     }
 
-    this.getInstance = function() {
-        return Q
-    }
+    this.getInstance = () => Q
 
-    this.pause = function() {
+    this.pause = () => {
         if (Q.loop) {
             Q.pauseGame()
         }
     }
 
-    this.unpause = function() {
+    this.unpause = () => {
         if (!Q.loop) {
             Q.unpauseGame()
         }
     }
 
-    this.preload = function(resources, progress, callback) {
+    this.preload = (resources, progress, callback) => {
         Q.load(resources, callback, {progressCallback: progress})
     }
 
-    this.load = function(resources, callback) {
+    this.load = (resources, callback) => {
         Q.load(resources, callback)
     }
 
-    this.addClass = function(param1, param2, param3) {
-        var ancestor
-        var name
-        var object
+    this.addClass = (param1, param2, param3) => {
+        let ancestor
+        let name
+        let object
         if (typeof param3 !== 'undefined') {
             ancestor = param1
             name = param2
@@ -273,36 +271,34 @@ function TGraphics() {
         return Q[name]
     }
 
-    this.getEasing = function(name) {
-        return Q.Easing[name]
-    }
+    this.getEasing = name => Q.Easing[name]
 
-    this.insertObject = function(object, into) {
+    this.insertObject = (object, into) => {
         Q.stage().insert(object, into)
     }
 
-    this.removeObject = function(object) {
+    this.removeObject = object => {
         Q.stage().remove(object)
     }
 
 function drawGrid(context)
 {
-    var stage = Q.stage()
-    var canvas = Q.el
-    var position = {X : 0, Y: 0}
-    var dimensions = {width: canvas.width, height: canvas.height}
+    const stage = Q.stage()
+    const canvas = Q.el
+    const position = {X : 0, Y: 0}
+    const dimensions = {width: canvas.width, height: canvas.height}
     if (stage.has('viewport'))
     {
-	var viewport = stage.viewport
+	const viewport = stage.viewport
 	position.X = viewport.x
 	position.Y = viewport.y
 	dimensions.width = (viewport.centerX - viewport.x) * 2
 	dimensions.height = (viewport.centerY - viewport.y) * 2
     }
     context.beginPath()
-    var interval = 40
+    const interval = 40
     var linesCount
-    var index
+    let index
     // mark vertical lines
     var offset = interval - (position.X % interval)
     if (offset > interval)
@@ -333,24 +329,21 @@ function drawGrid(context)
     context.stroke()
 }
 
-var gridDisplay = false
+let gridDisplay = false
 
-this.displayGrid = function ()
-{
+this.displayGrid = () => {
     gridDisplay = true
 }
 
-this.maskGrid = function ()
-{
+this.maskGrid = () => {
     gridDisplay = false
 }
 
-    this.setCanvas = function(id) {
+    this.setCanvas = id => {
         Q.setup(id, {maximize: true}).touch(Q.SPRITE_ALL)
         Q.stageScene(null)
-    var renderer = Q.stage().render
-    Q.stage().render = function (context)
-    {
+    const renderer = Q.stage().render
+    Q.stage().render = context => {
 	if (gridDisplay === true)
 	{
 	    drawGrid(context)
@@ -359,34 +352,34 @@ this.maskGrid = function ()
     }
     }
 
-    this.resize = function(width, height) {
-        Q.el.style.height = height + 'px'
-        Q.el.style.width = width + 'px'
+    this.resize = (width, height) => {
+        Q.el.style.height = `${height}px`
+        Q.el.style.width = `${width}px`
         Q.el.width = width
         Q.el.height = height
-        Q.wrapper.style.width = width + 'px'
-        Q.wrapper.style.height = height + 'px'
+        Q.wrapper.style.width = `${width}px`
+        Q.wrapper.style.height = `${height}px`
         Q.width = width
         Q.height = height
         Q.cssWidth = width
         Q.cssHeight = height
-        var stage = Q.stage()
+        const stage = Q.stage()
         stage.defaults['w'] = width
         stage.defaults['h'] = height
     }
 
-    this.objectResized = function(object) {
+    this.objectResized = object => {
         object.size(true)
         Q._generatePoints(object, true)
     }
 
-    this.regridObject = function(object) {
+    this.regridObject = object => {
         Q._generateCollisionPoints(object)
         object.stage.regrid(object)
     }
 
-    this.searchCollisionLayer = function(object, collisionMask, regrid) {
-        var stage = object.stage
+    this.searchCollisionLayer = (object, collisionMask, regrid) => {
+        const stage = object.stage
         if (regrid) {
             Q._generateCollisionPoints(object)
             stage.regrid(object, false)
@@ -394,21 +387,13 @@ this.maskGrid = function ()
         return stage._collideCollisionLayer(object,collisionMask)
     }
 
-    this.getAsset = function(name) {
-        return Q.asset(name)
-    }
+    this.getAsset = name => Q.asset(name)
 
-    this.getContext = function() {
-        return Q.ctx
-    }
+    this.getContext = () => Q.ctx
 
-    this.getElement = function() {
-        return Q.el
-    }
+    this.getElement = () => Q.el
 
-    this.getAudio = function() {
-        return Q.audio
-    }
+    this.getAudio = () => Q.audio
 
 }
 

@@ -3,16 +3,52 @@ import Robot from '@/objects/robot/Robot'
 import CommandManager from '@/utils/CommandManager'
 import TUtils from '@/utils/TUtils'
 
-var Girl = function(model)
-{
-if (model === void 0) {
-    model = 'girl'
-}
-    Robot.call(this, model)
+class Girl extends Robot {
+    constructor(model) {
+    if (model === void 0) {
+        model = 'girl'
+    }
+        super(model)
+    }
+
+    _say(message) {
+    let text = null
+    try
+    {
+        text = `${TUtils.getInteger(message)}`
+    }
+    catch (exception)
+    {
+        text = TUtils.getString(message)
+    }
+        this.gObject.say(text)
+    }
+
+    _ifSay(command) {
+    command = TUtils.getCommand(command)
+    this.gObject.sayCommands.addCommand(command)
+    }
+
+    _ask(question) {
+    question = TUtils.getString(question)
+    this.gObject.ask(question)
+    }
+
+    _ifAsk(command) {
+    command = TUtils.getCommand(command)
+    this.gObject.askCommands.addCommand(command)
+    }
+
+    _disableCollisions(value) {
+    if (value === void 0) {
+        value = true
+    } else {
+        value = TUtils.getBoolean(value)
+    }
+    this.gObject.disableCollisions(value)
+    }
 }
 
-Girl.prototype = Object.create(Robot.prototype)
-Girl.prototype.constructor = Girl
 Girl.prototype.className = 'Girl'
 
 function drawBubble(context, X, Y, width, height, radius, direction)
@@ -23,8 +59,8 @@ if (typeof direction === 'undefined')
 {
 	direction = 'left'
 }
-var right = X + width
-var bottom = Y + height
+const right = X + width
+const bottom = Y + height
 context.beginPath()
 context.moveTo(X + radius, Y)
 context.lineTo(right - radius, Y)
@@ -55,7 +91,7 @@ context.stroke()
 
 Girl.prototype.gClass = Girl.prototype.graphics.addClass('TRobot', 'Girl',
 {
-init: function (props, defaultProps) {
+init(props, defaultProps) {
         this._super(props, defaultProps)
     this.collisionsDisabled = false
     this.timeoutIdentifier = null
@@ -63,32 +99,29 @@ init: function (props, defaultProps) {
     this.sayCommands = new CommandManager()
     this.askCommands = new CommandManager()
     },
-draw: function (context)
-{
+draw(context) {
     if (this.message !== null)
     {
 	context.font = '12px Lucida Console'
-	var padding = 6
-	var height = 15
-	var width = context.measureText(this.message).width
-	var X = -(width / 2)
-	var Y = -height - (padding * 3)
+	const padding = 6
+	const height = 15
+	const width = context.measureText(this.message).width
+	const X = -(width / 2)
+	const Y = -height - (padding * 3)
 	drawBubble(context, X - padding, Y - height - padding, width + (padding * 2), height + (padding * 2), padding, 'left')
 	context.fillStyle = 'black'
 	context.fillText(this.message, X, Y)
     }
     this._super(context)
 },
-say: function (message, triggerEvent)
-{
+say(message, triggerEvent) {
     if (typeof triggerEvent === 'undefined') {
         triggerEvent = true
     }
     this.message = message
     this.synchronousManager.begin()
-    var context = this
-    this.timeoutIdentifier = window.setTimeout(function ()
-    {
+    const context = this
+    this.timeoutIdentifier = window.setTimeout(() => {
         context.timeoutIdentifier = null
         context.message = null
         if (triggerEvent) {
@@ -97,68 +130,25 @@ say: function (message, triggerEvent)
         context.synchronousManager.end()
     }, (message.length * 50) + 1500)
 },
-ask: function (question)
-{
+ask(question) {
     this.say(question, false)
     Platform.ask(this.getTObject(), question)
 },
-destroy: function ()
-{
+destroy() {
     if (this.timeoutIdentifier !== null)
     {
 	window.clearTimeout(this.timeoutIdentifier)
     }
     this._super()
 },
-disableCollisions: function (value)
-{
+disableCollisions(value) {
     this.collisionsDisabled = value
 },
-checkCollisions: function () {
+checkCollisions() {
     if (!this.collisionsDisabled) {
 	this._super()
     }
 }
 })
-
-Girl.prototype._say = function (message)
-{
-var text = null
-try
-{
-    text = TUtils.getInteger(message) + ''
-}
-catch (exception)
-{
-    text = TUtils.getString(message)
-}
-    this.gObject.say(text)
-}
-
-Girl.prototype._ifSay = function (command)
-{
-command = TUtils.getCommand(command)
-this.gObject.sayCommands.addCommand(command)
-}
-
-Girl.prototype._ask = function (question)
-{
-question = TUtils.getString(question)
-this.gObject.ask(question)
-}
-
-Girl.prototype._ifAsk = function (command) {
-command = TUtils.getCommand(command)
-this.gObject.askCommands.addCommand(command)
-}
-
-Girl.prototype._disableCollisions = function (value) {
-if (value === void 0) {
-    value = true
-} else {
-    value = TUtils.getBoolean(value)
-}
-this.gObject.disableCollisions(value)
-}
 
 export default Girl

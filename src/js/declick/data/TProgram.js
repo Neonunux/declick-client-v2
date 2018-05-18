@@ -10,26 +10,26 @@ import TUtils from '@/utils/TUtils'
  * @exports TProgram
  */
 function TProgram(value) {
-    var statements = new Array()
-    var code = ''
-    var name = null
-    var loaded = false
-    var newProgram = false
-    var modified = false
-    var codeChanged = false
+    let statements = new Array()
+    let code = ''
+    let name = null
+    let loaded = false
+    let newProgram = false
+    let modified = false
+    let codeChanged = false
 
     if (TUtils.checkString(value)) {
         name = value
     } else {
-        var used = []
+        let used = []
         if (TUtils.checkArray(value)) {
             used = value
         }
-        var index = 0
+        let index = 0
         do {
             index++
             name = TEnvironment.getMessage('program-new', index)
-        } while (used.indexOf(name) > -1)
+        } while (used.includes(name))
         newProgram = true
     }
 
@@ -38,7 +38,7 @@ function TProgram(value) {
      * If it's a new program, create it.
      * @param {Function} callback
      */
-    this.save = function(callback) {
+    this.save = callback => {
         if (newProgram) {
             // First create program
             TLink.createProgram(name, function(error) {
@@ -75,7 +75,7 @@ function TProgram(value) {
      * Loads Program 'name'.
      * @param {Function} callback
      */
-    this.load = function(callback) {
+    this.load = callback => {
         TLink.getProgramCode(name, function(codeData) {
             if (codeData instanceof TError) {
                 callback.call(this, codeData)
@@ -100,7 +100,7 @@ function TProgram(value) {
      * Change the code.
      * @param {String} value    New code
      */
-    this.setCode = function(value) {
+    this.setCode = value => {
         code = value
         codeChanged = true
     }
@@ -120,7 +120,7 @@ function TProgram(value) {
      * Parse the code if it has changed, and returns statements.
      * @return {Statements[]}
      */
-    this.getStatements = function() {
+    this.getStatements = () => {
         if (codeChanged) {
             parse()
         }
@@ -131,9 +131,7 @@ function TProgram(value) {
      * Get Program's name.
      * @returns {String}
      */
-    this.getName = function() {
-        return name
-    }
+    this.getName = () => name
 
     /**
      * Returns the displayed Program's name.
@@ -141,7 +139,7 @@ function TProgram(value) {
      * depending of its modification state.)
      * @returns {String}
      */
-    this.getDisplayedName = function() {
+    this.getDisplayedName = () => {
         if (modified) {
             return TEnvironment.getMessage('program-modified', name)
         } else {
@@ -153,7 +151,7 @@ function TProgram(value) {
      * Set Program's name.
      * @param {String} value
      */
-    this.setName = function(value) {
+    this.setName = value => {
         name = value
     }
 
@@ -162,7 +160,7 @@ function TProgram(value) {
      * @param {String} value    New name
      * @param {Function} callback
      */
-    this.rename = function(value, callback) {
+    this.rename = (value, callback) => {
         if (!newProgram) {
             TLink.renameProgram(name, value, function(error) {
                 if (typeof error !== 'undefined') {
@@ -194,15 +192,13 @@ function TProgram(value) {
      * Get Program's ID.
      * @returns {String}
      */
-    this.getId = function() {
-        return TProgram.findId(name)
-    }
+    this.getId = () => TProgram.findId(name)
 
     /**
      * Set 'modified' value.
      * @param {Boolean} value
      */
-    this.setModified = function(value) {
+    this.setModified = value => {
         modified = value
     }
 
@@ -210,17 +206,13 @@ function TProgram(value) {
      * Returns true if the code has been modified.
      * @returns {Boolean}
      */
-    this.isModified = function() {
-        return modified
-    }
+    this.isModified = () => modified
 
     /**
      * Returns true if the current program is a new one.
      * @returns {Boolean}
      */
-    this.isNew = function() {
-        return newProgram
-    }
+    this.isNew = () => newProgram
 
     /**
      * Delete current program.
@@ -247,10 +239,10 @@ function TProgram(value) {
  * @returns {String|Number}
  */
 function hashCode(value) {
-    var hash = 0
-    var i
-    var chr
-    var len
+    let hash = 0
+    let i
+    let chr
+    let len
     if (value.length === 0)
         return hash
     for (i = 0, len = value.length; i < len; i++) {
@@ -266,8 +258,8 @@ function hashCode(value) {
  * @param {String} name
  * @returns {String}
  */
-TProgram.findId = function(name) {
-    var id = hashCode(name)
+TProgram.findId = name => {
+    const id = hashCode(name)
     return id
 }
 

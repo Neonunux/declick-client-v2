@@ -5,77 +5,71 @@ import TEnvironment from '@/env/TEnvironment'
 import THints from '@/ui/THints'
 import TError from '@/utils/TError'
 
-var TUI = function() {
-    var frame
-    var canvas
-    var editor
-    var sidebar
-    var toolbar
-    var console
-    var editorEnabled = false
-    var consoleDisplayed = true
-    var designModeEnabled = false
-    var floatingControllerEnabled = false
-    var programsDisplayed = true
-    var resourcesDisplayed = false
-    var log
-    var message
+const TUI = function() {
+    let frame
+    let canvas
+    let editor
+    let sidebar
+    let toolbar
+    let console
+    let editorEnabled = false
+    let consoleDisplayed = true
+    let designModeEnabled = false
+    let floatingControllerEnabled = false
+    let programsDisplayed = true
+    let resourcesDisplayed = false
+    let log
+    let message
 
-    this.setFrame = function(element) {
+    this.setFrame = element => {
         frame = element
         return
     }
 
-    this.setCanvas = function(element) {
+    this.setCanvas = element => {
         canvas = element
         return
     }
 
-    this.setEditor = function(element) {
+    this.setEditor = element => {
         editor = element
         return
     }
 
-    this.setSidebar = function(element) {
+    this.setSidebar = element => {
         sidebar = element
         return
     }
 
-    this.setLog = function(element) {
+    this.setLog = element => {
         log = element
         return
     }
 
-    this.setMessage = function(element) {
+    this.setMessage = element => {
         message = element
         return
     }
 
-    this.setToolbar = function(element) {
+    this.setToolbar = element => {
         toolbar = element
         return
     }
 
-    this.setConsole = function(element) {
+    this.setConsole = element => {
         console = element
         return
     }
 
-    this.setHints = function(element) {
+    this.setHints = element => {
         hints = element
         return
     }
 
-    this.getCanvas = function() {
-        return canvas
-    }
+    this.getCanvas = () => canvas
 
-    this.getCanvasCursorX = function() {
-        return canvas.getCursorX()
-    }
-    this.getCanvasCursorY = function() {
-        return canvas.getCursorY()
-    }
+    this.getCanvasCursorX = () => canvas.getCursorX()
+    this.getCanvasCursorY = () => canvas.getCursorY()
 
     this.hideConsole = function(hideLog) {
         //TODO: check if hideLog is still used?
@@ -91,7 +85,7 @@ var TUI = function() {
             }
             console.hide()
             if (hideLog) {
-                frame.setSeparatorPosition(toolbar.getHeight() + 'px')
+                frame.setSeparatorPosition(`${toolbar.getHeight()}px`)
                 frame.disableSeparator()
             }
             else {
@@ -264,7 +258,7 @@ var TUI = function() {
 
 
     this.clear = function(confirm) {
-        var goOn = true
+        let goOn = true
         if (typeof confirm !== 'undefined' && confirm) {
             goOn = window.confirm(TEnvironment.getMessage('clear-confirm'))
         }
@@ -278,7 +272,7 @@ var TUI = function() {
         }
     }
 
-    this.addLogMessage = function(text) {
+    this.addLogMessage = text => {
         if (typeof log !== 'undefined') {
             log.addMessage(text)
         }
@@ -287,13 +281,13 @@ var TUI = function() {
         }
     }
 
-    this.showMessage = function(text) {
+    this.showMessage = text => {
         if (typeof message !== 'undefined') {
             message.show(text)
         }
     }
 
-    this.addLogError = function(error) {
+    this.addLogError = error => {
         if (typeof log !== 'undefined') {
             log.addError(error)
         }
@@ -302,31 +296,31 @@ var TUI = function() {
         }
     }
 
-    this.showErrorMessage = function(text, index) {
+    this.showErrorMessage = (text, index) => {
         if (typeof message !== 'undefined') {
             message.showError(text, index)
         }
     }
 
-    this.clearLog = function() {
+    this.clearLog = () => {
         if (typeof log !== 'undefined') {
             log.clear()
         }
     }
 
-    this.getPreviousRow = function() {
+    this.getPreviousRow = () => {
         if (typeof log !== 'undefined') {
             return log.getPreviousRow()
         }
     }
 
-    this.getNextRow = function() {
+    this.getNextRow = () => {
         if (typeof log !== 'undefined') {
             return log.getNextRow()
         }
     }
 
-    this.setLastRow = function() {
+    this.setLastRow = () => {
         if (typeof log !== 'undefined') {
             return log.setLastRow()
         }
@@ -346,10 +340,10 @@ var TUI = function() {
             this.clear(false)
             this.disableEditor()
             console.clear()
-            var currentProgram = editor.getProgramName()
+            const currentProgram = editor.getProgramName()
             if (currentProgram !== false) {
                 TRuntime.executeFrom(editor, currentProgram)
-                window.setTimeout(function() {
+                window.setTimeout(() => {
                     canvas.giveFocus()
                 })
             }
@@ -357,7 +351,7 @@ var TUI = function() {
     }
 
     this.handleError = function(index) {
-        var error = log.getError(index)
+        const error = log.getError(index)
         if (error.getProgramName() === null) {
             if (consoleDisplayed) {
                 // error from command
@@ -374,12 +368,12 @@ var TUI = function() {
     }
 
     this.saveProgram = function() {
-        var project = TEnvironment.getProject()
+        const project = TEnvironment.getProject()
         editor.updateProgram()
-        var program = editor.getProgram()
+        const program = editor.getProgram()
         sidebar.showLoadingProgram(program.getName())
-        var self = this
-        project.saveProgram(program, function(error) {
+        const self = this
+        project.saveProgram(program, error => {
             if (typeof error !== 'undefined') {
                 self.addLogError(error)
             }
@@ -394,8 +388,8 @@ var TUI = function() {
     }
 
     this.newProgram = function() {
-        var project = TEnvironment.getProject()
-        var program = project.createProgram()
+        const project = TEnvironment.getProject()
+        const program = project.createProgram()
         project.setSession(program, editor.createSession(program))
         editor.setProgram(program)
         editor.setSession(project.getSession(program))
@@ -405,22 +399,22 @@ var TUI = function() {
     }
 
     this.editProgram = function(name) {
-        var project = TEnvironment.getProject()
+        const project = TEnvironment.getProject()
         // save previous session if any
-        var previousProgram = editor.getProgram()
+        const previousProgram = editor.getProgram()
         if (typeof previousProgram !== 'undefined') {
             project.updateSession(previousProgram, editor.getSession())
         }
         if (!project.isProgramEdited(name)) {
             // Program has to be loaded
             sidebar.showLoadingProgram(name)
-            var self = this
-            project.editProgram(name, function(error) {
+            const self = this
+            project.editProgram(name, error => {
                 if (typeof error !== 'undefined') {
                     self.addLogError(error)
                 }
                 else {
-                    var newProgram = project.getEditedProgram(name)
+                    const newProgram = project.getEditedProgram(name)
                     project.setSession(newProgram, editor.createSession(newProgram))
                     editor.setProgram(newProgram)
                     editor.setSession(project.getSession(newProgram))
@@ -431,7 +425,7 @@ var TUI = function() {
             })
         }
         else {
-            var newProgram = project.getEditedProgram(name)
+            const newProgram = project.getEditedProgram(name)
             editor.setProgram(newProgram)
             editor.setSession(project.getSession(newProgram))
             //update sidebar
@@ -441,8 +435,8 @@ var TUI = function() {
     }
 
     function nextProgram(name) {
-        var project = TEnvironment.getProject()
-        var program = project.findPreviousEditedProgram(name)
+        const project = TEnvironment.getProject()
+        const program = project.findPreviousEditedProgram(name)
         if (program) {
             editor.setProgram(program)
             editor.setSession(project.getSession(program))
@@ -456,8 +450,8 @@ var TUI = function() {
     }
 
     this.closeProgram = function(name) {
-        var project = TEnvironment.getProject()
-        var result = project.closeProgram(name)
+        const project = TEnvironment.getProject()
+        let result = project.closeProgram(name)
         if (result) {
             // close performed
             // check if program was current editing program in editor, in which case we set next editing program as current program
@@ -484,10 +478,10 @@ var TUI = function() {
 
     this.renameProgram = function(oldName, newName) {
         if (newName !== oldName) {
-            var project = TEnvironment.getProject()
+            const project = TEnvironment.getProject()
             sidebar.showRenamingProgram(oldName)
-            var self = this
-            project.renameProgram(oldName, newName, function(error) {
+            const self = this
+            project.renameProgram(oldName, newName, error => {
                 if (typeof error !== 'undefined') {
                     self.addLogError(error)
                 }
@@ -497,13 +491,13 @@ var TUI = function() {
     }
 
     this.renameResource = function(name, newBaseName) {
-        var project = TEnvironment.getProject()
-        var oldBaseName = project.getResourceBaseName(name)
-        var newName = name
+        const project = TEnvironment.getProject()
+        const oldBaseName = project.getResourceBaseName(name)
+        let newName = name
         if (newBaseName !== oldBaseName) {
             sidebar.showRenamingResource(name)
-            var self = this
-            project.renameResource(name, newBaseName, function(name) {
+            const self = this
+            project.renameResource(name, newBaseName, name => {
                 if (name instanceof TError) {
                     self.addLogError(name)
                 }
@@ -516,11 +510,11 @@ var TUI = function() {
         }
     }
 
-    this.setSaveAvailable = function(value) {
+    this.setSaveAvailable = value => {
         toolbar.setSaveAvailable(value)
     }
 
-    this.setSaveEnabled = function(value) {
+    this.setSaveEnabled = value => {
         if (value && TEnvironment.isProjectAvailable()) {
             toolbar.setSaveEnabled(true)
             editor.setSaveEnabled(true)
@@ -531,27 +525,25 @@ var TUI = function() {
         }
     }
 
-    this.setEditionEnabled = function(value) {
+    this.setEditionEnabled = value => {
         sidebar.setEditionEnabled(value)
     }
 
-    this.updateSidebarPrograms = function() {
+    this.updateSidebarPrograms = () => {
         sidebar.updatePrograms()
     }
 
-    this.updateSidebarResources = function() {
+    this.updateSidebarResources = () => {
         sidebar.updateResources()
     }
 
-    this.updateProgramInfo = function(program) {
+    this.updateProgramInfo = program => {
         sidebar.updateProgramInfo(program)
     }
 
-    this.getCurrentProgram = function() {
-        return editor.getProgram()
-    }
+    this.getCurrentProgram = () => editor.getProgram()
 
-    this.displayPrograms = function() {
+    this.displayPrograms = () => {
         sidebar.displayPrograms()
         programsDisplayed = true
         resourcesDisplayed = false
@@ -567,7 +559,7 @@ var TUI = function() {
         }
     }
 
-    this.displayResources = function() {
+    this.displayResources = () => {
         if (sidebar.displayResources()) {
             resourcesDisplayed = true
             programsDisplayed = false
@@ -585,10 +577,10 @@ var TUI = function() {
     }
 
     this.delete = function() {
-        var goOn
-        var name
-        var self = this
-        var project = TEnvironment.getProject()
+        let goOn
+        let name
+        const self = this
+        const project = TEnvironment.getProject()
         if (programsDisplayed) {
             // Program deletion
             name = editor.getProgramName()
@@ -598,12 +590,12 @@ var TUI = function() {
             }
             goOn = window.confirm(TEnvironment.getMessage('delete-program-confirm', name))
             if (goOn) {
-                project.deleteProgram(name, function(error) {
+                project.deleteProgram(name, error => {
                     if (typeof error !== 'undefined') {
                         self.addLogError(error)
                     }
                     else {
-                        var result = nextProgram(name)
+                        const result = nextProgram(name)
                         if (result) {
                             self.setSaveEnabled(true)
                             sidebar.setProgramsEditionEnabled(true)
@@ -627,7 +619,7 @@ var TUI = function() {
             if (name !== '') {
                 goOn = window.confirm(TEnvironment.getMessage('delete-resource-confirm', name))
                 if (goOn) {
-                    project.deleteResource(name, function(error) {
+                    project.deleteResource(name, error => {
                         if (typeof error !== 'undefined') {
                             self.addLogError(error)
                         }
@@ -640,13 +632,13 @@ var TUI = function() {
         }
     }
 
-    this.recordObjectLocation = function(tObject, location) {
-        var name = TRuntime.getTObjectName(tObject)
+    this.recordObjectLocation = (tObject, location) => {
+        const name = TRuntime.getTObjectName(tObject)
         log.addObjectLocation(name, location)
     }
 
     this.setResourceContent = function(name, data, callback) {
-        var self = this
+        const self = this
         TEnvironment.getProject().setResourceContent(name, data, function(newName) {
             if (!(newName instanceof TError)) {
                 if (newName !== name) {
@@ -660,7 +652,7 @@ var TUI = function() {
     }
 
     this.duplicateResource = function(name, callback) {
-        var self = this
+        const self = this
         TEnvironment.getProject().duplicateResource(name, function(newName) {
             if (!(newName instanceof TError)) {
                 self.updateSidebarResources()
@@ -671,12 +663,12 @@ var TUI = function() {
         })
     }
 
-    this.newResource = function() {
+    this.newResource = () => {
         sidebar.createResource()
     }
 
     this.createResource = function(name, width, height, callback) {
-        var self = this
+        const self = this
         TEnvironment.getProject().createResource(name, width, height, function(newName) {
             if (!(newName instanceof TError)) {
                 self.updateSidebarResources()
@@ -691,29 +683,29 @@ var TUI = function() {
         this.clear()
         editor.disable()
         sidebar.load()
-        TEnvironment.getProject().init(function() {
+        TEnvironment.getProject().init(() => {
             sidebar.update()
         }, id)
     }
 
-    this.hideHints = function() {
+    this.hideHints = () => {
         THints.hideHints()
         toolbar.setHintsDisplayed(false)
     }
 
-    this.toggleHints = function() {
+    this.toggleHints = () => {
         THints.toggleHints()
         toolbar.setHintsDisplayed(THints.visible())
     }
 
-    this.enableWiki = function() {
+    this.enableWiki = () => {
         toolbar.setWikiOpen()
     }
 
-    this.disableWiki = function() {
+    this.disableWiki = () => {
         toolbar.setWikiClosed()
     }
 }
 
-var uiInstance = new TUI()
+const uiInstance = new TUI()
 export default uiInstance

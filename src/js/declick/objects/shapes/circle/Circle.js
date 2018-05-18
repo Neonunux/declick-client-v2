@@ -9,23 +9,23 @@ import TUtils from '@/utils/TUtils'
  * Defines Circle, inherited from Arc.
  * @exports Circle
  */
-var Circle = function () {
-    Arc.call(this)
+class Circle extends Arc {
+    constructor() {
+        super()
+    }
 }
 
-Circle.prototype = Object.create(Arc.prototype)
-Circle.prototype.constructor = Circle
 Circle.prototype.className = 'Circle'
 
-var graphics = Circle.prototype.graphics
+const graphics = Circle.prototype.graphics
 
 Circle.prototype.gClass = graphics.addClass('TArc', 'TCircle', {
-    init: function (props, defaultProps) {
+    init(props, defaultProps) {
         this._super(TUtils.extend({
         }, props), defaultProps)
     },
-    draw: function (ctx) {
-        var p = this.p
+    draw(ctx) {
+        const p = this.p
         if (p.ray !== false) {
             ctx.beginPath()
             ctx.translate(p.tx, p.ty)

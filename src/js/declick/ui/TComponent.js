@@ -6,13 +6,13 @@ import TUtils from '@/utils/TUtils'
 
 function TComponent(component, callback) {
 
-    var domComponent
+    let domComponent
 
     if (TUtils.checkString(component)) {
         // 'component' holds the name of html template
-        var url = 'components/' + component
-        var self = this
-        TResource.getPlain(url, function(data) {
+        const url = `components/${component}`
+        const self = this
+        TResource.getPlain(url, data => {
             domComponent = $(data)
             if (typeof callback !== 'undefined') {
                 callback.call(self, domComponent)
@@ -21,12 +21,12 @@ function TComponent(component, callback) {
     }
     else {
         // 'component' holds div parameters
-        var txtElement = '<div'
+        let txtElement = '<div'
         if (typeof component.id !== 'undefined') {
-            txtElement += ' id="' + component.id + '"'
+            txtElement += ` id="${component.id}"`
         }
         if (typeof component.class !== 'undefined') {
-            txtElement += ' class="' + component.class + '"'
+            txtElement += ` class="${component.class}"`
         }
         txtElement += '></div>'
         domComponent = $(txtElement)
@@ -35,9 +35,7 @@ function TComponent(component, callback) {
         }
     }
 
-    this.getComponent = function() {
-        return domComponent
-    }
+    this.getComponent = () => domComponent
 }
 
 export default TComponent

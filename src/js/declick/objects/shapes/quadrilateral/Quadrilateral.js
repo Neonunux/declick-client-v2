@@ -9,25 +9,25 @@ import TUtils from '@/utils/TUtils'
  * Defines Quadrilateral, inherited from Polygon.
  * @exports Quadrilateral
  */
-var Quadrilateral = function (p1, p2, p3, p4) {
-    Polygon.call(this, p1, p2, p3, p4)
+class Quadrilateral extends Polygon {
+    constructor(p1, p2, p3, p4) {
+        super(p1, p2, p3, p4)
+    }
 }
 
-Quadrilateral.prototype = Object.create(Polygon.prototype)
-Quadrilateral.prototype.constructor = Quadrilateral
 Quadrilateral.prototype.className = 'Quadrilateral'
 
-var graphics = Quadrilateral.prototype.graphics
+const graphics = Quadrilateral.prototype.graphics
 
 Quadrilateral.prototype.gClass = graphics.addClass('TPolygon', 'TQuadrilateral', {
-    init: function (props, defaultProps) {
+    init(props, defaultProps) {
         this._super(TUtils.extend({
         }, props), defaultProps)
     },
-    setVertices: function (value) {
+    setVertices(value) {
         this.p.vertices = []
         if (value.length === 4) {
-            for (var i = 0; i < value.length; i++) {
+            for (let i = 0; i < value.length; i++) {
                 this.p.vertices.push(value[i])
             }
             this.p.initVertices = true

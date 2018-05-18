@@ -9,25 +9,25 @@ import TUtils from '@/utils/TUtils'
  * Defines Triangle, inherited from Polygon.
  * @exports Triangle
  */
-var Triangle = function (p1, p2, p3) {
-    Polygon.call(this, p1, p2, p3)
+class Triangle extends Polygon {
+    constructor(p1, p2, p3) {
+        super(p1, p2, p3)
+    }
 }
 
-Triangle.prototype = Object.create(Polygon.prototype)
-Triangle.prototype.constructor = Triangle
 Triangle.prototype.className = 'Triangle'
 
-var graphics = Triangle.prototype.graphics
+const graphics = Triangle.prototype.graphics
 
 Triangle.prototype.gClass = graphics.addClass('TPolygon', 'TTriangle', {
-    init: function (props, defaultProps) {
+    init(props, defaultProps) {
         this._super(TUtils.extend({
         }, props), defaultProps)
     },
-    setVertices: function (value) {
+    setVertices(value) {
         this.p.vertices = []
         if (value.length === 3) {
-            for (var i = 0; i < value.length; i++) {
+            for (let i = 0; i < value.length; i++) {
                 this.p.vertices.push(value[i])
             }
             this.p.initVertices = true

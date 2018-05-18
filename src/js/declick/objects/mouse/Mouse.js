@@ -9,29 +9,28 @@ import TUI from '@/ui/TUI'
  * It allows several interactions.
  * @exports Mouse
  */
-var Mouse = function () {
-    this.getX = function () {
-        return TUI.getCanvasCursorX()
+class Mouse extends TObject {
+    constructor() {
+        this.getX = () => TUI.getCanvasCursorX()
+        this.getY = () => TUI.getCanvasCursorY()
     }
-    this.getY = function () {
-        return TUI.getCanvasCursorY()
+
+    /**
+     * Get mouse X "value".
+     */
+    _getX() {
+        return this.getX()
     }
-}
-Mouse.prototype = Object.create(TObject.prototype)
-Mouse.prototype.constructor = Mouse
-Mouse.prototype.className = 'Mouse'
-/**
- * Get mouse X "value".
- */
-Mouse.prototype._getX = function () {
-    return this.getX()
-}
-/**
- * Get mouse Width "value" in logs.
- */
-Mouse.prototype._getY = function () {
-    return this.getY()
+
+    /**
+     * Get mouse Width "value" in logs.
+     */
+    _getY() {
+        return this.getY()
+    }
 }
 
-var mouseInstance = new Mouse()
+Mouse.prototype.className = 'Mouse'
+
+const mouseInstance = new Mouse()
 export default mouseInstance

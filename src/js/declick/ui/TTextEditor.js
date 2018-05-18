@@ -4,67 +4,67 @@ import TEnvironment from '@/env/TEnvironment'
 import TComponent from '@/ui/TComponent'
 import TUI from '@/ui/TUI'
 
-function TTextEditor(callback) {
-    var $name
-    var $textArea
-    var $main
-    var resourceName = ''
+class TTextEditor extends TComponent {
+    constructor(callback) {
+        let $name
+        let $textArea
+        let $main
+        let resourceName = ''
 
-    TComponent.call(this, 'TTextEditor.html', function(component) {
-        var $buttonClose = component.find('.tviewer-button-close')
-        $buttonClose.prop('title', TEnvironment.getMessage('texteditor-close'))
-        $buttonClose.click(function(e) {
-            hide()
+        super('TTextEditor.html', function(component) {
+            const $buttonClose = component.find('.tviewer-button-close')
+            $buttonClose.prop('title', TEnvironment.getMessage('texteditor-close'))
+            $buttonClose.click(e => {
+                hide()
+            })
+
+            const $buttonCancel = component.find('.tviewer-creation-cancel')
+            $buttonCancel.append(TEnvironment.getMessage('viewer-creation-cancel'))
+            $buttonCancel.click(e => {
+                hide()
+            })
+
+            const $buttonSave = component.find('.tviewer-creation-save')
+            $buttonSave.append(TEnvironment.getMessage('viewer-creation-save'))
+            $buttonSave.click(e => {
+                save()
+            })
+
+            $main = component
+            $textArea = component.find('#ttexteditor-text')
+            $name = component.find('.tviewer-text-name')
+            $main.hide()
+
+            if (typeof callback !== 'undefined') {
+                callback.call(this, component)
+            }
         })
 
-        var $buttonCancel = component.find('.tviewer-creation-cancel')
-        $buttonCancel.append(TEnvironment.getMessage('viewer-creation-cancel'))
-        $buttonCancel.click(function(e) {
-            hide()
-        })
-
-        var $buttonSave = component.find('.tviewer-creation-save')
-        $buttonSave.append(TEnvironment.getMessage('viewer-creation-save'))
-        $buttonSave.click(function(e) {
-            save()
-        })
-
-        $main = component
-        $textArea = component.find('#ttexteditor-text')
-        $name = component.find('.tviewer-text-name')
-        $main.hide()
-
-        if (typeof callback !== 'undefined') {
-            callback.call(this, component)
+        this.loadText = name => {
+            resourceName = name
+            $name.text(name)
+            const project = TEnvironment.getProject()
+            $textArea.val('')
+            project.getResourceContent(name, data => {
+                $textArea.val(data)
+            })
+            $main.fadeIn()
         }
-    })
 
-    this.loadText = function(name) {
-        resourceName = name
-        $name.text(name)
-        var project = TEnvironment.getProject()
-        $textArea.val('')
-        project.getResourceContent(name, function(data) {
-            $textArea.val(data)
-        })
-        $main.fadeIn()
-    }
+        this.init = () => {
+            $('body').append($main)
+        }
 
-    this.init = function() {
-        $('body').append($main)
-    }
+        var hide = () => {
+            $main.fadeOut()
+        }
 
-    var hide = function() {
-        $main.fadeOut()
-    }
-
-    var save = function() {
-        TUI.setResourceContent(resourceName, $textArea.val(), function(newName) {
-            hide()
-        })
+        var save = () => {
+            TUI.setResourceContent(resourceName, $textArea.val(), newName => {
+                hide()
+            })
+        }
     }
 }
 
-TTextEditor.prototype = Object.create(TComponent.prototype)
-TTextEditor.prototype.constructor = TTextEditor
 export default TTextEditor

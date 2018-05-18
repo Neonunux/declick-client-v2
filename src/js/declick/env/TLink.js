@@ -11,7 +11,7 @@ import TUtils from '@/utils/TUtils'
  * @exports TLink
  */
 
-  var TLink = function () {
+  const TLink = function () {
 
   /*
   var token = false;
@@ -22,38 +22,38 @@ import TUtils from '@/utils/TUtils'
   var resources = false;
   */
 
-  this.setProjectId = function (value) {
+  this.setProjectId = value => {
     store.setProjectId(value)
   }
 
-  var self = this
+  const self = this
 
-  var api = {
+  const api = {
 
     authorizationToken: null,
 
-    makeRequest: function (parameters, successCallback, errorCallback) {
-      var defaultParameters = {
+    makeRequest(parameters, successCallback, errorCallback) {
+      const defaultParameters = {
         global: false,
-        beforeSend: function (request) {
+        beforeSend(request) {
           if (api.authorizationToken) {
             request.setRequestHeader(
               'Authorization',
-              'Token ' + api.authorizationToken
+              `Token ${api.authorizationToken}`
             )
           }
         },
-        success: function (data) {
+        success(data) {
           successCallback.call(this, data)
         },
-        error: function (data, status, error) {
+        error(data, status, error) {
           errorCallback.call(this, new TError(error))
         }
       }
       $.ajax($.extend(defaultParameters, parameters))
     },
 
-    createResource: function (target, data, successCallback, errorCallback) {
+    createResource(target, data, successCallback, errorCallback) {
       this.makeRequest({
         type: 'POST',
         url: TEnvironment.getBackendUrl(target),
@@ -62,9 +62,7 @@ import TUtils from '@/utils/TUtils'
       }, successCallback, errorCallback)
     },
 
-    modifyResource: function (target, modifications, successCallback,
-      errorCallback
-    ) {
+    modifyResource(target, modifications, successCallback, errorCallback) {
       this.makeRequest({
         type: 'PATCH',
         url: TEnvironment.getBackendUrl(target),
@@ -73,7 +71,7 @@ import TUtils from '@/utils/TUtils'
       }, successCallback, errorCallback)
     },
 
-    getResource: function (target, successCallback, errorCallback) {
+    getResource(target, successCallback, errorCallback) {
       this.makeRequest({
         type: 'GET',
         url: TEnvironment.getBackendUrl(target),
@@ -81,14 +79,14 @@ import TUtils from '@/utils/TUtils'
       }, successCallback, errorCallback)
     },
 
-    deleteResource: function (target, successCallback, errorCallback) {
+    deleteResource(target, successCallback, errorCallback) {
       this.makeRequest({
         type: 'DELETE',
         url: TEnvironment.getBackendUrl(target)
       }, successCallback, errorCallback)
     },
 
-    getTextFile: function (target, successCallback, errorCallback) {
+    getTextFile(target, successCallback, errorCallback) {
       this.makeRequest({
         type: 'GET',
         url: TEnvironment.getBackendUrl(target),
@@ -96,7 +94,7 @@ import TUtils from '@/utils/TUtils'
       }, successCallback, errorCallback)
     },
 
-    setTextFile: function (target, code, successCallback, errorCallback) {
+    setTextFile(target, code, successCallback, errorCallback) {
       this.makeRequest({
         type: 'POST',
         url: TEnvironment.getBackendUrl(target),
@@ -105,7 +103,7 @@ import TUtils from '@/utils/TUtils'
       }, successCallback, errorCallback)
     },
 
-    getBinaryFile: function (target, successCallback, errorCallback) {
+    getBinaryFile(target, successCallback, errorCallback) {
       this.makeRequest({
         type: 'GET',
         url: TEnvironment.getBackendUrl(target),
@@ -113,12 +111,12 @@ import TUtils from '@/utils/TUtils'
       }, successCallback, errorCallback)
     },
 
-    setBinaryFile: function (target, data, successCallback, errorCallback) {
+    setBinaryFile(target, data, successCallback, errorCallback) {
       this.makeRequest({
         type: 'POST',
         url: TEnvironment.getBackendUrl(target),
         contentType: 'text/plain',
-        data: data
+        data
       }, successCallback, errorCallback)
     }
   }
@@ -129,22 +127,22 @@ import TUtils from '@/utils/TUtils'
     projectId: null,
     projectResources: null,
 
-    resetUser: function() {
+    resetUser() {
       store.userId = null
       store.projectId = null
       store.projectResources = null
     },
 
-    setProjectId: function(value) {
+    setProjectId(value) {
       store.projectId = value
       store.projectResources = null
     },
 
-    getUserId: function (successCallback, errorCallback) {
+    getUserId(successCallback, errorCallback) {
       if (store.userId) {
         return successCallback.call(self, store.userId)
       }
-      api.getResource('authorizations', function (authorizations) {
+      api.getResource('authorizations', authorizations => {
         if (authorizations.length >= 1) {
           store.userId = authorizations[0].owner_id
           successCallback.call(self, store.userId)
@@ -154,23 +152,23 @@ import TUtils from '@/utils/TUtils'
       }, errorCallback)
     },
 
-    getDefaultProjectId: function (successCallback, errorCallback) {
-      this.getUserId(function (userId) {
+    getDefaultProjectId(successCallback, errorCallback) {
+      this.getUserId(userId => {
         api.getResource(
-          'users/' + userId + '/projects/default',
-          function (project) {
-            successCallback.call(self, project.id)
+          `users/${userId}/projects/default`,
+          ({id}) => {
+            successCallback.call(self, id)
           },
           errorCallback
         )
       }, errorCallback)
     },
 
-    getProjectId: function (successCallback, errorCallback) {
+    getProjectId(successCallback, errorCallback) {
       if (store.projectId) {
         successCallback.call(self, store.projectId)
       } else {
-        this.getDefaultProjectId(function(projectId) {
+        this.getDefaultProjectId(projectId => {
           store.projectId = projectId
           successCallback.call(self, projectId)
           }
@@ -178,15 +176,15 @@ import TUtils from '@/utils/TUtils'
       }
     },
 
-    getProjectResources: function (successCallback, errorCallback) {
+    getProjectResources(successCallback, errorCallback) {
       if (store.projectId && store.projectResources) {
         return successCallback.call(self, store.projectResources,
           store.projectId)
       }
-      this.getProjectId(function (projectId) {
+      this.getProjectId(projectId => {
         api.getResource(
-          'projects/' + projectId + '/resources',
-          function (resources) {
+          `projects/${projectId}/resources`,
+          resources => {
             store.projectResources = resources
             successCallback.call(self, store.projectResources, projectId)
           },
@@ -195,11 +193,9 @@ import TUtils from '@/utils/TUtils'
       }, errorCallback)
     },
 
-    getProjectResource: function (name, successCallback, errorCallback) {
-      this.getProjectResources(function (resources, projectId) {
-        var match = resources.filter(function (resource) {
-          return resource.file_name === name
-        })[0]
+    getProjectResource(name, successCallback, errorCallback) {
+      this.getProjectResources((resources, projectId) => {
+        const match = resources.filter(({file_name}) => file_name === name)[0]
         if (match) {
           successCallback.call(self, match, projectId)
         } else {
@@ -208,12 +204,12 @@ import TUtils from '@/utils/TUtils'
       }, errorCallback)
     },
 
-    deleteProjectResource: function (name, successCallback, errorCallback) {
-      this.getProjectResource(name, function (resource, projectId) {
+    deleteProjectResource(name, successCallback, errorCallback) {
+      this.getProjectResource(name, (resource, projectId) => {
         api.deleteResource(
-          'projects/' + projectId + '/resources/' + resource.id,
-          function () {
-            var index = store.projectResources.indexOf(resource)
+          `projects/${projectId}/resources/${resource.id}`,
+          () => {
+            const index = store.projectResources.indexOf(resource)
             store.projectResources.splice(index, 1)
             successCallback.call(self, resource, projectId)
           },
@@ -222,16 +218,16 @@ import TUtils from '@/utils/TUtils'
       }, errorCallback)
     },
 
-    createProjectScript: function (name, successCallback, errorCallback) {
-      this.getProjectResources(function (resources, projectId) {
-        var script = {
+    createProjectScript(name, successCallback, errorCallback) {
+      this.getProjectResources((resources, projectId) => {
+        const script = {
             file_name: name,
             media_type: SCRIPT_MEDIA_TYPE
         }
         api.createResource(
-          'projects/' + projectId + '/resources',
+          `projects/${projectId}/resources`,
           script,
-          function (resource) {
+          resource => {
             resources.push(resource)
             successCallback.call(self, resources, projectId)
           },
@@ -240,16 +236,14 @@ import TUtils from '@/utils/TUtils'
       }, errorCallback)
     },
 
-    renameProjectScript: function (name, newName, successCallback,
-      errorCallback
-    ) {
-      this.getProjectResource(name, function (resource, projectId) {
+    renameProjectScript(name, newName, successCallback, errorCallback) {
+      this.getProjectResource(name, (resource, projectId) => {
         api.modifyResource(
-          'projects/' + projectId + '/resources/' + resource.id,
+          `projects/${projectId}/resources/${resource.id}`,
           modifications = {
             file_name: newName
           },
-          function (resources) {
+          resources => {
             resource.file_name = newName
             successCallback.call(self, resources, projectId)
           },
@@ -258,24 +252,20 @@ import TUtils from '@/utils/TUtils'
       })
     },
 
-    getProjectScriptContent: function (name, successCallback,
-      errorCallback
-    ) {
-      this.getProjectResource(name, function (resource, projectId) {
+    getProjectScriptContent(name, successCallback, errorCallback) {
+      this.getProjectResource(name, ({id}, projectId) => {
         api.getTextFile(
-          'projects/' + projectId + '/resources/' + resource.id + '/content',
+          `projects/${projectId}/resources/${id}/content`,
           successCallback,
           errorCallback
         )
       }, errorCallback)
     },
 
-    setProjectScriptContent: function (name, code, successCallback,
-      errorCallback
-    ) {
-      this.getProjectResource(name, function (resource, projectId) {
+    setProjectScriptContent(name, code, successCallback, errorCallback) {
+      this.getProjectResource(name, ({id}, projectId) => {
         api.setTextFile(
-          'projects/' + projectId + '/resources/' + resource.id + '/content',
+          `projects/${projectId}/resources/${id}/content`,
           code,
           successCallback,
           errorCallback
@@ -283,13 +273,13 @@ import TUtils from '@/utils/TUtils'
       }, errorCallback)
     },
 
-    createProjectAsset: function (name, successCallback, errorCallback) {
-      this.getProjectResources(function (resources, projectId) {
-        var extension = ''
-        if (name.indexOf('.') !== -1) {
+    createProjectAsset(name, successCallback, errorCallback) {
+      this.getProjectResources((resources, projectId) => {
+        let extension = ''
+        if (name.includes('.')) {
           extension = name.split('.').pop()
         }
-        var media_type = IMAGE_MEDIA_TYPES[extension]
+        let media_type = IMAGE_MEDIA_TYPES[extension]
         if (!media_type) {
           if (extension === 'html' || extension === 'htm') {
             media_type = HTML_MEDIA_TYPE
@@ -297,14 +287,14 @@ import TUtils from '@/utils/TUtils'
             media_type = 'application/octet-stream'
           }
         }
-        var asset = {
+        const asset = {
             file_name: name,
-            media_type: media_type
+            media_type
         }
         api.createResource(
-          'projects/' + projectId + '/resources',
+          `projects/${projectId}/resources`,
           asset,
-          function (resource) {
+          resource => {
             resources.push(resource)
             successCallback.call(self, resources, projectId)
           },
@@ -313,15 +303,10 @@ import TUtils from '@/utils/TUtils'
       }, errorCallback)
     },
 
-    setProjectAssetContent: function (
-      name,
-      content,
-      successCallback,
-      errorCallback
-    ) {
-      this.getProjectResource(name, function (resource, projectId) {
+    setProjectAssetContent(name, content, successCallback, errorCallback) {
+      this.getProjectResource(name, (resource, projectId) => {
         api.setBinaryFile(
-          'projects/' + projectId + '/resources/' + resource.id + '/content',
+          `projects/${projectId}/resources/${resource.id}/content`,
           content,
           function () {
             successCallback.call(this, resource)
@@ -331,21 +316,19 @@ import TUtils from '@/utils/TUtils'
       }, errorCallback)
     },
 
-    renameProjectAsset: function (name, newBaseName, successCallback,
-      errorCallback
-    ) {
-      this.getProjectResource(name, function (resource, projectId) {
-        var newName = newBaseName
-        var extension = name.split('.').pop()
+    renameProjectAsset(name, newBaseName, successCallback, errorCallback) {
+      this.getProjectResource(name, (resource, projectId) => {
+        let newName = newBaseName
+        const extension = name.split('.').pop()
         if (extension) {
-          newName += '.' + extension
+          newName += `.${extension}`
         }
         api.modifyResource(
-          'projects/' + projectId + '/resources/' + resource.id,
+          `projects/${projectId}/resources/${resource.id}`,
           modifications = {
             file_name: newName
           },
-          function (resources) {
+          resources => {
             resource.file_name = newName
             successCallback.call(self, newName)
           },
@@ -354,19 +337,15 @@ import TUtils from '@/utils/TUtils'
       }, errorCallback)
     },
 
-    getProjectAssetContentLocation: function (name, withExtension) {
+    getProjectAssetContentLocation(name, withExtension) {
       // optimistic
-      var resource = this.projectResources.filter(function (resource) {
-        return resource.file_name === name
-      })[0]
-      var target =
-        'projects/' + (this.projectId || this.defaultProjectId) +
-        '/resources/' + resource.id +
-        '/content'
+      const resource = this.projectResources.filter(({file_name}) => file_name === name)[0]
+      let target =
+        `projects/${this.projectId || this.defaultProjectId}/resources/${resource.id}/content`
       if (withExtension) {
-        for (var extension in IMAGE_MEDIA_TYPES) {
+        for (const extension in IMAGE_MEDIA_TYPES) {
           if (resource.media_type === IMAGE_MEDIA_TYPES[extension]) {
-            target += '.' + extension
+            target += `.${extension}`
             break
           }
         }
@@ -374,10 +353,10 @@ import TUtils from '@/utils/TUtils'
       return TEnvironment.getBackendUrl(target)
     },
 
-    getProjectAssetContent: function (name, successCallback, errorCallback) {
-      this.getProjectResource(name, function (resource, projectId) {
+    getProjectAssetContent(name, successCallback, errorCallback) {
+      this.getProjectResource(name, ({id}, projectId) => {
         api.getBinaryFile(
-          'projects/' + projectId + '/resources/' + resource.id + '/content',
+          `projects/${projectId}/resources/${id}/content`,
           successCallback,
           errorCallback
         )
@@ -385,9 +364,9 @@ import TUtils from '@/utils/TUtils'
     }
   }
 
-  TEnvironment.registerParametersHandler(function (parameters) {
-      for (var name in parameters) {
-          var value = parameters[name]
+  TEnvironment.registerParametersHandler(parameters => {
+      for (const name in parameters) {
+          const value = parameters[name]
           switch (name) {
             case 'token':
               if (api.authorizationToken != value) {
@@ -399,22 +378,20 @@ import TUtils from '@/utils/TUtils'
       }
   })
 
-  this.getAuthorizationToken = function () {
-    return api.authorizationToken
-  }
+  this.getAuthorizationToken = () => api.authorizationToken
 
   var SCRIPT_MEDIA_TYPE = 'text/vnd.colombbus.declick.script'
 
-  this.getProgramList = function (callback) {
-    store.getProjectResources(function (resources, projectId) {
-      var scriptNames = []
-      resources.forEach(function (resource) {
-        if (resource.media_type === SCRIPT_MEDIA_TYPE) {
-          scriptNames.push(resource.file_name)
+  this.getProgramList = callback => {
+    store.getProjectResources((resources, projectId) => {
+      const scriptNames = []
+      resources.forEach(({media_type, file_name}) => {
+        if (media_type === SCRIPT_MEDIA_TYPE) {
+          scriptNames.push(file_name)
         }
       })
       callback.call(self, scriptNames, projectId)
-    }, function() {
+    }, () => {
       callback.call(self, new TError('not connected'))
     })
   }
@@ -428,97 +405,97 @@ import TUtils from '@/utils/TUtils'
 
   var HTML_MEDIA_TYPE = 'text/html'
 
-  this.getResources = function (callback) {
-    store.getProjectResources(function (resources, projectId) {
-      var formattedResources = {}
-      resources.forEach(function (resource) {
-        var isImage = false
-        var isHtml = false
+  this.getResources = callback => {
+    store.getProjectResources((resources, projectId) => {
+      const formattedResources = {}
+      resources.forEach(({media_type, file_name}) => {
+        let isImage = false
+        let isHtml = false
         for (var extension in IMAGE_MEDIA_TYPES) {
-          if (resource.media_type === IMAGE_MEDIA_TYPES[extension]) {
+          if (media_type === IMAGE_MEDIA_TYPES[extension]) {
             isImage = true
             break
           }
         }
-        if (resource.media_type === HTML_MEDIA_TYPE) {
+        if (media_type === HTML_MEDIA_TYPE) {
           isHtml = true
         }
         if (isImage || isHtml) {
-          var parts = resource.file_name.split('.')
+          const parts = file_name.split('.')
           var extension = (parts.length >= 2) ? parts.pop() : ''
-          var baseName = parts.join('.')
-          formattedResources[resource.file_name] = {
+          const baseName = parts.join('.')
+          formattedResources[file_name] = {
             type: (isImage && 'image') || (isHtml && 'text'),
             version: 0,
-            extension: extension,
+            extension,
             'base-name': baseName
           }
         }
       })
       callback.call(self, formattedResources, projectId)
-    }, function() {
+    }, () => {
       callback.call(self, new TError('cannot retrieve resources'))
     })
   }
 
   this.getResource = function (name, callback) {
-    this.getResources(function (resources) {
+    this.getResources(resources => {
       callback.call(self, resources[name])
     }, callback)
   }
 
-  this.getProgramCode = function (name, callback) {
+  this.getProgramCode = (name, callback) => {
     store.getProjectScriptContent(name, callback, callback)
   }
 
-  this.getProgramStatements = function (name, callback) {
-    store.getProjectScriptContent(name, function (content) {
-      var statements = TParser.parse(content, name)
+  this.getProgramStatements = (name, callback) => {
+    store.getProjectScriptContent(name, content => {
+      const statements = TParser.parse(content, name)
       callback.call(self, statements)
     }, callback)
   }
 
-  this.saveProgram = function (name, code, callback) {
-    store.getProjectResource(name, function (resource) {
-      store.setProjectScriptContent(name, code, function () {
+  this.saveProgram = (name, code, callback) => {
+    store.getProjectResource(name, resource => {
+      store.setProjectScriptContent(name, code, () => {
         callback.call(self)
       }, callback)
     }, callback)
   }
 
-  this.createProgram = function (name, callback) {
-    store.createProjectScript(name, function () {
+  this.createProgram = (name, callback) => {
+    store.createProjectScript(name, () => {
       callback.call(self)
     }, callback)
   }
 
-  this.renameProgram = function (name, newName, callback) {
-    store.renameProjectScript(name, newName, function () {
+  this.renameProgram = (name, newName, callback) => {
+    store.renameProjectScript(name, newName, () => {
       callback.call(self)
     }, callback)
   }
 
-  this.deleteProgram = function (name, callback) {
-    store.deleteProjectResource(name, function () {
+  this.deleteProgram = (name, callback) => {
+    store.deleteProjectResource(name, () => {
       callback.call(self)
     }, callback)
   }
 
-  this.createResource = function (name, callback) {
-    store.createProjectAsset(name, function () {
+  this.createResource = (name, callback) => {
+    store.createProjectAsset(name, () => {
       callback.call(self, name)
     }, callback)
   }
 
-  this.saveResource = function (name, data, callback) {
-    store.getProjectResource(name, function (resource) {
-      store.setProjectAssetContent(name, data, function () {
+  this.saveResource = (name, data, callback) => {
+    store.getProjectResource(name, resource => {
+      store.setProjectAssetContent(name, data, () => {
         self.getResource(name, callback)
       }, callback)
     }, callback)
   }
 
-  this.getResourceContent = function (name, version, callback) {
+  this.getResourceContent = (name, version, callback) => {
     store.getProjectAssetContent(name, callback, callback)
   }
 
@@ -526,28 +503,24 @@ import TUtils from '@/utils/TUtils'
     this.saveResource(name, data, callback)
   }
 
-  this.getResourceLocation = function (name) {
-    return store.getProjectAssetContentLocation(name, true)
-  }
+  this.getResourceLocation = name => store.getProjectAssetContentLocation(name, true)
 
-  this.getResourceUploadLocation = function (name) {
-    return store.getProjectAssetContentLocation(name, false)
-  }
+  this.getResourceUploadLocation = name => store.getProjectAssetContentLocation(name, false)
 
-  this.renameResource = function (name, newBaseName, callback) {
+  this.renameResource = (name, newBaseName, callback) => {
     store.renameProjectAsset(name, newBaseName, callback, callback)
   }
 
-  this.getSlideContent = function (id, callback) {
-    var slideUrl = TEnvironment.getConfig('slide-url') + id + '?access_token=jWNoVhWCng6odNLK'
+  this.getSlideContent = (id, callback) => {
+    const slideUrl = `${TEnvironment.getConfig('slide-url') + id}?access_token=jWNoVhWCng6odNLK`
     $.ajax({
         type: 'GET',
         url: slideUrl,
         dataType: 'json',
-        success: function (data) {
-          callback.call(this, data.content)
+        success({content}) {
+          callback.call(this, content)
         },
-        error: function (data, status, error) {
+        error(data, status, error) {
           callback.call(this, new TError(error))
         }
       })
@@ -556,6 +529,6 @@ import TUtils from '@/utils/TUtils'
   this.deleteResource = this.deleteProgram
 }
 
-var linkInstance = new TLink()
+const linkInstance = new TLink()
 
 export default linkInstance

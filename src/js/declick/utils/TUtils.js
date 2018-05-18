@@ -6,9 +6,9 @@ import TEnvironment from '@/env/TEnvironment'
  * Many constants and functions for several purposes.
  * @exports TUtils
  */
-var TUtils = function() {
-    var QUOTE_DELIMITER = '#'
-    var defaultDiacriticsRemovalap = [
+const TUtils = function() {
+    const QUOTE_DELIMITER = '#'
+    const defaultDiacriticsRemovalap = [
         { 'base': 'A', 'letters': 'AⒶＡÀÁÂẦẤẪẨÃĀĂẰẮẴẲȦǠÄǞẢÅǺǍȀȂẠẬẶḀĄȺⱯ' },
         { 'base': 'AA', 'letters': 'Ꜳ' },
         { 'base': 'AE', 'letters': 'ÆǼǢ' },
@@ -94,15 +94,15 @@ var TUtils = function() {
         { 'base': 'y', 'letters': 'yⓨｙỳýŷỹȳẏÿỷẙỵƴɏỿ' },
         { 'base': 'z', 'letters': 'zⓩｚźẑżžẓẕƶȥɀⱬꝣ' }
     ]
-    var diacriticsMap = {}
+    const diacriticsMap = {}
     for (var i = 0; i < defaultDiacriticsRemovalap.length; i++) {
-        var letters = defaultDiacriticsRemovalap[i].letters.split('')
+        const letters = defaultDiacriticsRemovalap[i].letters.split('')
         for (var j = 0; j < letters.length; j++) {
             diacriticsMap[letters[j]] = defaultDiacriticsRemovalap[i].base
         }
     }
 
-    var keyCodes = {
+    const keyCodes = {
         'backspace': 0,
         'tab': 9,
         'return': 13,
@@ -189,12 +189,12 @@ var TUtils = function() {
         '\'': 222
     }
 
-    var keyNamesList = Object.keys(keyCodes)
+    const keyNamesList = Object.keys(keyCodes)
 
-    var keyNames = {}
+    const keyNames = {}
     for (var i = 0; i < keyNamesList.length; i++) {
-        var name = keyNamesList[i]
-        var codes = keyCodes[name]
+        const name = keyNamesList[i]
+        const codes = keyCodes[name]
         if (!isNaN(codes)) {
             // codes is indeed a code
             keyNames[codes] = name
@@ -206,7 +206,7 @@ var TUtils = function() {
         }
     }
 
-    var colors = {
+    const colors = {
         black: [0, 0, 0],
         white: [255, 255, 255],
         red: [255, 0, 0],
@@ -241,10 +241,10 @@ var TUtils = function() {
      * @param {type} str
      * @returns {String}    Returns the modified string.
      */
-    this.removeAccents = function(str) {
-        var letters = str.split('')
-        var newStr = ''
-        for (var i = 0; i < letters.length; i++) {
+    this.removeAccents = str => {
+        const letters = str.split('')
+        let newStr = ''
+        for (let i = 0; i < letters.length; i++) {
             newStr += letters[i] in diacriticsMap ? diacriticsMap[letters[i]] : letters[i]
         }
         return newStr
@@ -258,10 +258,8 @@ var TUtils = function() {
      * @returns {String}    Returns the modified string.
      */
     this.format = function(text) {
-        var args = Array.prototype.slice.call(arguments, 1) // Get an array of arguments w/o the first
-        return text.replace(/{(\d+)}/g, function(match, number) {
-            return typeof args[number] !== 'undefined' ? args[number] : match
-        })
+        const args = Array.prototype.slice.call(arguments, 1) // Get an array of arguments w/o the first
+        return text.replace(/{(\d+)}/g, (match, number) => typeof args[number] !== 'undefined' ? args[number] : match)
     }
 
     /**
@@ -269,9 +267,7 @@ var TUtils = function() {
      * @param {Boolean} value
      * @returns {Boolean}
      */
-    this.checkBoolean = function(value) {
-        return (typeof value !== 'undefined' && typeof value === 'boolean')
-    }
+    this.checkBoolean = value => typeof value !== 'undefined' && typeof value === 'boolean'
 
     /**
      * Get value. If it's not a Boolean, throw an error.
@@ -290,9 +286,7 @@ var TUtils = function() {
      * @param {Number} value
      * @returns {Boolean}
      */
-    this.checkInteger = function(value) {
-        return (typeof value !== 'undefined' && !isNaN(value))
-    }
+    this.checkInteger = value => typeof value !== 'undefined' && !isNaN(value)
 
     /**
      * Get value. If it's not a Number, throw an error.
@@ -311,9 +305,7 @@ var TUtils = function() {
      * @param {String} value
      * @returns {Boolean}
      */
-    this.checkString = function(value) {
-        return (typeof value !== 'undefined' && (typeof value === 'string' || value instanceof String))
-    }
+    this.checkString = value => typeof value !== 'undefined' && (typeof value === 'string' || value instanceof String)
 
     /**
      * Get value. If it's not a String, throw an error.
@@ -332,9 +324,7 @@ var TUtils = function() {
      * @param {Function} value
      * @returns {Boolean}
      */
-    this.checkFunction = function(value) {
-        return (typeof value !== 'undefined' && typeof value === 'object' && typeof value.type !== 'undefined' && value.type === 'function')
-    }
+    this.checkFunction = value => typeof value !== 'undefined' && typeof value === 'object' && typeof value.type !== 'undefined' && value.type === 'function'
 
     /**
      * Get value. If it's not a Function, throw an error.
@@ -395,9 +385,7 @@ var TUtils = function() {
      * @param {Array} value
      * @returns {Boolean}
      */
-    this.checkArray = function(value) {
-        return (Array.isArray(value))
-    }
+    this.checkArray = value => Array.isArray(value)
 
     /**
      * Get value. If it's not an Array, throw an error.
@@ -425,16 +413,14 @@ var TUtils = function() {
         return false
     }
 
-    this.getkeyName = function(value) {
+    this.getkeyName = value => {
         if (typeof keyNames[value] !== 'undefined') {
             return keyNames[value]
         }
         return false
     }
 
-    this.getKeyNames = function() {
-        return keyNamesList
-    }
+    this.getKeyNames = () => keyNamesList
 
     /**
      * Get a color from a string or from 3 integers.
@@ -447,7 +433,7 @@ var TUtils = function() {
      */
     this.getColor = function(red, green, blue) {
         if (this.checkString(red)) {
-            var translated = TEnvironment.getMessage('color-' + red)
+            const translated = TEnvironment.getMessage(`color-${red}`)
             if (typeof colors[translated] !== 'undefined') {
                 return colors[translated]
             }
@@ -469,9 +455,9 @@ var TUtils = function() {
      * @param {Number} color
      * @returns {String}    Component in Hexadecimal
      */
-    this.componentToHex = function(color) {
-        var hex = color.toString(16)
-        return hex.length === 1 ? '0' + hex : hex
+    this.componentToHex = color => {
+        const hex = color.toString(16)
+        return hex.length === 1 ? `0${hex}` : hex
     }
 
     /**
@@ -480,7 +466,7 @@ var TUtils = function() {
      * @returns {String}    Color in Hexadecimal
      */
     this.rgbToHex = function(color) {
-        return '#' + this.componentToHex(color[0]) + this.componentToHex(color[1]) + this.componentToHex(color[2])
+        return `#${this.componentToHex(color[0])}${this.componentToHex(color[1])}${this.componentToHex(color[2])}`
     }
 
     /**
@@ -488,8 +474,8 @@ var TUtils = function() {
      * @param {String} hex
      * @returns {Number[]}    Color in RGB
      */
-    this.hexToRgb = function(hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    this.hexToRgb = hex => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
         return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null
     }
 
@@ -498,8 +484,8 @@ var TUtils = function() {
      * @param {Number[]} color
      * @returns {Number[]}
      */
-    this.reverseColor = function(color) {
-        var ret = []
+    this.reverseColor = color => {
+        const ret = []
         ret[0] = ((color[0] > 64 && color[0] < 192) ? ((color[0] + 128) % 256) : (255 - color[0]))
         ret[1] = ((color[1] > 64 && color[1] < 192) ? ((color[1] + 128) % 256) : (255 - color[1]))
         ret[2] = ((color[2] > 64 && color[2] < 192) ? ((color[2] + 128) % 256) : (255 - color[2]))
@@ -511,21 +497,17 @@ var TUtils = function() {
      * @param {String[]} value
      * @returns {String[]}  Returns the sorted array.
      */
-    this.sortArray = function(value) {
-        return value.sort(function(a, b) {
-            return a.toLowerCase().localeCompare(b.toLowerCase())
-        })
-    }
+    this.sortArray = value => value.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
 
     /**
      * Convert a string to Unicode.
      * @param {String} text
      * @returns {String}    Returns the converted String.
      */
-    this.toUnicode = function(text) {
-        var result = ''
-        for (var i = 0; i < text.length; i++) {
-            result += '\\u' + ('000' + text.charCodeAt(i).toString(16)).substr(-4)
+    this.toUnicode = text => {
+        let result = ''
+        for (let i = 0; i < text.length; i++) {
+            result += `\\u${(`000${text.charCodeAt(i).toString(16)}`).substr(-4)}`
         }
         return result
     }
@@ -537,11 +519,11 @@ var TUtils = function() {
      * '#' will be used.
      * @returns {String}    Returns the created string.
      */
-    this.someDelimiters = function(level, value) {
+    this.someDelimiters = (level, value) => {
         if (typeof value === 'undefined')
             value = QUOTE_DELIMITER
-        var result = ''
-        for (var i = 0; i < level; i++)
+        let result = ''
+        for (let i = 0; i < level; i++)
             result += value
         return result
     }
@@ -556,13 +538,13 @@ var TUtils = function() {
      * @returns {String}    Returns the modified string.
      */
     this.parseQuotes = function(string) {
-        var result = ''
-        var charactersTab = string.split('')
-        var delimiterEncountered = false
-        var escapeEncountered = false
-        var level = 0
-        var character
-        for (var i = 0; i < string.length; i++) {
+        let result = ''
+        const charactersTab = string.split('')
+        let delimiterEncountered = false
+        let escapeEncountered = false
+        let level = 0
+        let character
+        for (let i = 0; i < string.length; i++) {
             character = charactersTab[i]
             switch (character) {
                 case QUOTE_DELIMITER:
@@ -594,7 +576,7 @@ var TUtils = function() {
                 default:
                     if (delimiterEncountered) {
                         // false alarm : write the delimiters to result
-                        for (var j = 0; j < level; j++)
+                        for (let j = 0; j < level; j++)
                             result += QUOTE_DELIMITER
                         delimiterEncountered = false
                         level = 0
@@ -612,11 +594,9 @@ var TUtils = function() {
      * @param {String} text Text to convert
      * @returns {String}    Returns the converted text.
      */
-    this.convertUnicode = function(text) {
-        var result = text.replace(/\\u([0-9a-fA-F]{4})/g,
-            function(whole, group1) {
-                return String.fromCharCode(parseInt(group1, 16))
-            }
+    this.convertUnicode = text => {
+        const result = text.replace(/\\u([0-9a-fA-F]{4})/g,
+            (whole, group1) => String.fromCharCode(parseInt(group1, 16))
         )
         return result
     }
@@ -626,8 +606,8 @@ var TUtils = function() {
      * @param {String} text
      * @returns {Boolean}
      */
-    this.isDelimiterEnded = function(text) {
-        var regex = new RegExp('.*[#\\\\]$', 'm')
+    this.isDelimiterEnded = text => {
+        const regex = new RegExp('.*[#\\\\]$', 'm')
         return regex.test(text)
     }
 
@@ -636,8 +616,8 @@ var TUtils = function() {
      * @param {String} text
      * @returns {Boolean}
      */
-    this.isACommand = function(text) {
-        var regex = new RegExp('.*[A-Za-z0-9]+\\s*.\\s*[A-Za-z0-9]+\\s*\\(\\s*$', 'm')
+    this.isACommand = text => {
+        const regex = new RegExp('.*[A-Za-z0-9]+\\s*.\\s*[A-Za-z0-9]+\\s*\\(\\s*$', 'm')
         return regex.test(text)
     }
 
@@ -646,8 +626,8 @@ var TUtils = function() {
      * @param {String} text
      * @returns {Boolean}
      */
-    this.isNewInstanceStringed = function(text) {
-        var regex = new RegExp('.*[A-Za-z\\d]+\\s*=\\s*new\\s*[A-Za-z\\d]*\\s*\\(\\s*["\']$', 'm')
+    this.isNewInstanceStringed = text => {
+        const regex = new RegExp('.*[A-Za-z\\d]+\\s*=\\s*new\\s*[A-Za-z\\d]*\\s*\\(\\s*["\']$', 'm')
         return regex.test(text)
     }
 
@@ -656,8 +636,8 @@ var TUtils = function() {
      * @param {String} text
      * @returns {Boolean}
      */
-    this.isComparison = function(text) {
-        var regex = new RegExp('.*[\\=!]?\\=\\s*$', 'm')
+    this.isComparison = text => {
+        const regex = new RegExp('.*[\\=!]?\\=\\s*$', 'm')
         return regex.test(text)
     }
 
@@ -666,8 +646,8 @@ var TUtils = function() {
      * @param {type} text
      * @returns {Boolean}
      */
-    this.isStringElement = function(text) {
-        var regex = new RegExp('.*[\\+\\,]\\s*$', 'm')
+    this.isStringElement = text => {
+        const regex = new RegExp('.*[\\+\\,]\\s*$', 'm')
         return regex.test(text)
     }
 
@@ -676,12 +656,12 @@ var TUtils = function() {
      * @param {type} text
      * @returns {Boolean}
      */
-    this.isElsePresent = function(text) {
+    this.isElsePresent = text => {
         //var regex = new RegExp("^.*else*$", "m");
-        var regex = new RegExp('^.*[^[[:alpha:]]]*else[^[[:alpha:]]]*.*$', 'm')
+        const regex = new RegExp('^.*[^[[:alpha:]]]*else[^[[:alpha:]]]*.*$', 'm')
         //var regex  = new RegExp("^.*\\s*[^[[:alpha:]]]else[^[[:alpha:]]]*", "m");
         //^.*[^[[:alpha:]]]*else[^[[:alpha:]]]*.*$
-        console.log('Regex : ' + regex.toString() + ' -- Verif : ' + regex.test(text) + ' -- Text : ' + text)
+        console.log(`Regex : ${regex.toString()} -- Verif : ${regex.test(text)} -- Text : ${text}`)
 
         return regex.test(text)
     }
@@ -695,11 +675,11 @@ var TUtils = function() {
      */
     this.addQuoteDelimiters = function(text) {
         try {
-            var leftPart = ''
-            var newPart = ''
-            var oldQuoteIndex = 0
-            var newQuoteIndex = text.indexOf('"', 0)
-            var level = 0
+            let leftPart = ''
+            let newPart = ''
+            let oldQuoteIndex = 0
+            let newQuoteIndex = text.indexOf('"', 0)
+            let level = 0
 
             while (true) //we scan the String until we got sure there are no more quotation marks to find
             {
@@ -750,7 +730,7 @@ var TUtils = function() {
             }
         }
         catch (e) {
-            TEnvironment.error('addQuoteDelimiters error: ' + e)
+            TEnvironment.error(`addQuoteDelimiters error: ${e}`)
             return text
         }
     }
@@ -760,24 +740,22 @@ var TUtils = function() {
      * @param {String} string
      * @returns {String}    Returns the modified string.
      */
-    this.addslashes = function(string) {
-        return string.replace(/\\/g, '\\\\').
-        replace(/\u0008/g, '\\b').
-        replace(/\t/g, '\\t').
-        replace(/\n/g, '\\n').
-        replace(/\f/g, '\\f').
-        replace(/\r/g, '\\r').
-        replace(/'/g, '\\\'').
-        replace(/"/g, '\\"')
-    }
+    this.addslashes = string => string.replace(/\\/g, '\\\\').
+    replace(/\u0008/g, '\\b').
+    replace(/\t/g, '\\t').
+    replace(/\n/g, '\\n').
+    replace(/\f/g, '\\f').
+    replace(/\r/g, '\\r').
+    replace(/'/g, '\\\'').
+    replace(/"/g, '\\"')
 
     /**
      * Get function name.
      * @param {String} object
      * @returns {String}
      */
-    this.getFunctionName = function(object) {
-        var string = object.toString()
+    this.getFunctionName = object => {
+        let string = object.toString()
         string = string.substr('function '.length)
         string = string.substr(0, string.indexOf('('))
         return string
@@ -789,10 +767,8 @@ var TUtils = function() {
      * @param {Object} source
      * @returns {Object}
      */
-    this.extend = function(dest, source) {
-        // just use jQuery extend
-        return $.extend(dest, source)
-    }
+    this.extend = (dest, source) => // just use jQuery extend
+    $.extend(dest, source)
 
     /**
      * Checks if two numbers have the same value.
@@ -800,7 +776,7 @@ var TUtils = function() {
      * @param {Number} y
      * @returns {Boolean}
      */
-    this.equalNumbers = function(x, y) {
+    this.equalNumbers = (x, y) => {
         if (Math.abs(x - y) < 0.0000000001) {
             return true
         }
@@ -808,6 +784,6 @@ var TUtils = function() {
     }
 }
 
-var utilInstance = new TUtils()
+const utilInstance = new TUtils()
 
 export default utilInstance

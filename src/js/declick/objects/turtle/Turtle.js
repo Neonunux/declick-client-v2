@@ -12,23 +12,75 @@ import TUtils from '@/utils/TUtils'
  * It can draw the path that it has taken.
  * @exports Turtle
  */
-var Turtle = function() {
-    Sprite.call(this)
-    this.addImage('turtle.png', '', false)
-    this.setDisplayedImage('turtle.png')
-    this.synchronousManager = new SynchronousManager()
-    this.gObject.synchronousManager = this.synchronousManager
-    var gObject = this.gObject
+class Turtle extends Sprite {
+    constructor() {
+        super()
+        this.addImage('turtle.png', '', false)
+        this.setDisplayedImage('turtle.png')
+        this.synchronousManager = new SynchronousManager()
+        this.gObject.synchronousManager = this.synchronousManager
+        const gObject = this.gObject
+    }
+
+    /**
+     * Move Turtle of "value" pixels forward, depending of its angle.
+     * @param {Number} value
+     */
+    _walk(value) {
+        if (typeof value !== 'undefined') {
+            value = TUtils.getInteger(value)
+            this.gObject.walk(value)
+        }
+    }
+
+    /**
+     * Change the color of the path.</br>
+     * Default value : red | [255, 0, 0]
+     * @param {String|Number} red
+     * @param {Number} green
+     * @param {Number} blue
+     */
+    _colorPath(red, green, blue) {
+        this.gObject.colorPath(red, green, blue)
+    }
+
+    /**
+     * Set trackPath to false.
+     * See _trackPath() for more information.
+     */
+    _untrackPath() {
+        this.gObject.trackPath(false)
+    }
+
+    /**
+     * Set trackPath to true.
+     * When trackPath is at true, the path borrowed by Turtle is tracked.
+     * When trackPath is at false, the path borrowed by Turtle is not tracked.
+     * The tracked path is drawn.
+     */
+    _trackPath() {
+        this.gObject.trackPath(true)
+    }
+
+    /**
+     * Set the width of the path.
+     * Default value : 1.
+     * @param {Number} value
+     */
+    _pathWidth(value) {
+        if (typeof value !== 'undefined') {
+            value = TUtils.getInteger(value)
+            this.gObject.pathWidth(value)
+        }
+    }
 }
 
-Turtle.prototype = Object.create(Sprite.prototype)
-Turtle.prototype.constructor = Turtle
 Turtle.prototype.className = 'Turtle'
 
-var graphics = Turtle.prototype.graphics
+const graphics = Turtle.prototype.graphics
 
 Turtle.prototype.gClass = graphics.addClass('TSprite', 'TTurtle', {
-    init: function(props, defaultProps) {
+    init(props, defaultProps) {
         this._super(TUtils.extend({
             inMovement: false,
             type: TGraphicalObject.TYPE_TURTLE,
@@ -43,11 +95,11 @@ Turtle.prototype.gClass = graphics.addClass('TSprite', 'TTurtle', {
             velocity: 200
         }, props), defaultProps)
     },
-    walk: function(value) {
+    walk(value) {
         this.synchronousManager.begin()
         this.perform(function(value) {
-            var x = Math.cos((this.p.tangle - 90) / 180 * Math.PI) * value
-            var y = Math.sin((this.p.tangle - 90) / 180 * Math.PI) * value
+            const x = Math.cos((this.p.tangle - 90) / 180 * Math.PI) * value
+            const y = Math.sin((this.p.tangle - 90) / 180 * Math.PI) * value
             if (this.p.trackPath) {
                 this.p.coordinates.push([this.p.destinationX, this.p.destinationY, this.p.strokeColor])
             }
@@ -67,19 +119,19 @@ Turtle.prototype.gClass = graphics.addClass('TSprite', 'TTurtle', {
         }, [value])
 
     },
-    rotate: function(angle) {
+    rotate(angle) {
         this.perform(function(angle) {
             this.p.tangle = this.p.tangle + angle
         }, [angle])
     },
-    step: function(dt) {
-        var p = this.p
+    step(dt) {
+        const p = this.p
         if (p.inMovement)
         {
             p.moving = false
             if (!p.dragging && !p.frozen) {
-                var stepX = p.velocityX * dt
-                var stepY = p.velocityY * dt
+                const stepX = p.velocityX * dt
+                const stepY = p.velocityY * dt
                 if (p.tx < p.destinationX) {
                     p.tx = Math.min(p.tx + stepX, p.destinationX)
                     p.moving = true
@@ -107,9 +159,9 @@ Turtle.prototype.gClass = graphics.addClass('TSprite', 'TTurtle', {
             }
         }
     },
-    draw: function(ctx) {
-        var p = this.p
-        for (var i = 0 ; i < p.coordinates.length ; i += 2) {
+    draw(ctx) {
+        const p = this.p
+        for (let i = 0 ; i < p.coordinates.length ; i += 2) {
             ctx.beginPath()
             ctx.moveTo(p.coordinates[i][0] - p.cx + 50, p.coordinates[i][1] - p.cy + 50)
             if (i >= p.coordinates.length - 2 && p.trackPath) {
@@ -129,72 +181,20 @@ Turtle.prototype.gClass = graphics.addClass('TSprite', 'TTurtle', {
             ctx.drawImage(this.resources.getUnchecked(p.asset), -p.cx, -p.cy)
         }
     },
-    colorPath: function(red, green, blue) {
+    colorPath(red, green, blue) {
        this.p.strokeColor = TUtils.rgbToHex(TUtils.getColor(red, green, blue))
     },
-    trackPath: function(value) {
+    trackPath(value) {
         this.perform(function(value) {
             this.p.trackPath = value
         }, [value])
     },
-    pathWidth: function(value) {
+    pathWidth(value) {
         this.perform(function(value) {
             this.p.pathWidth = value
         }, [value])
     }
 })
-
-/**
- * Move Turtle of "value" pixels forward, depending of its angle.
- * @param {Number} value
- */
-Turtle.prototype._walk = function(value) {
-    if (typeof value !== 'undefined') {
-        value = TUtils.getInteger(value)
-        this.gObject.walk(value)
-    }
-}
-
-/**
- * Change the color of the path.</br>
- * Default value : red | [255, 0, 0]
- * @param {String|Number} red
- * @param {Number} green
- * @param {Number} blue
- */
-Turtle.prototype._colorPath = function(red, green, blue) {
-    this.gObject.colorPath(red, green, blue)
-}
-
-/**
- * Set trackPath to false.
- * See _trackPath() for more information.
- */
-Turtle.prototype._untrackPath = function() {
-    this.gObject.trackPath(false)
-}
-
-/**
- * Set trackPath to true.
- * When trackPath is at true, the path borrowed by Turtle is tracked.
- * When trackPath is at false, the path borrowed by Turtle is not tracked.
- * The tracked path is drawn.
- */
-Turtle.prototype._trackPath = function() {
-    this.gObject.trackPath(true)
-}
-
-/**
- * Set the width of the path.
- * Default value : 1.
- * @param {Number} value
- */
-Turtle.prototype._pathWidth = function(value) {
-    if (typeof value !== 'undefined') {
-        value = TUtils.getInteger(value)
-        this.gObject.pathWidth(value)
-    }
-}
 
 /**
  * Rotate Turtle to the right.

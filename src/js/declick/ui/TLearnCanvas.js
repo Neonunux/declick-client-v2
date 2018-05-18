@@ -3,57 +3,56 @@ import $ from 'jquery'
 import TComponent from '@/ui/TComponent'
 import TRuntime from '@/ui/TRuntime'
 
-function TLearnCanvas(callback) {
-    var $main
-    var $canvas
-    var $canvasLoading
-    var $canvasLoadingValue
+class TLearnCanvas extends TComponent {
+    constructor(callback) {
+        let $main
+        let $canvas
+        let $canvasLoading
+        let $canvasLoadingValue
 
-    TComponent.call(this, 'TLearnCanvas.html', function(component) {
-        $main = component
-        $canvas = component.find('#tcanvas')
-        $canvasLoading = component.find('#tcanvas-loading')
-        $canvasLoadingValue = component.find('#tcanvas-loading-value')
+        super('TLearnCanvas.html', function(component) {
+            $main = component
+            $canvas = component.find('#tcanvas')
+            $canvasLoading = component.find('#tcanvas-loading')
+            $canvasLoadingValue = component.find('#tcanvas-loading-value')
 
-        if (typeof callback !== 'undefined') {
-            callback.call(this, component)
-        }
-    })
-
-    this.mounted = function() {
-        var graphics = TRuntime.getGraphics()
-        graphics.setCanvas('tcanvas')
-        // resize canvas and its container when window is resized
-        $(window).resize(function(e) {
-            var width = $main.width()
-            var height = $main.height()
-            graphics.resize(width, height)
+            if (typeof callback !== 'undefined') {
+                callback.call(this, component)
+            }
         })
-    }
 
-    this.show = function() {
-        $main.show()
-    }
+        this.mounted = () => {
+            const graphics = TRuntime.getGraphics()
+            graphics.setCanvas('tcanvas')
+            // resize canvas and its container when window is resized
+            $(window).resize(e => {
+                const width = $main.width()
+                const height = $main.height()
+                graphics.resize(width, height)
+            })
+        }
 
-    this.hide = function() {
-        $main.hide()
-    }
-    this.showLoading = function() {
-        $canvasLoading.show()
-    }
-    this.setLoadingValue = function(count, total) {
-        var value = Math.round(count * 100 / total)
-        $canvasLoadingValue.text(value + '%')
-    }
-    this.removeLoading = function() {
-        $canvasLoading.hide()
-    }
-    this.giveFocus = function() {
-        $canvas.get(0).focus()
+        this.show = () => {
+            $main.show()
+        }
+
+        this.hide = () => {
+            $main.hide()
+        }
+        this.showLoading = () => {
+            $canvasLoading.show()
+        }
+        this.setLoadingValue = (count, total) => {
+            const value = Math.round(count * 100 / total)
+            $canvasLoadingValue.text(`${value}%`)
+        }
+        this.removeLoading = () => {
+            $canvasLoading.hide()
+        }
+        this.giveFocus = () => {
+            $canvas.get(0).focus()
+        }
     }
 }
-
-TLearnCanvas.prototype = Object.create(TComponent.prototype)
-TLearnCanvas.prototype.constructor = TLearnCanvas
 
 export default TLearnCanvas

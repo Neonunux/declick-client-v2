@@ -11,15 +11,15 @@ import TUtils from '@/utils/TUtils'
  */
 function TProject() {
 
-    var name = ''
-    var id = -1
-    var programs = []
-    var resourcesNames = []
-    var resources = {}
-    var editedPrograms = {}
-    var sessions = {}
-    var editedProgramsNames = []
-    var editedProgramsArray = []
+    let name = ''
+    let id = -1
+    let programs = []
+    let resourcesNames = []
+    let resources = {}
+    let editedPrograms = {}
+    let sessions = {}
+    let editedProgramsNames = []
+    let editedProgramsArray = []
 
     /**
      *
@@ -27,22 +27,20 @@ function TProject() {
      * @returns {undefined}Set Project's name.
      * @param {String} value
      */
-    this.setName = function(value) {
+    this.setName = value => {
         name = value
     }
 
     /**
      * Get Project's name.
      */
-    this.getName = function() {
-        return name
-    }
+    this.getName = () => name
 
     /**
      * Set Project's ID.
      * @param {Number} value
      */
-    this.setId = function(value) {
+    this.setId = value => {
         if (value !== false && typeof value !== 'number') {
             value = parseInt(value)
         }
@@ -56,9 +54,7 @@ function TProject() {
     /**
      * Get Project's ID.
      */
-    this.getId = function() {
-        return id
-    }
+    this.getId = () => id
 
     /**
      *
@@ -70,9 +66,9 @@ function TProject() {
      * @param {String} newName  New name of the program
      * @param {Function} callback
      */
-    this.renameProgram = function(oldName, newName, callback) {
+    this.renameProgram = (oldName, newName, callback) => {
         if (typeof editedPrograms[oldName] !== 'undefined') {
-            var program = editedPrograms[oldName]
+            const program = editedPrograms[oldName]
             program.rename(newName, function(error) {
                 if (typeof error !== 'undefined') {
                     callback.call(this, error)
@@ -83,7 +79,7 @@ function TProject() {
                     editedPrograms[newName] = editedPrograms[oldName]
 
                     // remove oldname records
-                    var i = programs.indexOf(oldName)
+                    const i = programs.indexOf(oldName)
                     if (i > -1) {
                         // Should always be the case
                         programs.splice(i, 1)
@@ -104,9 +100,9 @@ function TProject() {
      * Create a new Program for Project, and return it.
      * @returns {TProgram}
      */
-    this.createProgram = function() {
-        var program = new TProgram(programs)
-        var name = program.getName()
+    this.createProgram = () => {
+        const program = new TProgram(programs)
+        const name = program.getName()
         programs.push(name)
         programs = TUtils.sortArray(programs)
         editedPrograms[name] = program
@@ -119,7 +115,7 @@ function TProject() {
      * @param {TProgram} program
      * @param {?} session
      */
-    this.updateSession = function(program, session) {
+    this.updateSession = (program, session) => {
         sessions[program.getName()] = session
         program.setCode(session.getValue())
     }
@@ -143,7 +139,7 @@ function TProject() {
      * @returns {TProgram|Boolean} If 'name' is edited, returns it.
      * Else return false.
      */
-    this.getEditedProgram = function(name) {
+    this.getEditedProgram = name => {
         if (typeof editedPrograms[name] !== 'undefined') {
             return editedPrograms[name]
         }
@@ -156,9 +152,9 @@ function TProject() {
      * @param {Function} callback
      * @param {?} session
      */
-    this.editProgram = function(name, callback, session) {
+    this.editProgram = (name, callback, session) => {
         if (typeof editedPrograms[name] === 'undefined') {
-            var program = new TProgram(name)
+            const program = new TProgram(name)
             program.load(function(error) {
                 if (typeof error !== 'undefined') {
                     callback.call(this, error)
@@ -188,7 +184,7 @@ function TProject() {
                     editedPrograms[name] = program
                     // sort editing programs alphabetically
                     updateEditedPrograms()
-                    var result
+                    let result
                     try {
                         result = program.getStatements()
                     } catch(e) {
@@ -235,9 +231,7 @@ function TProject() {
      * @param {String} name
      * @returns {Boolean}
      */
-    this.isProgramEdited = function(name) {
-        return (typeof editedPrograms[name] !== 'undefined')
-    }
+    this.isProgramEdited = name => typeof editedPrograms[name] !== 'undefined'
 
     /**
      *
@@ -246,13 +240,13 @@ function TProject() {
      * @param {String} name
      * @returns {Boolean}
      */
-    this.closeProgram = function(name) {
+    this.closeProgram = name => {
         if (typeof editedPrograms[name] === 'undefined') {
             return false
         }
-        var program = editedPrograms[name]
+        const program = editedPrograms[name]
         if (program.isModified()) {
-            var goOn = window.confirm(TEnvironment.getMessage('close-confirm', name))
+            const goOn = window.confirm(TEnvironment.getMessage('close-confirm', name))
             if (!goOn) {
                 return false
             }
@@ -262,7 +256,7 @@ function TProject() {
         updateEditedPrograms()
         if (program.isNew()) {
             // program is still new (i.e. not saved) : we remove it from programs list
-            var i = programs.indexOf(program.getName())
+            const i = programs.indexOf(program.getName())
             if (i > -1) {
                 // Should always be the case
                 programs.splice(i, 1)
@@ -277,13 +271,13 @@ function TProject() {
      * @returns {TProgram|Boolean} Return false if there is
      * no edited program.
      */
-    this.findPreviousEditedProgram = function(name) {
+    this.findPreviousEditedProgram = name => {
         if (editedProgramsNames.length === 0) {
             return false
         }
-        var value = editedProgramsNames[0]
+        let value = editedProgramsNames[0]
         name = name.toLowerCase()
-        for (var i = 1; i < editedProgramsNames.length; i++) {
+        for (let i = 1; i < editedProgramsNames.length; i++) {
             if (name.localeCompare(editedProgramsNames[i].toLowerCase()) > 0) {
                 value = editedProgramsNames[i]
             }
@@ -295,49 +289,39 @@ function TProject() {
      * Get session of 'program'.
      * @param {TProgram} program
      */
-    this.getSession = function(program) {
-        return sessions[program.getName()]
-    }
+    this.getSession = program => sessions[program.getName()]
 
     /**
      * Set the session of 'program' to 'session'.
      * @param {TProgram} program
      * @param {?} session
      */
-    this.setSession = function(program, session) {
+    this.setSession = (program, session) => {
         sessions[program.getName()] = session
     }
 
     /**
      * Get Programs names.
      */
-    this.getProgramsNames = function() {
-        return programs
-    }
+    this.getProgramsNames = () => programs
 
     /**
      * Returns the array of edited programs.
      * @returns {TProgram[]}
      */
-    this.getEditedPrograms = function() {
-        return editedPrograms
-    }
+    this.getEditedPrograms = () => editedPrograms
 
     /**
      * Returns the array of programs names.
      * @returns {String[]}
      */
-    this.getEditedProgramsNames = function() {
-        return editedProgramsNames
-    }
+    this.getEditedProgramsNames = () => editedProgramsNames
 
     /**
      * Returns the array of edited programs.
      * @returns {TProgram[]}
      */
-    this.getEditedPrograms = function() {
-        return editedProgramsArray
-    }
+    this.getEditedPrograms = () => editedProgramsArray
 
     /**
      * Initialize Project, get Programs list and Resources.
@@ -358,12 +342,12 @@ function TProject() {
             this.setId(false)
         }
         // get program list
-        var self = this
+        const self = this
         TLink.getProgramList(function(arg, id) {
             if (arg instanceof TError) {
                 // error sent: stop there
                 TEnvironment.setProjectAvailable(false)
-                var message = arg.getMessage()
+                const message = arg.getMessage()
                 if (message == 'not connected') {
                     // just log it
                     TEnvironment.log(message)
@@ -398,28 +382,24 @@ function TProject() {
      * Return resources names.
      * @returns {String[]}
      */
-    this.getResourcesNames = function() {
-        return resourcesNames
-    }
+    this.getResourcesNames = () => resourcesNames
 
     /**
      * Return resources.
      * @returns {Resource[]}
      */
-    this.getResources = function() {
-        return resources
-    }
+    this.getResources = () => resources
 
     /**
      * Return a resource. Throw an error if 'name' resource is unknown.
      * @param {String} name
      * @returns {Resource}
      */
-    this.getResourceInfo = function(name) {
+    this.getResourceInfo = name => {
         if (typeof resources[name] !== 'undefined') {
             return resources[name]
         } else {
-            var e = new TError(TEnvironment.getMessage('resource-unknown', name))
+            const e = new TError(TEnvironment.getMessage('resource-unknown', name))
             throw e
         }
     }
@@ -430,14 +410,14 @@ function TProject() {
      * @param {String} name
      * @returns {Number}
      */
-    this.getNewResourceIndex = function(name) {
-        var i
+    this.getNewResourceIndex = name => {
+        let i
         for (i = 0; i < resourcesNames.length; i++) {
-            var current = resourcesNames[i]
-            var result = current.toLowerCase().localeCompare(name.toLowerCase())
+            const current = resourcesNames[i]
+            const result = current.toLowerCase().localeCompare(name.toLowerCase())
             if (result === 0) {
                 // problem: resource name already exists
-                var e = new TError(TEnvironment.getMessage('resource-name-exists', name))
+                const e = new TError(TEnvironment.getMessage('resource-name-exists', name))
                 throw e
             }
             if (result > 0) {
@@ -453,11 +433,11 @@ function TProject() {
      */
     this.uploadingResource = function(name) {
         if (typeof resources[name] !== 'undefined') {
-            var e = new TError(TEnvironment.getMessage('resource-already-exists', name))
+            const e = new TError(TEnvironment.getMessage('resource-already-exists', name))
             throw e
         }
         resources[name] = {'type': 'uploading'}
-        var i = this.getNewResourceIndex(name)
+        const i = this.getNewResourceIndex(name)
         resourcesNames.splice(i, 0, name)
         return i
     }
@@ -471,7 +451,7 @@ function TProject() {
         resources[name] = data
         if (data.type === 'image') {
             // preload image
-            var img = new Image()
+            const img = new Image()
             img.src = this.getResourceLocation(name)
         }
     }
@@ -480,11 +460,11 @@ function TProject() {
      * TBD
      * @param {String} name
      */
-    this.removeUploadingResource = function(name) {
+    this.removeUploadingResource = name => {
         if (typeof resources[name] !== 'undefined') {
             resources[name] = undefined
         }
-        var i = resourcesNames.indexOf(name)
+        const i = resourcesNames.indexOf(name)
         if (i > -1) {
             resourcesNames.splice(i, 1)
         }
@@ -497,16 +477,16 @@ function TProject() {
      * @param {Function} callback
      */
     this.renameResource = function(name, newBaseName, callback) {
-        var i = resourcesNames.indexOf(name)
+        const i = resourcesNames.indexOf(name)
         if (i > -1) {
             // resource exists
-            var resource = resources[name]
+            const resource = resources[name]
             // check that resource is not uploading
-            var type = resource.type
+            const type = resource.type
             if (type === 'uploading') {
                 throw new TError(TEnvironment.getMessage('resource-not-uploaded'))
             }
-            var self = this
+            const self = this
             TLink.renameResource(name, newBaseName, function(newName) {
                 if (newName instanceof TError) {
                     // error: just forward it
@@ -540,17 +520,17 @@ function TProject() {
      * @param {Function} callback
      */
     this.setResourceContent = function(name, data, callback) {
-        var self = this
+        const self = this
         TLink.setResourceContent(name, data, function(newData) {
             if (newData instanceof TError) {
                 // error: just forward it
                 callback.call(this, newData)
             } else {
-                var newName = name
+                const newName = name
                 if (newName !== name) {
                     // name has changed
                     // remove old name
-                    var i = resourcesNames.indexOf(name)
+                    const i = resourcesNames.indexOf(name)
                     resourcesNames.splice(i, 1)
                     // add new name
                     resourcesNames.push(newName)
@@ -572,32 +552,28 @@ function TProject() {
      * @param {String} name
      * @return {String}
      */
-    this.getResourceLocation = function(name) {
-        return TLink.getResourceLocation(name, resources[name].version)
-    }
+    this.getResourceLocation = name => TLink.getResourceLocation(name, resources[name].version)
 
     /**
      * Return base name of 'name' resource.
      * @param {String} name
      * @return {String}
      */
-    this.getResourceBaseName = function(name) {
-        return resources[name]['base-name']
-    }
+    this.getResourceBaseName = name => resources[name]['base-name']
 
     /**
      * Preload an image.
      * @param {String} name
      */
     this.preloadImage = function(name) {
-        var img = new Image()
+        const img = new Image()
         img.src = this.getResourceLocation(name)
     }
 
     /**
      * Preload all images. (in development)
      */
-    this.preloadImages = function() {
+    this.preloadImages = () => {
         /*for (var i=0; i<resourcesNames.length; i++) {
          var name = resourcesNames[i];
          if (resources[name].type === 'image') {
@@ -610,9 +586,9 @@ function TProject() {
      * Returns true if a least one program is modified.
      * @returns {Boolean}
      */
-    this.isUnsaved = function() {
-        for (var i = 0; i < editedProgramsNames.length; i++) {
-            var program = editedPrograms[editedProgramsNames[i]]
+    this.isUnsaved = () => {
+        for (let i = 0; i < editedProgramsNames.length; i++) {
+            const program = editedPrograms[editedProgramsNames[i]]
             if (program.isModified()) {
                 return true
             }
@@ -625,15 +601,15 @@ function TProject() {
      * @param {String} name
      * @param {Function} callback
      */
-    this.deleteProgram = function(name, callback) {
+    this.deleteProgram = (name, callback) => {
         if (typeof editedPrograms[name] !== 'undefined') {
-            var program = editedPrograms[name]
+            const program = editedPrograms[name]
             program.delete(function(error) {
                 if (typeof error !== 'undefined') {
                     callback.call(this, error)
                 } else {
                     // delete corresponding records
-                    var i = programs.indexOf(name)
+                    const i = programs.indexOf(name)
                     if (i > -1) {
                         // Should always be the case
                         programs.splice(i, 1)
@@ -655,12 +631,12 @@ function TProject() {
      * @param {Function} callback
      */
     this.deleteResource = function(name, callback) {
-        var i = resourcesNames.indexOf(name)
+        const i = resourcesNames.indexOf(name)
         if (i > -1) {
             // resource exists
-            var resource = resources[name]
+            const resource = resources[name]
             // check that resource is not uploading
-            var type = resource.type
+            const type = resource.type
             if (type === 'uploading') {
                 //TODO: find a way to cancel upload?
                 callback.call(this, new TError(TEnvironment.getMessage('resource-not-uploaded')))
@@ -685,13 +661,13 @@ function TProject() {
      * @param {Function} callback
      */
     this.duplicateResource = function(name, callback) {
-        var self = this
+        const self = this
         TLink.duplicateResource(name, function(newData) {
             if (newData instanceof TError) {
                 // error: just forward it
                 callback.call(this, newData)
             } else {
-                var newName = newData['name']
+                const newName = newData['name']
                 resourcesNames.push(newName)
                 resourcesNames = TUtils.sortArray(resourcesNames)
                 resources[newName] = newData['data']
@@ -711,13 +687,13 @@ function TProject() {
      */
     this.createResource = function(name, width, height, callback) {
         // create image
-        var canvas = document.createElement('canvas')
+        const canvas = document.createElement('canvas')
         canvas.width = width
         canvas.height = height
-        var imageData = canvas.toDataURL()
-        var self = this
+        const imageData = canvas.toDataURL()
+        const self = this
 
-        if (name.indexOf('.png') === -1) {
+        if (!name.includes('.png')) {
           name += '.png'
         }
 
@@ -729,7 +705,7 @@ function TProject() {
               if (resource && resource instanceof TError) {
                 callback.call(this, resource)
               } else {
-                var newName = name
+                const newName = name
                 resourcesNames.push(newName)
                 resourcesNames = TUtils.sortArray(resourcesNames)
                 resources[newName] = resource
@@ -747,18 +723,16 @@ function TProject() {
      * @param {String} name
      * @param {Function} callback
      */
-    this.getResourceContent = function(name, callback) {
-        return TLink.getResourceContent(name, resources[name].version, callback)
-    }
+    this.getResourceContent = (name, callback) => TLink.getResourceContent(name, resources[name].version, callback)
 
     /**
      * Update array of edited programs. (sorted alphabetically)
      */
-    var updateEditedPrograms = function() {
+    var updateEditedPrograms = () => {
         editedProgramsNames = Object.keys(editedPrograms)
         editedProgramsNames = TUtils.sortArray(editedProgramsNames)
         editedProgramsArray = []
-        for (var i = 0; i < editedProgramsNames.length; i++) {
+        for (let i = 0; i < editedProgramsNames.length; i++) {
             editedProgramsArray.push(editedPrograms[editedProgramsNames[i]])
         }
     }
@@ -770,14 +744,14 @@ function TProject() {
      */
     this.preloadResources = function(progress, callback) {
         // TODO: handle preload of other resource types
-        var graphicalResources = []
-        for (var name in resources) {
-            var resource = resources[name]
+        const graphicalResources = []
+        for (const name in resources) {
+            const resource = resources[name]
             if (resource.type === 'image') {
                 graphicalResources.push(this.getResourceLocation(name))
             }
         }
-        var g = TRuntime.getGraphics()
+        const g = TRuntime.getGraphics()
         if (graphicalResources.length > 0) {
             g.preload(graphicalResources, progress, callback)
         } else {
@@ -785,8 +759,8 @@ function TProject() {
         }
     }
 
-    this.hasProgram = function(name) {
-        for (var i = 0; i < programs.length; i++) {
+    this.hasProgram = name => {
+        for (let i = 0; i < programs.length; i++) {
             if (programs[i] === name) {
                 return true
             }

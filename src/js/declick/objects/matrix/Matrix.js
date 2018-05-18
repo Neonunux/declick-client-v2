@@ -12,7 +12,7 @@ class Matrix extends TObject {
         this.data = data || []
         let dimensions
         if (this.data && (width === undefined || height === undefined))
-            dimensions = Matrix.measure(this.data)
+            {dimensions = Matrix.measure(this.data)}
         this.width = (width !== undefined) ? width : dimensions.width
         this.height = (height !== undefined) ? height : dimensions.height
     }
@@ -29,9 +29,9 @@ class Matrix extends TObject {
     _scan(direction, task) {
         if (direction == Matrix.Direction.TOP) {
             for (let XIndex = 0; XIndex < this.width; XIndex++)
-                for (let YIndex = this.height - 1; YIndex >= 0; YIndex--) {
+                {for (let YIndex = this.height - 1; YIndex >= 0; YIndex--) {
                     this._edit(XIndex, YIndex, task)
-                }
+                }}
         }
     }
 
@@ -54,41 +54,41 @@ class Matrix extends TObject {
 
         if ((XPosition - 1) >= 0 && (XPosition - 1) < this.width
                 && YPosition >= 0 && YPosition < this.height)
-            if (!Mask.filtrer._get(XPosition - 1, YPosition)) {
+            {if (!Mask.filtrer._get(XPosition - 1, YPosition)) {
                 var result = callback(value, this._get(XPosition - 1, YPosition))
                 Mask.filtrer._set(XPosition - 1, YPosition, result)
                 if (result === true) {
                     this._propagate(XPosition - 1, YPosition, callback, Mask)
                 }
-            }
+            }}
 
         if ((XPosition + 1) >= 0 && (XPosition + 1) < this.width
                 && YPosition >= 0 && YPosition < this.height)
-            if (!Mask.filtrer._get(XPosition + 1, YPosition)) {
+            {if (!Mask.filtrer._get(XPosition + 1, YPosition)) {
                 var result = callback(value, this._get(XPosition + 1, YPosition))
                 Mask.filtrer._set(XPosition + 1, YPosition, result)
                 if (result === true)
-                    this._propagate(XPosition + 1, YPosition, callback, Mask)
-            }
+                    {this._propagate(XPosition + 1, YPosition, callback, Mask)}
+            }}
 
 
         if (XPosition >= 0 && XPosition < this.width
                 && (YPosition - 1) >= 0 && (YPosition - 1) < this.height)
-            if (!Mask.filtrer._get(XPosition, YPosition - 1)) {
+            {if (!Mask.filtrer._get(XPosition, YPosition - 1)) {
                 var result = callback(value, this._get(XPosition, YPosition - 1))
                 Mask.filtrer._set(XPosition, YPosition - 1, result)
                 if (result === true)
-                    this._propagate(XPosition, YPosition - 1, callback, Mask)
-            }
+                    {this._propagate(XPosition, YPosition - 1, callback, Mask)}
+            }}
 
         if (XPosition >= 0 && XPosition < this.width
                 && (YPosition + 1) >= 0 && (YPosition + 1) < this.height)
-            if (!Mask.filtrer._get(XPosition, YPosition + 1)) {
+            {if (!Mask.filtrer._get(XPosition, YPosition + 1)) {
                 var result = callback(value, this._get(XPosition, YPosition + 1))
                 Mask.filtrer._set(XPosition, YPosition + 1, result)
                 if (result === true)
-                    this._propagate(XPosition, YPosition + 1, callback, Mask)
-            }
+                    {this._propagate(XPosition, YPosition + 1, callback, Mask)}
+            }}
 
         return Mask
     }
@@ -96,9 +96,9 @@ class Matrix extends TObject {
     _count() {
         let compteur = 0
         for (let YIndex = 0; YIndex < this.height; YIndex++)
-            for (const Index = 0; XIndex < this.width; XIndex++)
-                if (this._get(XIndex, YIndex) !== undefined)
-                    compteur++
+            {for (const Index = 0; XIndex < this.width; XIndex++)
+                {if (this._get(XIndex, YIndex) !== undefined)
+                    {compteur++}}}
         return compteur
     }
 
@@ -109,13 +109,13 @@ class Matrix extends TObject {
 
     _get(XPosition, YPosition) {
         if (!this.data[YPosition])
-            return undefined
+            {return undefined}
         return this.data[YPosition][XPosition]
     }
 
     _set(XPosition, YPosition, value) {
         if (!this.data[YPosition])
-            this.data[YPosition] = []
+            {this.data[YPosition] = []}
         this.data[YPosition][XPosition] = value
         return this
     }
@@ -137,33 +137,33 @@ class Matrix extends TObject {
     _copy() {
         const copy = []
         for (let YIndex = 0; YIndex < this.height; YIndex++)
-            for (let XIndex = 0; XIndex < this.width; XIndex++) {
+            {for (let XIndex = 0; XIndex < this.width; XIndex++) {
                 const value = this._get(XIndex, YIndex)
                 if (value !== undefined) {
                     if (copy[YIndex] === undefined)
-                        copy[YIndex] = []
+                        {copy[YIndex] = []}
                     copy[YIndex][XIndex] = value
                 }
-            }
+            }}
         return new Matrix(copy, this.width, this.height)
     }
 
     _transform(task) {
         for (let YIndex = 0; YIndex < this.height; YIndex++)
-            for (let XIndex = 0; XIndex < this.width; XIndex++)
-                this._edit(XIndex, YIndex, task)
+            {for (let XIndex = 0; XIndex < this.width; XIndex++)
+                {this._edit(XIndex, YIndex, task)}}
         return this
     }
 
     _apply(task) {
         const callback = (element, x, y) => {
             if (element !== undefined)
-                return task(element, x, y)
+                {return task(element, x, y)}
             return element
         }
         for (let YIndex = 0; YIndex < this.height; YIndex++)
-            for (let XIndex = 0; XIndex < this.width; XIndex++)
-                this._edit(XIndex, YIndex, callback)
+            {for (let XIndex = 0; XIndex < this.width; XIndex++)
+                {this._edit(XIndex, YIndex, callback)}}
         return this
     }
 
@@ -171,8 +171,8 @@ class Matrix extends TObject {
         const XLimit = Math.min(this.width, Matrix.width)
         const YLimit = Math.min(this.height, Matrix.height)
         for (YIndex = 0; YIndex < YLimit; YIndex++)
-            for (XIndex = 0; XIndex < XLimit; XIndex++)
-                this._set(XIndex, YIndex, Matrix._get(XIndex, YIndex))
+            {for (XIndex = 0; XIndex < XLimit; XIndex++)
+                {this._set(XIndex, YIndex, Matrix._get(XIndex, YIndex))}}
         return this
     }
 
@@ -180,12 +180,12 @@ class Matrix extends TObject {
         const XLimit = Math.min(this.width, Matrix.width)
         const YLimit = Math.min(this.height, Matrix.height)
         for (YIndex = 0; YIndex < YLimit; YIndex++)
-            for (XIndex = 0; XIndex < XLimit; XIndex++)
-                if (this._get(XIndex, YIndex) === undefined) {
+            {for (XIndex = 0; XIndex < XLimit; XIndex++)
+                {if (this._get(XIndex, YIndex) === undefined) {
                     const value = Matrix._get(XIndex, YIndex)
                     if (value !== undefined)
-                        this._set(XIndex, YIndex, value)
-                }
+                        {this._set(XIndex, YIndex, value)}
+                }}}
         return this
     }
 
@@ -197,17 +197,17 @@ class Matrix extends TObject {
 
     _shift(direction, intensity) {
         if (intensity === undefined)
-            intensity = 1
+            {intensity = 1}
         if (intensity < 0) {
             intensity = -intensity
             if (direction === Matrix.Direction.TOP)
-                direction = Matrix.Direction.BOTTOM
+                {direction = Matrix.Direction.BOTTOM}
             else if (direction === Matrix.Direction.BOTTOM)
-                direction = Matrix.Direction.TOP
+                {direction = Matrix.Direction.TOP}
             else if (direction === Matrix.Direction.LEFT)
-                direction = Matrix.Direction.RIGHT
+                {direction = Matrix.Direction.RIGHT}
             else if (direction === Matrix.Direction.RIGHT)
-                direction = Matrix.Direction.LEFT
+                {direction = Matrix.Direction.LEFT}
         }
         switch (direction) {
             case Matrix.Direction.TOP:
@@ -250,9 +250,9 @@ class Matrix extends TObject {
     _reverse() {
         const copy = this._copy()
         for (YIndex = 0; YIndex < this.height; YIndex++)
-            for (XIndex = 0; XIndex < this.width; XIndex++)
-                this._set(this.width - 1 - XIndex, this.height - 1 - YIndex,
-                        copy._get(XIndex, YIndex))
+            {for (XIndex = 0; XIndex < this.width; XIndex++)
+                {this._set(this.width - 1 - XIndex, this.height - 1 - YIndex,
+                        copy._get(XIndex, YIndex))}}
         return this
     }
 
@@ -262,9 +262,9 @@ class Matrix extends TObject {
             for (let XIndex = 0; XIndex < this.width; XIndex++) {
                 const value = this._get(XIndex, YIndex)
                 if (value === undefined)
-                    line += 'undef\t'
+                    {line += 'undef\t'}
                 else
-                    line += `${value}\t`
+                    {line += `${value}\t`}
             }
             console.log(line)
         }
@@ -272,8 +272,8 @@ class Matrix extends TObject {
 
     _cover(Matrix) {
         if (Matrix instanceof Matrix.Selection)
-            return this.width >= (Matrix.width + Matrix.XOffset)
-                    && this.height >= (Matrix.height + Matrix.YOffset)
+            {return this.width >= (Matrix.width + Matrix.XOffset)
+                    && this.height >= (Matrix.height + Matrix.YOffset)}
         return this.width >= Matrix.width && this.height >= Matrix.height
     }
 
@@ -297,11 +297,11 @@ class Matrix extends TObject {
 Matrix.measure = data => {
     const dimensions = {}
     for (let YIndex = 0; YIndex < data.length; YIndex++)
-        if (data[YIndex] && (dimensions.width === undefined ||
+        {if (data[YIndex] && (dimensions.width === undefined ||
                 data[YIndex].length > dimensions.width))
-            dimensions.width = data[YIndex].length
+            {dimensions.width = data[YIndex].length}}
     if (dimensions.width === undefined)
-        dimensions.width = 0
+        {dimensions.width = 0}
     dimensions.height = data.length
     return dimensions
 }
@@ -310,10 +310,10 @@ Matrix.conflit = (MatrixA, MatrixB) => {
     const XLimit = Math.min(MatrixA.width, MatrixB.width)
     const YLimit = Math.min(MatrixA.height, MatrixB.height)
     for (let YIndex = 0; YIndex < YLimit; YIndex++)
-        for (let XIndex = 0; XIndex < XLimit; XIndex++)
-            if (MatrixA._get(XIndex, YIndex) !== undefined &&
+        {for (let XIndex = 0; XIndex < XLimit; XIndex++)
+            {if (MatrixA._get(XIndex, YIndex) !== undefined &&
                     MatrixB._get(XIndex, YIndex) !== undefined)
-                return true
+                {return true}}}
     return false
 }
 
@@ -322,9 +322,9 @@ Matrix.Selection.prototype.constructor = Matrix.Selection
 
 Matrix.Selection.prototype._reset = function () {
     for (let YIndex = 0; YIndex < this.height; YIndex++)
-        for (let XIndex = 0; XIndex < this.width; XIndex++)
-            this.Matrix._set(this.XOffset + XIndex, this.YOffset + YIndex,
-                    undefined)
+        {for (let XIndex = 0; XIndex < this.width; XIndex++)
+            {this.Matrix._set(this.XOffset + XIndex, this.YOffset + YIndex,
+                    undefined)}}
     return this
 }
 
@@ -351,21 +351,21 @@ Matrix.Mask.prototype.constructor = Matrix.Mask
 // TODO Remove loop behaviours.
 Matrix.Mask.prototype._reset = function () {
     for (let YIndex = 0; YIndex < this.height; YIndex++)
-        for (let XIndex = 0; XIndex < this.width; XIndex++)
-            if (this._filter._get(XIndex, YIndex))
-                this.Matrix._set(XIndex, YIndex, undefined)
+        {for (let XIndex = 0; XIndex < this.width; XIndex++)
+            {if (this._filter._get(XIndex, YIndex))
+                {this.Matrix._set(XIndex, YIndex, undefined)}}}
     return this
 }
 
 Matrix.Mask.prototype._get = function (XPosition, YPosition) {
     if (this._filter._get(XPosition, YPosition))
-        return this.Matrix._get(XPosition, YPosition)
+        {return this.Matrix._get(XPosition, YPosition)}
     return undefined
 }
 
 Matrix.Mask.prototype._set = function (XPosition, YPosition, value) {
     if (this._filter._get(XPosition, YPosition))
-        this.Matrix._set(XPosition, YPosition, value)
+        {this.Matrix._set(XPosition, YPosition, value)}
     return this
 }
 

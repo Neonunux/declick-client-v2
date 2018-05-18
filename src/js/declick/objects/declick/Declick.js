@@ -18,6 +18,7 @@ import TUtils from '@/utils/TUtils'
  */
 class Declick extends TObject {
     constructor() {
+        super()
         this.synchronousManager = new SynchronousManager()
         TRuntime.addInstance(this)
         this._interruptions = []
@@ -176,9 +177,9 @@ class Declick extends TObject {
     _ask(text) {
         const answer = window.prompt(text)
         if (answer === null || answer.length === 0)
-            return false
+            {return false}
         else
-            return answer
+            {return answer}
     }
 
     /**

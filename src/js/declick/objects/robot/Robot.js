@@ -45,13 +45,13 @@ class Robot extends Character {
      */
     _moveForward(number) {
         if (typeof number !== 'undefined')
-            number = TUtils.getInteger(number)
+            {number = TUtils.getInteger(number)}
         else
-            number = 1
+            {number = 1}
         if (number >= 0)
-            this.gObject.moveForward(number)
+            {this.gObject.moveForward(number)}
         else
-            this.gObject.moveBackward(-number)
+            {this.gObject.moveBackward(-number)}
     }
 
     /**
@@ -62,13 +62,13 @@ class Robot extends Character {
      */
     _moveBackward(number) {
         if (typeof number !== 'undefined')
-            number = TUtils.getInteger(number)
+            {number = TUtils.getInteger(number)}
         else
-            number = 1
+            {number = 1}
         if (number >= 0)
-            this.gObject.moveBackward(number)
+            {this.gObject.moveBackward(number)}
         else
-            this.gObject.moveForward(-number)
+            {this.gObject.moveForward(-number)}
     }
 
     /**
@@ -79,13 +79,13 @@ class Robot extends Character {
      */
     _moveUpward(number) {
         if (typeof number !== 'undefined')
-            number = TUtils.getInteger(number)
+            {number = TUtils.getInteger(number)}
         else
-            number = 1
+            {number = 1}
         if (number >= 0)
-            this.gObject.moveUpward(number)
+            {this.gObject.moveUpward(number)}
         else
-            this.gObject.moveDownward(-number)
+            {this.gObject.moveDownward(-number)}
     }
 
     /**
@@ -96,13 +96,13 @@ class Robot extends Character {
      */
     _moveDownward(number) {
         if (typeof number !== 'undefined')
-            number = TUtils.getInteger(number)
+            {number = TUtils.getInteger(number)}
         else
-            number = 1
+            {number = 1}
         if (number >= 0)
-            this.gObject.moveDownward(number)
+            {this.gObject.moveDownward(number)}
         else
-            this.gObject.moveUpward(-number)
+            {this.gObject.moveUpward(-number)}
     }
 
     /**
@@ -269,7 +269,7 @@ class Robot extends Character {
     _isOverItem(name) {
         try {
             if (typeof name !== 'undefined')
-                return this._isOver(name)
+                {return this._isOver(name)}
             this.gObject.getItemName()
             return true
         } catch (e) {}

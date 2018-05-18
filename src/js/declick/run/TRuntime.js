@@ -23,11 +23,11 @@ function TRuntime() {
     let self
     const baseClasses = ['TObject', 'TGraphicalObject']
     const baseClasses3D = ['TObject3D']
-    
+
     let Api
 
-    this.load = function(callback) {
-        
+    this.load = function (callback) {
+
         // link interpreter to errorHandler
         interpreter.setErrorHandler(handleError)
 
@@ -38,13 +38,13 @@ function TRuntime() {
         TEnvironment.log('loading base classes')
         // set repeat keyword
         TParser.setRepeatKeyword(TEnvironment.getMessage('repeat-keyword'))
-        
+
         Api = require('@/objects/index')
         loadBaseClasses(TEnvironment.getLanguage(), () => {
             TEnvironment.log('* Retrieving list of translated objects')
             // find objects and translate them
             const classesUrl = TEnvironment.getObjectListUrl()
-            TResource.get(classesUrl,[], data => {
+            TResource.get(classesUrl, [], data => {
                 loadClasses(data, TEnvironment.getLanguage(), () => {
                     // Load translated error messages
                     TEnvironment.log('* Loading translated error messages')
@@ -68,17 +68,17 @@ function TRuntime() {
             classes = baseClasses
         }
         let classesToLoad = classes.length
-        for (let i = 0;i < classes.length; i++) {
+        for (let i = 0; i < classes.length; i++) {
             const objectName = classes[i]
             TEnvironment.log(`adding base object ${objectName}`)
             const aClass = Api[objectName]
             // require([objectName], function(aClass) {
-                TI18n.internationalize(aClass, false, language, () => {
-                    classesToLoad--
-                    if (classesToLoad === 0 && typeof callback !== 'undefined') {
-                        callback.call(self)
-                    }
-                })
+            TI18n.internationalize(aClass, false, language, () => {
+                classesToLoad--
+                if (classesToLoad === 0 && typeof callback !== 'undefined') {
+                    callback.call(self)
+                }
+            })
             // });
         }
     }
@@ -217,17 +217,16 @@ function TRuntime() {
         }
     }
 
-this.evaluate = function (statements, callback)
-{
-    const breakpoint = interpreter.createCallbackStatement(() => {
-        callback(interpreter.convertToNative(interpreter.output))
-    })
-    const body = statements.body.slice()
-    statements = $.extend({}, statements)
-    statements.body = body
-    statements.body.push(breakpoint)
-    this.executeStatements(statements)
-}
+    this.evaluate = function (statements, callback) {
+        const breakpoint = interpreter.createCallbackStatement(() => {
+            callback(interpreter.convertToNative(interpreter.output))
+        })
+        const body = statements.body.slice()
+        statements = $.extend({}, statements)
+        statements.body = body
+        statements.body.push(breakpoint)
+        this.executeStatements(statements)
+    }
 
     this.handleError = err => {
         handleError(err)
@@ -253,11 +252,11 @@ this.evaluate = function (statements, callback)
         interpreter.addPriorityStatements(statements, parameters, log, callback)
     }
 
-    this.executeNow = function(commands, parameters, logCommands, callback) {
+    this.executeNow = function (commands, parameters, logCommands, callback) {
         this.executeStatementsNow(commands, parameters, logCommands, callback)
     }
 
-    this.executeFrom = function(object, programName) {
+    this.executeFrom = function (object, programName) {
         if (typeof programName === 'undefined') {
             programName = null
         }
@@ -290,13 +289,13 @@ this.evaluate = function (statements, callback)
         }
     }
 
-    this.stop = function() {
+    this.stop = function () {
         graphics.pause()
         wasFrozen = frozen
         this.freeze(true)
     }
 
-    this.start = function() {
+    this.start = function () {
         graphics.unpause()
         if (!wasFrozen) {
             this.freeze(false)
@@ -340,9 +339,9 @@ this.evaluate = function (statements, callback)
     }
 
     this.addGraphicalObject = (object, actually) => {
-    	if (typeof actually === 'undefined' || actually) {
-    		graphics.insertObject(object.getGObject())
-    	}
+        if (typeof actually === 'undefined' || actually) {
+            graphics.insertObject(object.getGObject())
+        }
         tGraphicalObjects.push(object)
         // initialize object with current state
         object.freeze(frozen)
@@ -377,12 +376,12 @@ this.evaluate = function (statements, callback)
             object.deleteObject()
         }
         // clear instances
-        for (let i = 0;i < tInstances.length;i++) {
+        for (let i = 0; i < tInstances.length; i++) {
             tInstances[i].clear()
         }
     }
 
-    this.clear = function() {
+    this.clear = function () {
         interpreter.clear()
         // TODO: clear RuntimeFrame as well (e.g. to erase declared functions)
         this.clearGraphics()
@@ -391,7 +390,7 @@ this.evaluate = function (statements, callback)
 
     this.init = () => {
         // init instances
-        for (let i = 0;i < tInstances.length;i++) {
+        for (let i = 0; i < tInstances.length; i++) {
             tInstances[i].init()
         }
     }
@@ -404,7 +403,7 @@ this.evaluate = function (statements, callback)
         designMode = value
     }
 
-    this.freeze = function(value) {
+    this.freeze = function (value) {
         let i
         if (value) {
             this.suspend()

@@ -19,9 +19,9 @@ class Robis extends TObject {
 
     command(command) {
         if (this.url !== 'undefined')
-            $.get(this.url, {command})
+            {$.get(this.url, {command})}
         else
-            console.debug('failed')
+            {console.debug('failed')}
     }
 
     /**

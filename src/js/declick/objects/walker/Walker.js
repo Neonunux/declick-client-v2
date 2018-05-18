@@ -125,7 +125,7 @@ Walker.prototype.gClass = graphics.addClass('TSprite', 'TWalker', {
             if (this.p.mayFall) {
                 this.p.vy += this.p.gravity * dt
                 if (this.p.jumpAvailable > 0)
-                    this.p.jumpAvailable--
+                    {this.p.jumpAvailable--}
                 if (this.p.jumping) {
                     if (this.p.jumpAvailable > 0) {
                         // perform a jump

@@ -819,7 +819,7 @@ Sprite.prototype.gClass = graphics.addClass('TGraphicalObject', 'TSprite', {
             this.p.vy = 0
             if (this.p.direction === Sprite.DIRECTION_UP
                 || this.p.direction === Sprite.DIRECTION_DOWN)
-            this.p.direction = Sprite.DIRECTION_NONE
+            {this.p.direction = Sprite.DIRECTION_NONE}
         }, {})
     },
     stopHorizontally() {
@@ -828,7 +828,7 @@ Sprite.prototype.gClass = graphics.addClass('TGraphicalObject', 'TSprite', {
             this.p.vx = 0
             if (this.p.direction === Sprite.DIRECTION_LEFT
                 || this.p.direction === Sprite.DIRECTION_RIGHT)
-            this.p.direction = Sprite.DIRECTION_NONE
+            {this.p.direction = Sprite.DIRECTION_NONE}
         }, {})
     },
     setVelocity(value) {
@@ -869,7 +869,7 @@ Sprite.prototype.gClass = graphics.addClass('TGraphicalObject', 'TSprite', {
     watchCollisions(value) {
         this.perform(function(value) {
             if (value === this.p.collisionWatched)
-                return
+                {return}
             if (value) {
                 this.on('hit', this, 'objectEncountered')
             } else {

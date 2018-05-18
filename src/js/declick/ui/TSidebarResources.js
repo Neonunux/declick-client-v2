@@ -84,7 +84,7 @@ class TSidebarResources extends TComponent {
                 const current = $files.find('.tsidebar-current')
                 let nextImage = current.next('.tsidebar-type-image')
                 if (nextImage.length === 0)
-                    nextImage = $files.find('.tsidebar-type-image:first')
+                    {nextImage = $files.find('.tsidebar-type-image:first')}
                 current.removeClass('tsidebar-current')
                 nextImage.addClass('tsidebar-current')
                 $resources.stop().animate({ scrollTop: $resources.scrollTop() + nextImage.position().top }, 1000)
@@ -96,7 +96,7 @@ class TSidebarResources extends TComponent {
                 const current = $files.find('.tsidebar-current')
                 let prevImage = current.prev('.tsidebar-type-image')
                 if (prevImage.length === 0)
-                    prevImage = $files.find('.tsidebar-type-image:last')
+                    {prevImage = $files.find('.tsidebar-type-image:last')}
                 current.removeClass('tsidebar-current')
                 prevImage.addClass('tsidebar-current')
                 $resources.stop().animate({ scrollTop: $resources.scrollTop() + prevImage.position().top }, 1000)
@@ -134,9 +134,9 @@ class TSidebarResources extends TComponent {
                             const index = project.uploadingResource(file.name)
                             const where = $files.find(`.tsidebar-file:eq(${index})`)
                             if (where.length > 0)
-                                where.before(div)
+                                {where.before(div)}
                             else
-                                $files.append(div)
+                                {$files.append(div)}
                             newDivs.push(div)
                             uploadingDivs[file.name] = $(div)
                         }
@@ -414,7 +414,7 @@ class TSidebarResources extends TComponent {
         this.getCurrentName = () => {
             const currentDiv = $resources.find('.tsidebar-current .tsidebar-file-name div')
             if (currentDiv.length < 0)
-                return false
+                {return false}
             return currentDiv.text()
         }
 

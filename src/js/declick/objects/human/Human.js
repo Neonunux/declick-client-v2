@@ -484,7 +484,7 @@ const PartClass = graphics.addClass('HumanPart', {
     },
     step(dt) {
         if (this.p.mayCatch)
-            this.stage.collide(this, TGraphicalObject.TYPE_CATCHABLE)
+            {this.stage.collide(this, TGraphicalObject.TYPE_CATCHABLE)}
     },
     objectEncountered({obj}) {
         const collided = obj

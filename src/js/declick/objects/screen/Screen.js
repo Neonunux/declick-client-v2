@@ -11,6 +11,7 @@ import TRuntime from '@/run/TRuntime'
  */
 class Screen extends TObject {
  constructor() {
+    super()
      this.w = window
      this.d = document
      this.e = this.d.documentElement

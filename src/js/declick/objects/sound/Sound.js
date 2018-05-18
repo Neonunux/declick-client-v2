@@ -89,7 +89,7 @@ class Sound extends TObject {
      */
     _play(name) {
         if (typeof name === 'undefined')
-            name = 0
+            {name = 0}
         const asset = this.sounds[name]
         // TODO: wait for loading
         const audio = TRuntime.getGraphics().getAudio()

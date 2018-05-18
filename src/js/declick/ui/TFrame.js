@@ -31,7 +31,6 @@ class TFrame extends TComponent {
         let $bottom
         let $loading
 
-        const frame = this
         let separatorEnabled = true
         let currentToken = ''
         let currentId = null
@@ -93,6 +92,7 @@ class TFrame extends TComponent {
 
         })
 
+        const frame = this
         const checkSeparatorEnabled = event => {
             if (!separatorEnabled) {
                 event.stopImmediatePropagation()

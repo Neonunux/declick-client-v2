@@ -11,6 +11,7 @@ import TUI from '@/ui/TUI'
  */
 class Mouse extends TObject {
     constructor() {
+        super()
         this.getX = () => TUI.getCanvasCursorX()
         this.getY = () => TUI.getCanvasCursorY()
     }

@@ -244,7 +244,7 @@ function hashCode(value) {
     let chr
     let len
     if (value.length === 0)
-        return hash
+        {return hash}
     for (i = 0, len = value.length; i < len; i++) {
         chr = value.charCodeAt(i)
         hash = ((hash << 5) - hash) + chr

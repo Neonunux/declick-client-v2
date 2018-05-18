@@ -88,9 +88,9 @@ class Video extends TObject {
 
     _displayControls(state) {
         if (state)
-            $(this.domVideo).attr('controls', true)
+            {$(this.domVideo).attr('controls', true)}
         else
-            $(this.domVideo).removeAttr('controls')
+            {$(this.domVideo).removeAttr('controls')}
     }
 
     _mute(state) {

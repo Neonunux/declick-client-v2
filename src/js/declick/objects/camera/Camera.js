@@ -12,6 +12,7 @@ import TObject from '@/objects/tobject/TObject'
  */
 class Camera extends TObject {
     constructor() {
+        super()
         this.activated = false
         this.followedObject = null
         this.followX = true

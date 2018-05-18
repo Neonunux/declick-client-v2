@@ -68,7 +68,7 @@ class TSidebarPrograms extends TComponent {
 
                 $(element).click(function(e) {
                     if ($(this).hasClass('tsidebar-renaming'))
-                        return false
+                        {return false}
                     if (current) {
                         // rename program
                         $(this).addClass('tsidebar-renaming')

@@ -148,24 +148,24 @@ Button.prototype.gClass = graphics.addClass('TGraphicalObject', 'TButton', {
 
         // fill button
         if (this.p.active)
-            context.fillStyle = this.p.fillColorActive
+            {context.fillStyle = this.p.fillColorActive}
         else
-            context.fillStyle = this.p.fillColor
+            {context.fillStyle = this.p.fillColor}
         context.fill()
 
         // stroke button
         context.lineWidth = 1
         if (this.p.active)
-            context.strokeStyle = this.p.strokeColorActive
+            {context.strokeStyle = this.p.strokeColorActive}
         else
-            context.strokeStyle = this.p.strokeColor
+            {context.strokeStyle = this.p.strokeColor}
         context.stroke()
 
         // draw text
         if (this.p.active)
-            context.fillStyle = this.p.textColorActive
+            {context.fillStyle = this.p.textColorActive}
         else
-            context.fillStyle = this.p.textColor
+            {context.fillStyle = this.p.textColor}
         context.textBaseline = 'middle'
         context.font = `normal ${this.p.textSize}px Verdana,Sans-serif`
         context.fillText(this.p.label, -this.p.w / 2 + this.p.textSize, 0)

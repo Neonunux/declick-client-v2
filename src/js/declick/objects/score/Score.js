@@ -65,7 +65,7 @@ class Score extends Text {
             this.label = 'Score : '
         }
         else
-            this.label = label
+            {this.label = label}
         this._setText(this.label + this.score)
     }
 

@@ -10,6 +10,7 @@ import TUtils from '@/utils/TUtils'
  */
 class Keyboard extends TObject {
     constructor() {
+        super()
         this.active = false
         this.keyboardEnabled = false
         this.waiting = false

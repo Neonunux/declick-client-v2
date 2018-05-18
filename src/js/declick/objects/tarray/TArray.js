@@ -19,7 +19,7 @@ class TArray extends TObject {
         const checkValue = TUtils.checkInteger(value)
         
         if (checkPosition && checkValue)
-            this.element[position - 1] = value
+            {this.element[position - 1] = value}
     }
 
     _getValue(position) {

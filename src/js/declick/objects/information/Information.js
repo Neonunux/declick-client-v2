@@ -11,48 +11,48 @@ import TUtils from '@/utils/TUtils'
  * @param {String} label    Text displayed on the information
  * @exports Information
  */
-var Information = function(label) {
-    TObject.call(this);
-    this.label = label;
-    this.commands = new CommandManager();
-};
+class Information extends TObject {
+ constructor(label) {
+     super()
+     this.label = label
+     this.commands = new CommandManager()
+ }
 
-Information.prototype = Object.create(TObject.prototype);
-Information.prototype.constructor = Information;
-Information.prototype.className = "Information";
+ /**
+  * Set a label for Information.
+  * @param {String} label    Label to be displayed
+  */
+ _setText(label) {
+     label = TUtils.getString(label)
+     this.label = label
+ }
 
-/**
- * Set a label for Information.
- * @param {String} label    Label to be displayed
- */
-Information.prototype._setText = function(label) {
-    label = TUtils.getString(label);
-    this.label = label;
-};
+ /**
+  * Associates a command to Information.
+  * @param {String} command
+  */
+ _addCommand(command) {
+     command = TUtils.getCommand(command)
+     this.commands.addCommand(command)
+     
+ }
 
-/**
- * Associates a command to Information.
- * @param {String} command
- */
-Information.prototype._addCommand = function(command) {
-    command = TUtils.getCommand(command);
-    this.commands.addCommand(command);
-    
-};
+ /**
+  * Removes all commands associated to information.
+  */
+ _removeCommands() {
+     this.commands.removeCommands()
+ }
 
-/**
- * Removes all commands associated to information.
- */
-Information.prototype._removeCommands = function() {
-    this.commands.removeCommands();
-};
+ /**
+  * Shows the alert window.
+  */
+ _show() {
+     window.alert(this.label)
+     this.commands.executeCommands()
+ }
+}
 
-/**
- * Shows the alert window.
- */
-Information.prototype._show = function() {
-    window.alert(this.label);
-    this.commands.executeCommands();
-};
+Information.prototype.className = 'Information'
 
 export default Information

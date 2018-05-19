@@ -16,13 +16,13 @@ function Grader() {
         callback(score, "");
     }*/
 
-    this.gradeTask = function (strAnswer, token, callback) {
-        var answer = JSON.parse(strAnswer);
-        platform.getTaskParams('maxScore', 100, function(maxScore) {
-           var score = answer.score * maxScore;
-           callback(score, answer.message);
-        });
-    };           
+    this.gradeTask = (strAnswer, token, callback) => {
+        const answer = JSON.parse(strAnswer)
+        platform.getTaskParams('maxScore', 100, maxScore => {
+           const score = answer.score * maxScore
+           callback(score, answer.message)
+        })
+    }           
     
 }
 

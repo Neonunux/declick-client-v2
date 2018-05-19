@@ -9,38 +9,38 @@ import TUtils from '@/utils/TUtils'
  * Defines Circle, inherited from Arc.
  * @exports Circle
  */
-var Circle = function () {
-    Arc.call(this);
-};
+class Circle extends Arc {
+    constructor() {
+        super()
+    }
+}
 
-Circle.prototype = Object.create(Arc.prototype);
-Circle.prototype.constructor = Circle;
-Circle.prototype.className = "Circle";
+Circle.prototype.className = 'Circle'
 
-var graphics = Circle.prototype.graphics;
+const graphics = Circle.prototype.graphics
 
-Circle.prototype.gClass = graphics.addClass("TArc", "TCircle", {
-    init: function (props, defaultProps) {
+Circle.prototype.gClass = graphics.addClass('TArc', 'TCircle', {
+    init(props, defaultProps) {
         this._super(TUtils.extend({
-        }, props), defaultProps);
+        }, props), defaultProps)
     },
-    draw: function (ctx) {
-        var p = this.p;
+    draw(ctx) {
+        const p = this.p
         if (p.ray !== false) {
-            ctx.beginPath();
-            ctx.translate(p.tx, p.ty);
-            ctx.arc(0, 0, p.ray, 0, 2 * Math.PI);
+            ctx.beginPath()
+            ctx.translate(p.tx, p.ty)
+            ctx.arc(0, 0, p.ray, 0, 2 * Math.PI)
             if (this.p.fill) {
-                ctx.closePath();
-                ctx.fillStyle = p.fillColor;
-                ctx.fill();
+                ctx.closePath()
+                ctx.fillStyle = p.fillColor
+                ctx.fill()
             }
-            ctx.strokeStyle = p.color;
-            ctx.lineWidth = p.width;
-            ctx.stroke();
+            ctx.strokeStyle = p.color
+            ctx.lineWidth = p.width
+            ctx.stroke()
             
         }
     }
-});
+})
 
 export default Circle

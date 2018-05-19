@@ -1,13 +1,13 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
+const merge = require('webpack-merge')
 
-const src = (...paths) => path.resolve(__dirname, '..', 'src', ...paths)
+const src = (...paths) => path.resolve(__dirname, 'src', ...paths)
 const lib = (...paths) => src(path.join('js', 'libs', ...paths))
-const module = (...paths) => path.resolve(__dirname, '..', 'node_modules', ...paths)
+const nodeModules = (...paths) => path.resolve(__dirname, 'node_modules', ...paths)
 
-export default {
-  mode: 'production',
+const baseConfig = {
   entry: src('js', 'declick', 'main.js'),
   output: {
     path: path.join(__dirname, '..', 'dist'),
@@ -16,9 +16,10 @@ export default {
   resolve: {
     alias: {
       '@': src('js', 'declick'),
-      'ace': module('ace-builds', 'src-noconflict', 'ace'),
-      'ace_modules': module('ace-builds', 'src-noconflict'),
+      'ace': nodeModules('ace-builds', 'src-noconflict', 'ace'),
+      'ace_modules': nodeModules('ace-builds', 'src-noconflict'),
       'acorn': lib('acorn', 'acorn'),
+      'css': src('css'),
       'quintus': lib('quintus-0.2.0', 'quintus-all'),
       'jquery.ui.draggable': lib('jquery.ui-1.11.2', 'draggable'),
       'jquery.ui.widget': lib('jquery.ui-1.11.2', 'widget'),
@@ -38,8 +39,7 @@ export default {
     },
   },
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.(png|jpg|gif)$/,
         loader: 'url-loader',
         include: [src('images'), src('js', 'declick', 'objects')],
@@ -48,6 +48,16 @@ export default {
         test: /\.html$/,
         loader: 'raw-loader',
         include: src('components'),
+      },
+      {
+        test: /\.css$/,
+        loader: 'style-loader',
+        include: [src('js'),src('css'), src('components')],
+      },
+      {
+        test: /\.css$/,
+        loader: 'css-loader',
+        include: [src('js'),src('css'), src('components')],
       },
     ],
   },
@@ -69,3 +79,11 @@ export default {
     hints: false,
   },
 }
+
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = 'development'
+}
+
+const extendConfig = require(`./webpack.config.${process.env.NODE_ENV}.js`)
+
+module.exports = merge(baseConfig, extendConfig)

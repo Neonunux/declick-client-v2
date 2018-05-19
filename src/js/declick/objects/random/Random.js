@@ -8,21 +8,21 @@ import TUtils from '@/utils/TUtils'
  * Its purpose is to send random numbers in a limited interval.
  * @exports Random
  */
-var Random = function() {
-    TObject.call(this);
-};
+class Random extends TObject {
+ constructor() {
+     super()
+ }
 
-Random.prototype = Object.create(TObject.prototype);
-Random.prototype.constructor = Random;
-Random.prototype.className = "Random";
+ /**
+  * Return a random number between 1 and max.
+  * @param {Number} max
+  * @returns {Number}
+  */
+ _throwDice(max) {
+  return Math.floor((Math.random() * max) + 1)
+ }
+}
 
-/**
- * Return a random number between 1 and max.
- * @param {Number} max
- * @returns {Number}
- */
-Random.prototype._throwDice = function(max) {
-    return Math.floor((Math.random() * max) + 1);
-};
+Random.prototype.className = 'Random'
 
 export default Random

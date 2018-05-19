@@ -10,439 +10,427 @@ import TError from '@/utils/TError'
 import TUtils from '@/utils/TUtils'
 
 function TRuntime() {
-    var interpreter = new TInterpreter();
-    var runtimeCallback;
-    var graphics;
-    var log;
-    var tObjects = [];
-    var tInstances = [];
-    var tGraphicalObjects = [];
-    var designMode = false;
-    var frozen = false;
-    var wasFrozen = false;
-    var self;
-    var baseClasses = ["TObject", "TGraphicalObject"];
-    var baseClasses3D = ["TObject3D"];
-    
+    const interpreter = new TInterpreter()
+    let runtimeCallback
+    let graphics
+    let log
+    const tObjects = []
+    const tInstances = []
+    const tGraphicalObjects = []
+    let designMode = false
+    let frozen = false
+    let wasFrozen = false
+    let self
+    const baseClasses = ['TObject', 'TGraphicalObject']
+    const baseClasses3D = ['TObject3D']
+
     let Api
 
-    this.load = function(callback) {
-        
+    this.load = function (callback) {
+
         // link interpreter to errorHandler
-        interpreter.setErrorHandler(handleError);
+        interpreter.setErrorHandler(handleError)
 
         // create graphics;
-        graphics = new TGraphics();
+        graphics = new TGraphics()
 
-        self = this;
-        TEnvironment.log("loading base classes");
+        self = this
+        TEnvironment.log('loading base classes')
         // set repeat keyword
-        TParser.setRepeatKeyword(TEnvironment.getMessage("repeat-keyword"));
-        
-        Api = require('@/objects/index')
-        loadBaseClasses(TEnvironment.getLanguage(), function() {
-            TEnvironment.log("* Retrieving list of translated objects");
-            // find objects and translate them
-            var classesUrl = TEnvironment.getObjectListUrl();
-            TResource.get(classesUrl,[], function(data) {
-                loadClasses(data, TEnvironment.getLanguage(), function() {
-                    // Load translated error messages
-                    TEnvironment.log("* Loading translated error messages");
-                    TError.loadMessages(function() {
-                        interpreter.initialize();
-                        TEnvironment.log("**** TRUNTIME INITIALIZED ****");
-                        if (typeof callback !== "undefined") {
-                            callback.call(self);
-                        }
-                    });
-                });
-            });
-        });
-    };
+        TParser.setRepeatKeyword(TEnvironment.getMessage('repeat-keyword'))
 
-    var loadBaseClasses = function(language, callback) {
-        var classes;
+        Api = require('@/objects/index')
+        loadBaseClasses(TEnvironment.getLanguage(), () => {
+            TEnvironment.log('* Retrieving list of translated objects')
+            // find objects and translate them
+            const classesUrl = TEnvironment.getObjectListUrl()
+            TResource.get(classesUrl, [], data => {
+                loadClasses(data, TEnvironment.getLanguage(), () => {
+                    // Load translated error messages
+                    TEnvironment.log('* Loading translated error messages')
+                    TError.loadMessages(() => {
+                        interpreter.initialize()
+                        TEnvironment.log('**** TRUNTIME INITIALIZED ****')
+                        if (typeof callback !== 'undefined') {
+                            callback.call(self)
+                        }
+                    })
+                })
+            })
+        })
+    }
+
+    var loadBaseClasses = (language, callback) => {
+        let classes
         if (TEnvironment.is3DSupported()) {
-            classes = baseClasses.concat(baseClasses3D);
+            classes = baseClasses.concat(baseClasses3D)
         } else {
-            classes = baseClasses;
+            classes = baseClasses
         }
-        var classesToLoad = classes.length;
-        for (var i=0;i<classes.length; i++) {
-            var objectName = classes[i];
-            TEnvironment.log("adding base object " + objectName);
+        let classesToLoad = classes.length
+        for (let i = 0; i < classes.length; i++) {
+            const objectName = classes[i]
+            TEnvironment.log(`adding base object ${objectName}`)
             const aClass = Api[objectName]
             // require([objectName], function(aClass) {
-                TI18n.internationalize(aClass, false, language, function() {
-                    classesToLoad--;
-                    if (classesToLoad === 0 && typeof callback !== 'undefined') {
-                        callback.call(self);
-                    }
-                });
+            TI18n.internationalize(aClass, false, language, () => {
+                classesToLoad--
+                if (classesToLoad === 0 && typeof callback !== 'undefined') {
+                    callback.call(self)
+                }
+            })
             // });
         }
-    };
+    }
 
-    var loadClasses = function(classes, language, callback) {
-        var is3DSupported = TEnvironment.is3DSupported();
-        var classesToLoad = Object.keys(classes).length;
-        $.each(classes, function(key, val) {
-            var addObject = true;
+    var loadClasses = (classes, language, callback) => {
+        const is3DSupported = TEnvironment.is3DSupported()
+        let classesToLoad = Object.keys(classes).length
+        $.each(classes, (key, val) => {
+            let addObject = true
             if (typeof val.conditions !== 'undefined') {
                 // object rely on conditions
-                for (var i = 0; i < val.conditions.length; i++) {
-                    var condition = val.conditions[i];
+                for (let i = 0; i < val.conditions.length; i++) {
+                    const condition = val.conditions[i]
                     switch (condition) {
                         case '3d':
                             if (!is3DSupported) {
-                                console.log("skipping addition of object " + key + ": 3D not supported");
-                                addObject = false;
+                                console.log(`skipping addition of object ${key}: 3D not supported`)
+                                addObject = false
                             }
-                            break;
+                            break
                     }
                 }
             }
             if (addObject) {
-                var lib = "objects/" + val.path + "/" + key;
+                const lib = `objects/${val.path}/${key}`
                 if (typeof val.translations[language] !== 'undefined') {
-                    TEnvironment.log("adding " + lib);
-                    var translatedName = val.translations[language];
-                    var parents, instance;
+                    TEnvironment.log(`adding ${lib}`)
+                    const translatedName = val.translations[language]
+                    let parents
+                    let instance
                     if (typeof val.parents === 'undefined') {
-                        parents = false;
+                        parents = false
                     } else {
-                        parents = val.parents;
+                        parents = val.parents
                     }
                     if (typeof val.instance === 'undefined') {
-                        instance = false;
+                        instance = false
                     } else {
-                        instance = val.instance;
+                        instance = val.instance
                     }
 
                     // require([lib], function(aClass) {
                     const aClass = Api[key]
-                        // set Object path
-                        var aConstructor = aClass;
+                    // set Object path
+                    let aConstructor = aClass
+                    if (instance) {
+                        // in case class is in fact an instance (e.g. special object declick),
+                        // get its constructor
+                        aConstructor = aClass.constructor
+                    }
+                    aConstructor.prototype.objectPath = val.path
+                    TI18n.internationalize(aConstructor, parents, language, () => {
+                        TEnvironment.log(`Declaring translated object '${translatedName}'`)
                         if (instance) {
-                            // in case class is in fact an instance (e.g. special object declick),
-                            // get its constructor
-                            aConstructor = aClass.constructor;
+                            interpreter.addInstance(aClass, translatedName)
+                        } else {
+                            interpreter.addClass(aClass, translatedName)
                         }
-                        aConstructor.prototype.objectPath = val.path;
-                        TI18n.internationalize(aConstructor, parents, language, function() {
-                            TEnvironment.log("Declaring translated object '" + translatedName + "'");
-                            if (instance) {
-                                interpreter.addInstance(aClass, translatedName);
-                            } else {
-                                interpreter.addClass(aClass, translatedName);
-                            }
-                            classesToLoad--;
-                            if (classesToLoad === 0 && typeof callback !== 'undefined') {
-                                callback.call(self);
-                            }
-                        });
+                        classesToLoad--
+                        if (classesToLoad === 0 && typeof callback !== 'undefined') {
+                            callback.call(self)
+                        }
+                    })
                     // });
                 }
             } else {
-                classesToLoad--;
+                classesToLoad--
                 if (classesToLoad === 0 && typeof callback !== 'undefined') {
-                    callback.call(self);
+                    callback.call(self)
                 }
             }
-        });
-    };
+        })
+    }
 
-    this.setCallback = function(callback) {
-        runtimeCallback = callback;
-    };
+    this.setCallback = callback => {
+        runtimeCallback = callback
+    }
 
-    this.getCallback = function() {
-        return runtimeCallback;
-    };
+    this.getCallback = () => runtimeCallback
 
-    this.getTObject = function(objectName) {
-        return interpreter.getObject(objectName);
-    };
+    this.getTObject = objectName => interpreter.getObject(objectName)
 
-    this.getTObjectName = function(reference) {
+    this.getTObjectName = reference => {
         if (reference.objectName) {
-            return reference.objectName;
+            return reference.objectName
         }
-        var name = interpreter.getObjectName(reference);
+        const name = interpreter.getObjectName(reference)
         if (name) {
-            reference.objectName = name;
-            return name;
+            reference.objectName = name
+            return name
         }
-        return false;
-    };
+        return false
+    }
 
-    this.getTObjectClassName = function(objectName) {
-        var theObject = interpreter.getObject(objectName);
+    this.getTObjectClassName = objectName => {
+        const theObject = interpreter.getObject(objectName)
         if (theObject && theObject.className) {
-            return theObject.className;
+            return theObject.className
         }
-        return false;
-    };
+        return false
+    }
 
-    this.getClassTranslatedMethods = function(className) {
-        var theClass = interpreter.getClass(className);
+    this.getClassTranslatedMethods = className => {
+        const theClass = interpreter.getClass(className)
         if (theClass && typeof theClass.prototype.translatedMethodsDisplay !== 'undefined') {
-            return theClass.prototype.translatedMethodsDisplay;
+            return theClass.prototype.translatedMethodsDisplay
         }
-        return false;
-    };
+        return false
+    }
 
-    this.getTObjectTranslatedMethods = function(objectName) {
-        var theObject = interpreter.getObject(objectName);
+    this.getTObjectTranslatedMethods = objectName => {
+        const theObject = interpreter.getObject(objectName)
         if (theObject && typeof theObject.translatedMethodsDisplay !== 'undefined') {
-            return theObject.translatedMethodsDisplay;
+            return theObject.translatedMethodsDisplay
         }
-        return false;
-    };
+        return false
+    }
 
     // COMMANDS EXECUTION
 
-    var handleError = function(err, programName) {
-        var error;
+    var handleError = (err, programName) => {
+        let error
         if (!(err instanceof TError)) {
-            error = new TError(err);
-            error.detectError();
+            error = new TError(err)
+            error.detectError()
         } else {
-            error = err;
+            error = err
         }
         if (typeof programName !== 'undefined') {
-            error.setProgramName(programName);
+            error.setProgramName(programName)
         }
         if (typeof log !== 'undefined') {
-            log.addError(error);
+            log.addError(error)
         } else {
-            TEnvironment.error(error);
+            TEnvironment.error(error)
         }
-    };
+    }
 
-this.evaluate = function (statements, callback)
-{
-    var breakpoint = interpreter.createCallbackStatement(function () {
-        callback(interpreter.convertToNative(interpreter.output));
-    });
-    var body = statements.body.slice();
-    statements = $.extend({}, statements);
-    statements.body = body;
-    statements.body.push(breakpoint);
-    this.executeStatements(statements);
-};
+    this.evaluate = function (statements, callback) {
+        const breakpoint = interpreter.createCallbackStatement(() => {
+            callback(interpreter.convertToNative(interpreter.output))
+        })
+        const body = statements.body.slice()
+        statements = $.extend({}, statements)
+        statements.body = body
+        statements.body.push(breakpoint)
+        this.executeStatements(statements)
+    }
 
-    this.handleError = function(err) {
-        handleError(err);
-    };
+    this.handleError = err => {
+        handleError(err)
+    }
 
-    this.executeStatements = function(statements) {
-        interpreter.addStatements(statements);
-    };
+    this.executeStatements = statements => {
+        interpreter.addStatements(statements)
+    }
 
-    this.insertStatements = function(statements) {
-        interpreter.insertStatements(statements);
-    };
+    this.insertStatements = statements => {
+        interpreter.insertStatements(statements)
+    }
 
-    this.insertStatement = function(statement, parameters) {
-        interpreter.insertStatement(statement, parameters);
-    };
+    this.insertStatement = (statement, parameters) => {
+        interpreter.insertStatement(statement, parameters)
+    }
 
-    this.executeStatementsNow = function(statements, parameters, log, callback) {
+    this.executeStatementsNow = (statements, parameters, log, callback) => {
         /*if (typeof parameter !== 'undefined') {
             // TODO: find a better way than using a string representation
             parameter = JSON.stringify(parameter);
         }*/
-        interpreter.addPriorityStatements(statements, parameters, log, callback);
-    };
+        interpreter.addPriorityStatements(statements, parameters, log, callback)
+    }
 
-    this.executeNow = function(commands, parameters, logCommands, callback) {
-        this.executeStatementsNow(commands, parameters, logCommands, callback);
-    };
+    this.executeNow = function (commands, parameters, logCommands, callback) {
+        this.executeStatementsNow(commands, parameters, logCommands, callback)
+    }
 
-    this.executeFrom = function(object, programName) {
+    this.executeFrom = function (object, programName) {
         if (typeof programName === 'undefined') {
-            programName = null;
+            programName = null
         }
         try {
-            var statements = object.getStatements();
-            this.executeStatements(statements);
+            const statements = object.getStatements()
+            this.executeStatements(statements)
         } catch (e) {
-            handleError(e, programName);
+            handleError(e, programName)
         }
-    };
+    }
 
-    this.allowPriorityStatements = function() {
-        interpreter.allowPriorityStatements();
-    };
+    this.allowPriorityStatements = () => {
+        interpreter.allowPriorityStatements()
+    }
 
-    this.refusePriorityStatements = function() {
-        interpreter.refusePriorityStatements();
-    };
+    this.refusePriorityStatements = () => {
+        interpreter.refusePriorityStatements()
+    }
 
     // LOG MANAGEMENT
 
-    this.setLog = function(element) {
-        log = element;
-        interpreter.setLog(element);
-    };
+    this.setLog = element => {
+        log = element
+        interpreter.setLog(element)
+    }
 
-    this.logCommand = function(command) {
+    this.logCommand = command => {
         if (typeof log !== 'undefined') {
-            log.addCommand(command);
+            log.addCommand(command)
         }
-    };
+    }
 
-    this.stop = function() {
-        graphics.pause();
-        wasFrozen = frozen;
-        this.freeze(true);
-    };
+    this.stop = function () {
+        graphics.pause()
+        wasFrozen = frozen
+        this.freeze(true)
+    }
 
-    this.start = function() {
-        graphics.unpause();
+    this.start = function () {
+        graphics.unpause()
         if (!wasFrozen) {
-            this.freeze(false);
+            this.freeze(false)
         }
-    };
+    }
 
     // SYNCHRONOUS EXECUTION
 
-    this.suspend = function() {
-        interpreter.suspend();
-    };
+    this.suspend = () => {
+        interpreter.suspend()
+    }
 
-    this.resume = function() {
-        interpreter.resume();
-    };
+    this.resume = () => {
+        interpreter.resume()
+    }
 
-    this.interrupt = function() {
-        interpreter.interrupt();
-    };
+    this.interrupt = () => {
+        interpreter.interrupt()
+    }
 
     // OBJECTS MANAGEMENT
 
-    this.addObject = function(object) {
-        tObjects.push(object);
+    this.addObject = object => {
+        tObjects.push(object)
         // initialize object with current state
-        object.freeze(frozen);
-    };
+        object.freeze(frozen)
+    }
 
-    this.addInstance = function(instance) {
-        tInstances.push(instance);
+    this.addInstance = instance => {
+        tInstances.push(instance)
         // initialize object with current state
-        instance.freeze(frozen);
-    };
+        instance.freeze(frozen)
+    }
 
-    this.removeObject = function(object) {
-        var index = tObjects.indexOf(object);
+    this.removeObject = object => {
+        const index = tObjects.indexOf(object)
         if (index > -1) {
-            tObjects.splice(index, 1);
-            interpreter.deleteObject(object);
+            tObjects.splice(index, 1)
+            interpreter.deleteObject(object)
         }
-    };
+    }
 
-    this.addGraphicalObject = function(object, actually) {
-    	if (typeof actually ==='undefined' || actually) {
-    		graphics.insertObject(object.getGObject());
-    	}
-        tGraphicalObjects.push(object);
+    this.addGraphicalObject = (object, actually) => {
+        if (typeof actually === 'undefined' || actually) {
+            graphics.insertObject(object.getGObject())
+        }
+        tGraphicalObjects.push(object)
         // initialize object with current state
-        object.freeze(frozen);
-        object.setDesignMode(designMode);
-    };
+        object.freeze(frozen)
+        object.setDesignMode(designMode)
+    }
 
-    this.removeGraphicalObject = function(object) {
-        var index = tGraphicalObjects.indexOf(object);
+    this.removeGraphicalObject = object => {
+        const index = tGraphicalObjects.indexOf(object)
         if (index > -1) {
-            graphics.removeObject(object.getGObject());
-            tGraphicalObjects.splice(index, 1);
-            interpreter.deleteObject(object);
+            graphics.removeObject(object.getGObject())
+            tGraphicalObjects.splice(index, 1)
+            interpreter.deleteObject(object)
         }
-    };
+    }
 
     // GRAPHICS MANAGEMENT
 
-    this.getGraphics = function() {
-        return graphics;
-    };
+    this.getGraphics = () => graphics
 
-    this.clearGraphics = function() {
+    this.clearGraphics = () => {
         while (tGraphicalObjects.length > 0) {
-            var object = tGraphicalObjects[0];
+            const object = tGraphicalObjects[0]
             // deleteObject will remove object from tGraphicalObjects
-            object.deleteObject();
+            object.deleteObject()
         }
-    };
+    }
 
-    this.clearObjects = function() {
+    this.clearObjects = () => {
         while (tObjects.length > 0) {
-            var object = tObjects[0];
+            const object = tObjects[0]
             // deleteObject will remove object from tGraphicalObjects
-            object.deleteObject();
+            object.deleteObject()
         }
         // clear instances
-        for (var i=0;i<tInstances.length;i++) {
-            tInstances[i].clear();
+        for (let i = 0; i < tInstances.length; i++) {
+            tInstances[i].clear()
         }
-    };
+    }
 
-    this.clear = function() {
-        interpreter.clear();
+    this.clear = function () {
+        interpreter.clear()
         // TODO: clear RuntimeFrame as well (e.g. to erase declared functions)
-        this.clearGraphics();
-        this.clearObjects();
-    };
+        this.clearGraphics()
+        this.clearObjects()
+    }
 
-    this.init = function() {
+    this.init = () => {
         // init instances
-        for (var i=0;i<tInstances.length;i++) {
-            tInstances[i].init();
+        for (let i = 0; i < tInstances.length; i++) {
+            tInstances[i].init()
         }
-    };
+    }
 
-    this.setDesignMode = function(value) {
+    this.setDesignMode = value => {
         // TODO: handle duplicate objects
-        for (var i = 0; i < tGraphicalObjects.length; i++) {
-            tGraphicalObjects[i].setDesignMode(value);
+        for (let i = 0; i < tGraphicalObjects.length; i++) {
+            tGraphicalObjects[i].setDesignMode(value)
         }
-        designMode = value;
-    };
+        designMode = value
+    }
 
-    this.freeze = function(value) {
-        var i;
+    this.freeze = function (value) {
+        let i
         if (value) {
-            this.suspend();
+            this.suspend()
         } else {
-            this.resume();
+            this.resume()
         }
 
         for (i = 0; i < tGraphicalObjects.length; i++) {
-            tGraphicalObjects[i].freeze(value);
+            tGraphicalObjects[i].freeze(value)
         }
         for (i = 0; i < tObjects.length; i++) {
-            tObjects[i].freeze(value);
+            tObjects[i].freeze(value)
         }
-        frozen = value;
-    };
+        frozen = value
+    }
 
-    this.getGraphics = function() {
-        return graphics;
-    };
+    this.getGraphics = () => graphics
 
-    this.exposeProperty = function(reference, property, name) {
-        interpreter.exposeProperty(reference, property, name);
-    };
+    this.exposeProperty = (reference, property, name) => {
+        interpreter.exposeProperty(reference, property, name)
+    }
 
-    this.createCallStatement = function(functionStatement) {
-        return interpreter.createCallStatement(functionStatement);
-    };
+    this.createCallStatement = functionStatement => interpreter.createCallStatement(functionStatement)
 
-    this.createFunctionStatement = function(functionStatement) {
-        return interpreter.createFunctionStatement(functionStatement);
-    };
+    this.createFunctionStatement = functionStatement => interpreter.createFunctionStatement(functionStatement)
 }
 
-var runtimeInstance = new TRuntime();
+const runtimeInstance = new TRuntime()
 
 export default runtimeInstance

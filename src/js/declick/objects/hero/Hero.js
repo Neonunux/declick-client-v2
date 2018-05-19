@@ -12,18 +12,18 @@ import TUtils from '@/utils/TUtils'
  * @param {String} name Hero's name
  * @exports Hero
  */
-var Hero = function (name) {
-    Character.call(this);
-    if (typeof (name) === 'undefined') {
-        name = "tangy";
+class Hero extends Character {
+    constructor(name) {
+        super()
+        if (typeof (name) === 'undefined') {
+            name = 'tangy'
+        }
+        this._setAspect(name)
     }
-    this._setAspect(name);
-};
+}
 
-Hero.prototype = Object.create(Character.prototype);
-Hero.prototype.constructor = Hero;
-Hero.prototype.className = "Hero";
+Hero.prototype.className = 'Hero'
 
-var graphics = Hero.prototype.graphics;
+const graphics = Hero.prototype.graphics
 
 export default Hero

@@ -7,166 +7,164 @@ import TError from '@/utils/TError'
 import TSidebarPrograms from '@/ui/TSidebarPrograms'
 import TSidebarResources from '@/ui/TSidebarResources'
 
-function TSidebar(callback) {
+class TSidebar extends TComponent {
+    constructor(callback) {
+        let $sidebar
+        let $switchPrograms
+        let $switchResources
+        let programs
+        let resources
 
-    var $sidebar, $switchPrograms, $switchResources;
-    var programs, resources;
+        super('TSidebar.html', function(component) {
+            $sidebar = component
+            $switchPrograms = component.find('#tsidebar-switch-programs')
+            $switchPrograms.prop('title', TEnvironment.getMessage('switch-programs'))
+            $switchPrograms.click(e => {
+                TUI.togglePrograms()
+            })
+            $switchResources = component.find('#tsidebar-switch-resources')
+            $switchResources.prop('title', TEnvironment.getMessage('switch-resources'))
+            $switchResources.click(e => {
+                TUI.toggleResources()
+            })
 
-    TComponent.call(this, "TSidebar.html", function(component) {
-        $sidebar = component;
-        $switchPrograms = component.find("#tsidebar-switch-programs");
-        $switchPrograms.prop("title", TEnvironment.getMessage("switch-programs"));
-        $switchPrograms.click(function(e) {
-            TUI.togglePrograms();
-        });
-        $switchResources = component.find("#tsidebar-switch-resources");
-        $switchResources.prop("title", TEnvironment.getMessage("switch-resources"));
-        $switchResources.click(function(e) {
-            TUI.toggleResources();
-        });
+            const self = this
+            programs = new TSidebarPrograms(c => {
+                component.find('#TSidebarPrograms').replaceWith(c)
+                resources = new TSidebarResources(c => {
+                    component.find('#TSidebarResources').replaceWith(c)
+                    if (typeof callback !== 'undefined') {
+                        callback.call(self, component)
+                    }
+                })
+            })
+        })
 
-        var self = this;
-        programs = new TSidebarPrograms(function(c) {
-            component.find("#TSidebarPrograms").replaceWith(c);
-            resources = new TSidebarResources(function(c) {
-                component.find("#TSidebarResources").replaceWith(c);
-                if (typeof callback !== 'undefined') {
-                    callback.call(self, component);
-                }
-            });
-        });
-    });
-
-    /**
-     * Display Sidebar.
-     */
-    this.mounted = function() {
-        this.displayPrograms();
-        programs.init();
-        resources.init();
-    };
-
-    /**
-     * Loads Programs and Resources.
-     */
-    this.load = function() {
-        programs.load();
-        resources.load();
-    };
-
-    /**
-     * Update Programs.
-     */
-    this.updatePrograms = function() {
-        programs.update();
-    };
-
-    this.updateResources = function() {
-        resources.update();
-    };
-
-    this.update = function() {
-        this.updatePrograms();
-        this.updateResources();
-    };
-
-    this.updateProgramInfo = function(program) {
-        programs.updateInfo(program);
-    };
-
-    this.showLoadingProgram = function(name) {
-        programs.showLoading(name);
-    };
-
-    this.removeLoadingProgram = function(name) {
-        programs.removeLoading(name);
-    };
-
-    this.showRenamingProgram = function(name) {
-        programs.showRenaming(name);
-    };
-
-    this.showRenamingResource = function(name) {
-        resources.showRenaming(name);
-    };
-
-    this.show = function() {
-        $sidebar.show();
-    };
-
-    this.hide = function() {
-        $sidebar.hide();
-    };
-
-    this.displayPrograms = function() {
-        resources.hide();
-        $switchResources.removeClass("active");
-        $switchPrograms.addClass("active");
-        $sidebar.stop().animate({ width: "260px" }, 200, function() {
-            programs.show();
-            programs.setEditionEnabled(programs.hasCurrent());
-        });
-    };
-
-    this.displayResources = function() {
-        if (!TEnvironment.isProjectAvailable()) {
-            // Project is not available: we cannot manage resources
-            var error = new TError(TEnvironment.getMessage('resources-unavailable-user-not-logged'));
-            TUI.addLogError(error);
-            return false;
+        /**
+         * Display Sidebar.
+         */
+        this.mounted = function() {
+            this.displayPrograms()
+            programs.init()
+            resources.init()
         }
-        else {
-            programs.hide();
-            $switchPrograms.removeClass("active");
-            $switchResources.addClass("active");
-            $sidebar.stop().animate({ width: "440px" }, 200, function() {
-                resources.show();
-                resources.setEditionEnabled(resources.hasCurrent());
-            });
-            return true;
+
+        /**
+         * Loads Programs and Resources.
+         */
+        this.load = () => {
+            programs.load()
+            resources.load()
         }
-    };
 
-    this.close = function() {
-        programs.hide();
-        resources.hide();
-        $switchPrograms.removeClass("active");
-        $switchResources.removeClass("active");
-        $sidebar.stop().animate({ width: "65px" }, 200);
-    };
+        /**
+         * Update Programs.
+         */
+        this.updatePrograms = () => {
+            programs.update()
+        }
 
-    this.selectResource = function(name) {
-        resources.select(name);
-    };
+        this.updateResources = () => {
+            resources.update()
+        }
 
-    this.viewResource = function(name) {
-        resources.view(name);
-    };
+        this.update = function() {
+            this.updatePrograms()
+            this.updateResources()
+        }
 
-    this.getCurrentResourceName = function() {
-        return resources.getCurrentName();
-    };
+        this.updateProgramInfo = program => {
+            programs.updateInfo(program)
+        }
 
-    this.createResource = function() {
-        resources.create();
-    };
+        this.showLoadingProgram = name => {
+            programs.showLoading(name)
+        }
 
-    this.setEditionEnabled = function(value) {
-        programs.setEditionEnabled(value);
-        resources.setEditionEnabled(value);
-    };
+        this.removeLoadingProgram = name => {
+            programs.removeLoading(name)
+        }
 
-    this.setProgramsEditionEnabled = function(value) {
-        programs.setEditionEnabled(value);
-    };
+        this.showRenamingProgram = name => {
+            programs.showRenaming(name)
+        }
 
-    this.setResourcesEditionEnabled = function(value) {
-        resources.setEditionEnabled(value);
-    };
+        this.showRenamingResource = name => {
+            resources.showRenaming(name)
+        }
 
+        this.show = () => {
+            $sidebar.show()
+        }
+
+        this.hide = () => {
+            $sidebar.hide()
+        }
+
+        this.displayPrograms = () => {
+            resources.hide()
+            $switchResources.removeClass('active')
+            $switchPrograms.addClass('active')
+            $sidebar.stop().animate({ width: '260px' }, 200, () => {
+                programs.show()
+                programs.setEditionEnabled(programs.hasCurrent())
+            })
+        }
+
+        this.displayResources = () => {
+            if (!TEnvironment.isProjectAvailable()) {
+                // Project is not available: we cannot manage resources
+                const error = new TError(TEnvironment.getMessage('resources-unavailable-user-not-logged'))
+                TUI.addLogError(error)
+                return false
+            }
+            else {
+                programs.hide()
+                $switchPrograms.removeClass('active')
+                $switchResources.addClass('active')
+                $sidebar.stop().animate({ width: '440px' }, 200, () => {
+                    resources.show()
+                    resources.setEditionEnabled(resources.hasCurrent())
+                })
+                return true
+            }
+        }
+
+        this.close = () => {
+            programs.hide()
+            resources.hide()
+            $switchPrograms.removeClass('active')
+            $switchResources.removeClass('active')
+            $sidebar.stop().animate({ width: '65px' }, 200)
+        }
+
+        this.selectResource = name => {
+            resources.select(name)
+        }
+
+        this.viewResource = name => {
+            resources.view(name)
+        }
+
+        this.getCurrentResourceName = () => resources.getCurrentName()
+
+        this.createResource = () => {
+            resources.create()
+        }
+
+        this.setEditionEnabled = value => {
+            programs.setEditionEnabled(value)
+            resources.setEditionEnabled(value)
+        }
+
+        this.setProgramsEditionEnabled = value => {
+            programs.setEditionEnabled(value)
+        }
+
+        this.setResourcesEditionEnabled = value => {
+            resources.setEditionEnabled(value)
+        }
+    }
 }
-
-TSidebar.prototype = Object.create(TComponent.prototype);
-TSidebar.prototype.constructor = TSidebar;
 
 export default TSidebar

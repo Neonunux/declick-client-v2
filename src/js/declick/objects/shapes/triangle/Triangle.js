@@ -9,32 +9,32 @@ import TUtils from '@/utils/TUtils'
  * Defines Triangle, inherited from Polygon.
  * @exports Triangle
  */
-var Triangle = function (p1, p2, p3) {
-    Polygon.call(this, p1, p2, p3);
-};
+class Triangle extends Polygon {
+    constructor(p1, p2, p3) {
+        super(p1, p2, p3)
+    }
+}
 
-Triangle.prototype = Object.create(Polygon.prototype);
-Triangle.prototype.constructor = Triangle;
-Triangle.prototype.className = "Triangle";
+Triangle.prototype.className = 'Triangle'
 
-var graphics = Triangle.prototype.graphics;
+const graphics = Triangle.prototype.graphics
 
-Triangle.prototype.gClass = graphics.addClass("TPolygon", "TTriangle", {
-    init: function (props, defaultProps) {
+Triangle.prototype.gClass = graphics.addClass('TPolygon', 'TTriangle', {
+    init(props, defaultProps) {
         this._super(TUtils.extend({
-        }, props), defaultProps);
+        }, props), defaultProps)
     },
-    setVertices: function (value) {
-        this.p.vertices = [];
+    setVertices(value) {
+        this.p.vertices = []
         if (value.length === 3) {
-            for (var i = 0; i < value.length; i++) {
-                this.p.vertices.push(value[i]);
+            for (let i = 0; i < value.length; i++) {
+                this.p.vertices.push(value[i])
             }
-            this.p.initVertices = true;
+            this.p.initVertices = true
         } else {
-            throw new Error(this.getMessage("Bad vertices"));
+            throw new Error(this.getMessage('Bad vertices'))
         }
     }
-});
+})
 
 export default Triangle

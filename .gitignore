@@ -1,6 +1,7 @@
 # Build and Release Folders
 dist/
 dist/*
+yarn-error.log
 
 # Other files and folders
 .settings/
@@ -8,7 +9,6 @@ dist/*
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
-/nbproject/private/
 /src/resources/config.json
 
 /bower_components/*

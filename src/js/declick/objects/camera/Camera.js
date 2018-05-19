@@ -10,141 +10,140 @@ import TObject from '@/objects/tobject/TObject'
  * It can be fixed, or can follow an Object.
  * @exports Camera
  */
-var Camera = function() {
-	this.activated = false;
-	this.followedObject = null;
-	this.followX = true;
-	this.followY = true;
-    TRuntime.addInstance(this);
-};
+class Camera extends TObject {
+    constructor() {
+        super()
+        this.activated = false
+        this.followedObject = null
+        this.followX = true
+        this.followY = true
+        TRuntime.addInstance(this)
+    }
 
-Camera.prototype = Object.create(TObject.prototype);
-Camera.prototype.constructor = Camera;
-Camera.prototype.className = "Camera";
+    /**
+     * Activate Camera.
+     */
+    activate() {
+        if (!this.activated) {
+            const s = getStage()
+            s.add('viewport')
+            this.activated = true
+        }
+    }
 
-var getStage = function() {
-	return TRuntime.getGraphics().getInstance().stage();
-};
+    /**
+     * Deactivate Camera.
+     */
+    deactivate() {
+        if (this.activated) {
+            const s = getStage()
+            s.del('viewport')
+            this.activated = false
+        }
+    }
 
-/**
- * Activate Camera.
- */
-Camera.prototype.activate = function() {
-	if (!this.activated) {
-        var s = getStage();
-        s.add("viewport");
-        this.activated = true;
-	}
-};
+    /**
+     * Follow Object in this.followedObject.
+     */
+    follow() {
+        if (this.activated) {
+            const s = getStage()
+            s.follow(this.followedObject.getGObject(), {x:this.followX, y:this.followY})
+        }
+    }
 
-/**
- * Deactivate Camera.
- */
-Camera.prototype.deactivate = function() {
-	if (this.activated) {
-        var s = getStage();
-        s.del("viewport");
-        this.activated = false;
-	}
-};
+    /**
+     * Unfollow any Object.
+     */
+    stopFollow() {
+        if (this.activated) {
+            const s = getStage()
+            s.unfollow()
+        }
+    }
 
-/**
- * Follow Object in this.followedObject.
- */
-Camera.prototype.follow = function() {
-	if (this.activated) {
-        var s = getStage();
-        s.follow(this.followedObject.getGObject(), {x:this.followX, y:this.followY});
-	}
-};
+    /**
+     * Activate Camera and follow an object given in parameter.
+     * @param {String} object
+     */
+    _follow(object) {
+        object = TUtils.getObject(object)
+        this.followedObject = object
+        this.activate()
+        this.follow()
+    }
 
-/**
- * Unfollow any Object.
- */
-Camera.prototype.stopFollow = function() {
-	if (this.activated) {
-        var s = getStage();
-        s.unfollow();
-	}
-};
+    /**
+     * Unfollow any Object.
+     */
+    _unfollow() {
+        this.stopFollow()
+    }
 
-/**
- * Activate Camera and follow an object given in parameter.
- * @param {String} object
- */
-Camera.prototype._follow = function(object) {
-	object = TUtils.getObject(object);
-	this.followedObject = object;
-	this.activate();
-	this.follow();
-};
+    /**
+     * Enable or disable Object tracking on X Coordinate.
+     * @param {Boolean} value
+     */
+    _followX(value) {
+        value = TUtils.getBoolean(value)
+        this.followX = value
+        this.follow()
+    }
 
-/**
- * Unfollow any Object.
- */
-Camera.prototype._unfollow = function() {
-	this.stopFollow();
-};
+    /**
+     * Enable or disable Object tracking on Y Coordinate.
+     * @param {Boolean} value
+     */
+    _followY(value) {
+        value = TUtils.getBoolean(value)
+        this.followY = value
+        this.follow()
+    }
 
-/**
- * Enable or disable Object tracking on X Coordinate.
- * @param {Boolean} value
- */
-Camera.prototype._followX = function(value) {
-	value = TUtils.getBoolean(value);
-	this.followX = value;
-	this.follow();
-};
+    /**
+     * Move the Camera's top-left pixel to coordinates {x,y}.
+     * If it follow an Object, unfollow it.
+     * @param {Number} x
+     * @param {Number} y
+     */
+    _moveTo(x, y) {
+        x = TUtils.getInteger(x)
+        y = TUtils.getInteger(y)
+        this.activate()
+        const s = getStage()
+        this.stopFollow()
+        s.moveTo(x,y)
+    }
 
-/**
- * Enable or disable Object tracking on Y Coordinate.
- * @param {Boolean} value
- */
-Camera.prototype._followY = function(value) {
-	value = TUtils.getBoolean(value);
-	this.followY = value;
-	this.follow();
-};
+    /**
+     * Move the Camera's center pixel to coordinates {x,y}.
+     * If it follow an Object, unfollow it.
+     * @param {Number} x
+     * @param {Number} y
+     */
+    _centerOn(x, y) {
+        x = TUtils.getInteger(x)
+        y = TUtils.getInteger(y)
+        this.activate()
+        const s = getStage()
+        this.stopFollow()
+        s.centerOn(x,y)
+    }
 
-/**
- * Move the Camera's top-left pixel to coordinates {x,y}.
- * If it follow an Object, unfollow it.
- * @param {Number} x
- * @param {Number} y
- */
-Camera.prototype._moveTo = function(x,y) {
-	x = TUtils.getInteger(x);
-	y = TUtils.getInteger(y);
-	this.activate();
-	var s = getStage();
-	this.stopFollow();
-	s.moveTo(x,y);
-};
+    clear() {
+        this.stopFollow()
+        this.deactivate()
+    }
 
-/**
- * Move the Camera's center pixel to coordinates {x,y}.
- * If it follow an Object, unfollow it.
- * @param {Number} x
- * @param {Number} y
- */
-Camera.prototype._centerOn = function(x,y) {
-	x = TUtils.getInteger(x);
-	y = TUtils.getInteger(y);
-	this.activate();
-	var s = getStage();
-	this.stopFollow();
-	s.centerOn(x,y);
-};
+    init() {
+        
+    }
+}
 
-Camera.prototype.clear = function() {
-    this.stopFollow();
-    this.deactivate();
-};
+Camera.prototype.className = 'Camera'
 
-Camera.prototype.init = function() {
-    
-};
+const getStage = () => TRuntime.getGraphics().getInstance().stage()
 
-var instance = new Camera();
+const instance = new Camera()
 
 export default instance

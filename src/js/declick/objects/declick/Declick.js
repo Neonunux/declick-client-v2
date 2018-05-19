@@ -16,195 +16,192 @@ import TUtils from '@/utils/TUtils'
  * It allows several interactions.
  * @exports Declick
  */
-var Declick = function()
-{
-    this.synchronousManager = new SynchronousManager();
-    TRuntime.addInstance(this);
-    this._interruptions = [];
-};
-
-Declick.prototype = Object.create(TObject.prototype);
-Declick.prototype.constructor = Declick;
-Declick.prototype.className = "Declick";
-
-Declick.prototype.clear = function ()
-{
-    this._maskGrid();
-};
-
-Declick.prototype._displayGrid = function ()
-{
-    TRuntime.getGraphics().displayGrid();
-};
-
-Declick.prototype._maskGrid = function ()
-{
-    TRuntime.getGraphics().maskGrid();
-};
-
-Declick.prototype.delay = function (callback, arguments_, duration) {
-    if (typeof duration === 'undefined') {
-        duration = arguments_;
-    }
-    var context = this;
-    var identifier = window.setTimeout(function () {
-        var index = context._interruptions.indexOf(identifier);
-        context._interruptions.splice(index, 1);
-        callback();
-    }, duration);
-    this._interruptions.push(identifier);
-};
-
-    Declick.prototype.loop = function (callback) {
-    var loop = new CommandManager();
-    loop.addCommand(callback);
-    var previousTime = Date.now(), currentTime;
-    var context = this;
-    var repeater = function () {
-        currentTime = Date.now();
-        var delay = currentTime - previousTime;
-        loop.executeCommands({parameters: [delay]});
-        previousTime = currentTime;
-        context.delay(repeater, 0);
-    };
-    repeater();
-};
-
-/**
- * Write "value" in logs.
- * @param {String} value
- */
-Declick.prototype._write = function(value) {
-    if (TUtils.checkInteger(value)) {
-        value = value.toString();
-    } else {
-        value = TUtils.getString(value);
+class Declick extends TObject {
+    constructor() {
+        super()
+        this.synchronousManager = new SynchronousManager()
+        TRuntime.addInstance(this)
+        this._interruptions = []
     }
 
-    TUI.addLogMessage(value);
-};
-
-/**
- * Write "value" in a pop-up window.
- * @param {String} value
- */
-Declick.prototype._alert = function(value) {
-    if (TUtils.checkInteger(value)) {
-        value = value.toString();
-    } else {
-        value = TUtils.getString(value);
+    clear() {
+        this._maskGrid()
     }
-    var canvas = TUI.getCanvas();
-    if (typeof canvas !== 'undefined') {
-        this.synchronousManager.begin();
-        var self = this;
-        canvas.popup(value, function() {
-            self.synchronousManager.end();
-        });
-    }
-    //window.alert(value);
-};
 
-/**
- * Load a script given in parameter.
- * @param {String} name
- */
-Declick.prototype._loadScript = function(name) {
-    name = TUtils.getString(name);
-    this.synchronousManager.begin();
-    TRuntime.refusePriorityStatements();
-    var sm = this.synchronousManager;
-    TLink.getProgramStatements(name, function(statements) {
-        if (statements instanceof TError) {
-            sm.end();
-            TRuntime.allowPriorityStatements();
-            TRuntime.handleError(statements);
+    _displayGrid() {
+        TRuntime.getGraphics().displayGrid()
+    }
+
+    _maskGrid() {
+        TRuntime.getGraphics().maskGrid()
+    }
+
+    delay(callback, arguments_, duration) {
+        if (typeof duration === 'undefined') {
+            duration = arguments_
         }
-        var statement = TRuntime.createCallStatement(TRuntime.createFunctionStatement(statements.body));
-        TRuntime.insertStatement(statement);
-        sm.end();
-        TRuntime.allowPriorityStatements();
-    });
-};
-
-/**
- * Clear screen, commands history and console.
- */
-Declick.prototype._init = function() {
-    TRuntime.clearGraphics();
-    TRuntime.clearObjects();
-    for (var index = 0; index < this._interruptions.length; index++) {
-        var interruption = this._interruptions[index];
-        window.clearTimeout(interruption);
+        const context = this
+        const identifier = window.setTimeout(() => {
+            const index = context._interruptions.indexOf(identifier)
+            context._interruptions.splice(index, 1)
+            callback()
+        }, duration)
+        this._interruptions.push(identifier)
     }
-    this._interruptions = [];
-};
 
-/**
- * Clear screen.
- */
-Declick.prototype._clearScreen = function() {
-    TRuntime.clearGraphics();
-};
+    loop(callback) {
+        const loop = new CommandManager()
+        loop.addCommand(callback)
+        let previousTime = Date.now()
+        let currentTime
+        const context = this
+        const repeater = () => {
+            currentTime = Date.now()
+            const delay = currentTime - previousTime
+            loop.executeCommands({parameters: [delay]})
+            previousTime = currentTime
+            context.delay(repeater, 0)
+        }
+        repeater()
+    }
 
-/**
- * Pause Declick. Freeze every object.
- */
-Declick.prototype._pause = function() {
-    TRuntime.stop();
-};
+    /**
+     * Write "value" in logs.
+     * @param {String} value
+     */
+    _write(value) {
+        if (TUtils.checkInteger(value)) {
+            value = value.toString()
+        } else {
+            value = TUtils.getString(value)
+        }
 
-/**
- * Resume Declick.
- */
-Declick.prototype._unpause = function() {
-    TRuntime.start();
-};
+        TUI.addLogMessage(value)
+    }
 
-/**
- * Wait for a given duration
- * @param {Integer} duration
- */
-Declick.prototype._wait = function(duration) {
-    duration = TUtils.getInteger(duration);
-    var self = this;
-    window.setTimeout(function() {
-        self.synchronousManager.end();
-    }, duration);
-    this.synchronousManager.begin();
-};
+    /**
+     * Write "value" in a pop-up window.
+     * @param {String} value
+     */
+    _alert(value) {
+        if (TUtils.checkInteger(value)) {
+            value = value.toString()
+        } else {
+            value = TUtils.getString(value)
+        }
+        const canvas = TUI.getCanvas()
+        if (typeof canvas !== 'undefined') {
+            this.synchronousManager.begin()
+            const self = this
+            canvas.popup(value, () => {
+                self.synchronousManager.end()
+            })
+        }
+        //window.alert(value);
+    }
 
-/**
- * Ask a question and get the answer.
- * @param {String} text
- * @returns {String}    Returns the user's answer.
- */
-Declick.prototype._ask = function(text) {
-    var answer = window.prompt(text);
-    if (answer === null || answer.length === 0)
-        return false;
-    else
-        return answer;
-};
+    /**
+     * Load a script given in parameter.
+     * @param {String} name
+     */
+    _loadScript(name) {
+        name = TUtils.getString(name)
+        this.synchronousManager.begin()
+        TRuntime.refusePriorityStatements()
+        const sm = this.synchronousManager
+        TLink.getProgramStatements(name, statements => {
+            if (statements instanceof TError) {
+                sm.end()
+                TRuntime.allowPriorityStatements()
+                TRuntime.handleError(statements)
+            }
+            const statement = TRuntime.createCallStatement(TRuntime.createFunctionStatement(statements.body))
+            TRuntime.insertStatement(statement)
+            sm.end()
+            TRuntime.allowPriorityStatements()
+        })
+    }
 
+    /**
+     * Clear screen, commands history and console.
+     */
+    _init() {
+        TRuntime.clearGraphics()
+        TRuntime.clearObjects()
+        for (let index = 0; index < this._interruptions.length; index++) {
+            const interruption = this._interruptions[index]
+            window.clearTimeout(interruption)
+        }
+        this._interruptions = []
+    }
 
-/**
- * Interrupt execution
- */
-Declick.prototype._interrupt = function() {
-    TRuntime.interrupt();
-};
+    /**
+     * Clear screen.
+     */
+    _clearScreen() {
+        TRuntime.clearGraphics()
+    }
 
-Declick.prototype.freeze = function(value) {
-};
+    /**
+     * Pause Declick. Freeze every object.
+     */
+    _pause() {
+        TRuntime.stop()
+    }
 
-Declick.prototype.clear = function() {
-    this.synchronousManager.end();
-};
+    /**
+     * Resume Declick.
+     */
+    _unpause() {
+        TRuntime.start()
+    }
 
-Declick.prototype.init = function() {
-};
+    /**
+     * Wait for a given duration
+     * @param {Integer} duration
+     */
+    _wait(duration) {
+        duration = TUtils.getInteger(duration)
+        const self = this
+        window.setTimeout(() => {
+            self.synchronousManager.end()
+        }, duration)
+        this.synchronousManager.begin()
+    }
 
-var declickInstance = new Declick();
+    /**
+     * Ask a question and get the answer.
+     * @param {String} text
+     * @returns {String}    Returns the user's answer.
+     */
+    _ask(text) {
+        const answer = window.prompt(text)
+        if (answer === null || answer.length === 0)
+            {return false}
+        else
+            {return answer}
+    }
+
+    /**
+     * Interrupt execution
+     */
+    _interrupt() {
+        TRuntime.interrupt()
+    }
+
+    freeze(value) {
+    }
+
+    clear() {
+        this.synchronousManager.end()
+    }
+
+    init() {
+    }
+}
+
+Declick.prototype.className = 'Declick'
+
+const declickInstance = new Declick()
 
 export default declickInstance

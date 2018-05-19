@@ -13,201 +13,201 @@ import TUtils from '@/utils/TUtils'
  * @param {String} name Scene's name
  * @exports Scene
  */
-var Scene = function (name) {
-    Block.call(this);
-    if (typeof (name) === 'undefined') {
-        name = "nature";
+class Scene extends Block {
+    constructor(name) {
+        super()
+        if (typeof (name) === 'undefined') {
+            name = 'nature'
+        }
+        this.backgroundName = ''
+        this.blockName = ''
+        this._setScene(name)
     }
-    this.backgroundName = "";
-    this.blockName = "";
-    this._setScene(name);
-};
 
-Scene.prototype = Object.create(Block.prototype);
-Scene.prototype.constructor = Scene;
-Scene.prototype.className = "Scene";
+    /**
+     * Creates Scene.
+     * Loads background and set it.
+     * Loads Block image, execute a transparency mask on it and set the result.
+     * @param {String} name Scene's name
+     */
+    _setScene(name) {
+        name = TUtils.getString(name)
+        name = this.getMessage(name)
+        const baseSceneUrl = `${this.getResource(name)}/`
+        const configUrl = `${baseSceneUrl}config.json`
+        const parent = this
+        this.loadJSON(
+            configUrl,
+            data => {
+                const backImage = data['images']['background']
+                const blockImage = data['images']['block']
+                try {
+                    parent._removeImageSet('elements')
+                } catch (e) {
+                }
+                parent.gObject.reinit()
+                const backgroundName = `${name}/${backImage}`
+                parent.backgroundName = backgroundName
+                const blockName = `${name}/${blockImage}`
+                parent.blockName = blockName
+                parent.addImage(backgroundName, 'elements', false, () => {
+                    // background may have changed during loading
+                    if (parent.backgroundName === backgroundName) {
+                        parent.gObject.setBackground(backgroundName)
+                    }
+                })
+                parent.addImage(blockName, 'elements', false, () => {
+                    // block may have changed during loading
+                    if (parent.blockName === blockName) {
+                        parent.computeTransparencyMask(blockName)
+                        parent.gObject.setBlock(blockName)
+                    }
+                })
+            },
+            error => {
+                throw new Error(TUtils.format(parent.getMessage('unknown character'), name))
+            }
+        )
+    }
 
-var graphics = Scene.prototype.graphics;
+    /**
+     * Display the Block image.
+     */
+    _showBlock() {
+        this.gObject.setBlockDisplayed(true)
+    }
 
-Scene.prototype.gClass = graphics.addClass("TBlock", "TScene", {
-    init: function (props, defaultProps) {
+    /**
+     * Hide the block image.
+     */
+    _hideBlock() {
+        this.gObject.setBlockDisplayed(false)
+    }
+
+    /**
+     * Remove the current background if existing and set a new one.
+     * @param {String} name
+     */
+    _setBackground(name) {
+        name = TUtils.getString(name)
+        try {
+            this.removeImage(this.backgroundName)
+        } catch (e) {
+        }
+        this.backgroundName = name
+        const sceneObject = this
+        const gObject = this.gObject
+        gObject.removeBackground()
+        this.addImage(name, 'elements', true, () => {
+            if (name === sceneObject.backgroundName) {
+                gObject.setBackground(name)
+            }
+        })
+    }
+
+    /**
+     * Remove the current Block image if existing and set a new one.
+     * @param {String} name
+     */
+    _setBlock(name) {
+        name = TUtils.getString(name)
+        try {
+            this.removeImage(this.blockName)
+        } catch (e) {
+        }
+        this.blockName = name
+        const sceneObject = this
+        const gObject = this.gObject
+        gObject.removeBlock()
+        this.addImage(name, 'elements', true, () => {
+            if (name === sceneObject.blockName) {
+                sceneObject.computeTransparencyMask(name)
+                gObject.setBlock(name)
+            }
+        })
+    }
+
+    /**
+     * Execute a Transparency Mask on Block image and Background,
+     * and set the created images as news Block image and Background.
+     * @param {Number} red
+     * @param {Number} green
+     * @param {Number} blue
+     */
+    _setTransparent(red, green, blue) {
+        if (this.resources.has(this.blockName)) {
+            this.gObject.removeBlock()
+        }
+        if (this.resources.has(this.backgroundName)) {
+            this.gObject.removeBackground()
+        }
+        const parent = this
+        Sprite.prototype.setTransparent.call(this, red, green, blue, name => {
+            if (name === parent.blockName) {
+                parent.computeTransparencyMask(name)
+                parent.gObject.setBlock(name)
+            }
+            if (name === parent.backgroundName) {
+                parent.gObject.setBackground(name)
+            }
+        })
+    }
+}
+
+Scene.prototype.className = 'Scene'
+
+const graphics = Scene.prototype.graphics
+
+Scene.prototype.gClass = graphics.addClass('TBlock', 'TScene', {
+    init(props, defaultProps) {
         this._super(TUtils.extend({
             assetBlock: null,
             showBlock: false
-        }, props), defaultProps);
+        }, props), defaultProps)
     },
-    draw: function (ctx) {
-        this._super(ctx);
-        var p = this.p;
+    draw(ctx) {
+        this._super(ctx)
+        const p = this.p
         if (p.showBlock && p.assetBlock) {
-            ctx.drawImage(this.resources.getUnchecked(p.assetBlock), -p.cx, -p.cy);
+            ctx.drawImage(this.resources.getUnchecked(p.assetBlock), -p.cx, -p.cy)
         }
     },
-    setBackground: function (asset) {
-        var oldW = this.p.w;
-        var oldH = this.p.h;
-        this.p.asset = asset;
+    setBackground(asset) {
+        const oldW = this.p.w
+        const oldH = this.p.h
+        this.p.asset = asset
         // resize only for background
-        graphics.objectResized(this);
-        this.p.x += (this.p.w - oldW) / 2;
-        this.p.y += (this.p.h - oldH) / 2;
-        this.p.destinationX = this.p.x;
-        this.p.destinationY = this.p.y;
+        graphics.objectResized(this)
+        this.p.x += (this.p.w - oldW) / 2
+        this.p.y += (this.p.h - oldH) / 2
+        this.p.destinationX = this.p.x
+        this.p.destinationY = this.p.y
         if (!this.p.initialized && this.p.assetBlock) {
-            this.initialized();
+            this.initialized()
         }
     },
-    setBlock: function (asset) {
-        this.p.assetBlock = asset;
+    setBlock(asset) {
+        this.p.assetBlock = asset
         if (!this.p.initialized && this.p.asset) {
-            this.initialized();
+            this.initialized()
         }
     },
-    setBlockDisplayed: function (value) {
-        this.p.showBlock = value;
+    setBlockDisplayed(value) {
+        this.p.showBlock = value
     },
-    reinit: function () {
-        this.initialized(false);
-        this.p.asset = null;
-        this.p.assetBlock = null;
+    reinit() {
+        this.initialized(false)
+        this.p.asset = null
+        this.p.assetBlock = null
     },
-    removeBlock: function () {
-        this.initialized(false);
-        this.p.assetBlock = null;
+    removeBlock() {
+        this.initialized(false)
+        this.p.assetBlock = null
     },
-    removeBackground: function () {
-        this.initialized(false);
-        this.p.asset = null;
+    removeBackground() {
+        this.initialized(false)
+        this.p.asset = null
     }
-});
-
-/**
- * Creates Scene.
- * Loads background and set it.
- * Loads Block image, execute a transparency mask on it and set the result.
- * @param {String} name Scene's name
- */
-Scene.prototype._setScene = function (name) {
-    name = TUtils.getString(name);
-    name = this.getMessage(name);
-    var baseSceneUrl = this.getResource(name) + "/";
-    var configUrl = baseSceneUrl + "config.json";
-    var parent = this;
-    this.loadJSON(
-        configUrl,
-        function (data) {
-            var backImage = data['images']['background'];
-            var blockImage = data['images']['block'];
-            try {
-                parent._removeImageSet("elements");
-            } catch (e) {
-            }
-            parent.gObject.reinit();
-            var backgroundName = name + "/" + backImage;
-            parent.backgroundName = backgroundName;
-            var blockName = name + "/" + blockImage;
-            parent.blockName = blockName;
-            parent.addImage(backgroundName, "elements", false, function () {
-                // background may have changed during loading
-                if (parent.backgroundName === backgroundName) {
-                    parent.gObject.setBackground(backgroundName);
-                }
-            });
-            parent.addImage(blockName, "elements", false, function () {
-                // block may have changed during loading
-                if (parent.blockName === blockName) {
-                    parent.computeTransparencyMask(blockName);
-                    parent.gObject.setBlock(blockName);
-                }
-            });
-        },
-        function (error) {
-            throw new Error(TUtils.format(parent.getMessage("unknown character"), name));
-        }
-    );
-};
-
-/**
- * Display the Block image.
- */
-Scene.prototype._showBlock = function () {
-    this.gObject.setBlockDisplayed(true);
-};
-
-/**
- * Hide the block image.
- */
-Scene.prototype._hideBlock = function () {
-    this.gObject.setBlockDisplayed(false);
-};
-
-/**
- * Remove the current background if existing and set a new one.
- * @param {String} name
- */
-Scene.prototype._setBackground = function (name) {
-    name = TUtils.getString(name);
-    try {
-        this.removeImage(this.backgroundName);
-    } catch (e) {
-    }
-    this.backgroundName = name;
-    var sceneObject = this;
-    var gObject = this.gObject;
-    gObject.removeBackground();
-    this.addImage(name, "elements", true, function () {
-        if (name === sceneObject.backgroundName) {
-            gObject.setBackground(name);
-        }
-    });
-};
-
-/**
- * Remove the current Block image if existing and set a new one.
- * @param {String} name
- */
-Scene.prototype._setBlock = function (name) {
-    name = TUtils.getString(name);
-    try {
-        this.removeImage(this.blockName);
-    } catch (e) {
-    }
-    this.blockName = name;
-    var sceneObject = this;
-    var gObject = this.gObject;
-    gObject.removeBlock();
-    this.addImage(name, "elements", true, function () {
-        if (name === sceneObject.blockName) {
-            sceneObject.computeTransparencyMask(name);
-            gObject.setBlock(name);
-        }
-    });
-};
-
-/**
- * Execute a Transparency Mask on Block image and Background,
- * and set the created images as news Block image and Background.
- * @param {Number} red
- * @param {Number} green
- * @param {Number} blue
- */
-Scene.prototype._setTransparent = function (red, green, blue) {
-    if (this.resources.has(this.blockName)) {
-        this.gObject.removeBlock();
-    }
-    if (this.resources.has(this.backgroundName)) {
-        this.gObject.removeBackground();
-    }
-    var parent = this;
-    Sprite.prototype.setTransparent.call(this, red, green, blue, function (name) {
-        if (name === parent.blockName) {
-            parent.computeTransparencyMask(name);
-            parent.gObject.setBlock(name);
-        }
-        if (name === parent.backgroundName) {
-            parent.gObject.setBackground(name);
-        }
-    });
-};
+})
 
 export default Scene

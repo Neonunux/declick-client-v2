@@ -12,102 +12,103 @@ import TUtils from '@/utils/TUtils'
  * @returns {Score}
  * @exports Score
  */
-var Score = function(string) {
-    if (typeof string === 'undefined') {
-        string = "Score : ";
+class Score extends Text {
+    constructor(string) {
+        if (typeof string === 'undefined') {
+            string = 'Score : '
+        }
+        const displayedText = string + this.score
+        super(displayedText)
     }
-    var displayedText = string + this.score;
-    Text.call(this, displayedText);
-};
 
-Score.prototype = Object.create(Text.prototype);
-Score.prototype.constructor = Score;
-Score.prototype.className = "Score";
-Score.prototype.label = "Score : ";
-Score.prototype.score = 0;
-
-/**
- * Reset score to 0.
- */
-Score.prototype._eraseScoreNumber = function() {
-    this.score = 0;
-    this._setText(this.label + this.score);
-};
-
-/**
- * Increase score with integer step defined.
- * Default value : 1
- * @param {Number} step
- */
-Score.prototype._increaseScore = function(step) {
-    if (typeof step === 'undefined') {
-        step = 1;
+    /**
+     * Reset score to 0.
+     */
+    _eraseScoreNumber() {
+        this.score = 0
+        this._setText(this.label + this.score)
     }
-    this.score += TUtils.getInteger(step);
-    this._setText(this.label + this.score);
-};
 
-/**
- * Decrease score with integer step defined.
- * Default value : 1
- * @param {Number} step
- */
-Score.prototype._decreaseScore = function(step) {
-    if (typeof step === 'undefined') {
-        step = 1;
+    /**
+     * Increase score with integer step defined.
+     * Default value : 1
+     * @param {Number} step
+     */
+    _increaseScore(step) {
+        if (typeof step === 'undefined') {
+            step = 1
+        }
+        this.score += TUtils.getInteger(step)
+        this._setText(this.label + this.score)
     }
-    this.score -= TUtils.getInteger(step);
-    this._setText(this.label + this.score);
-};
 
-/**
- * Defines a string label displayed before score number
- * Default value : "Score : "
- * @param {String} label First part of displayed string
- */
-Score.prototype._setLabel = function(label) {
-    if (typeof label === 'undefined') {
-        this.label = "Score : ";
+    /**
+     * Decrease score with integer step defined.
+     * Default value : 1
+     * @param {Number} step
+     */
+    _decreaseScore(step) {
+        if (typeof step === 'undefined') {
+            step = 1
+        }
+        this.score -= TUtils.getInteger(step)
+        this._setText(this.label + this.score)
     }
-    else
-        this.label = label;
-    this._setText(this.label + this.score);
-};
 
-/**
- * Defines score with integer given.
- * Default value : 0
- * @param {Number} number
- */
-Score.prototype._setScoreNumber = function(number) {
-    this.score = TUtils.getInteger(number);
-    this._setText(this.label + this.score);
-};
+    /**
+     * Defines a string label displayed before score number
+     * Default value : "Score : "
+     * @param {String} label First part of displayed string
+     */
+    _setLabel(label) {
+        if (typeof label === 'undefined') {
+            this.label = 'Score : '
+        }
+        else
+            {this.label = label}
+        this._setText(this.label + this.score)
+    }
 
-/**
- * Get Label.
- * @returns {String}    Returns Label.
- */
-Score.prototype._getLabel = function() {
-    var string = this.label;
-    return string;
-};
+    /**
+     * Defines score with integer given.
+     * Default value : 0
+     * @param {Number} number
+     */
+    _setScoreNumber(number) {
+        this.score = TUtils.getInteger(number)
+        this._setText(this.label + this.score)
+    }
 
-/**
- * Get score.
- * @returns {String} Return the score.
- */
-Score.prototype._getScoreNumber = function() {
-    var string = this.score + ""; // "" to convert in string
-    return string;
-};
-/**
- * Get score's string.
- * @returns {String} Returns label and score.
- */
-Score.prototype._getScore = function() {
-    var string = this.label + this.score;
-    return string;
-};
+    /**
+     * Get Label.
+     * @returns {String}    Returns Label.
+     */
+    _getLabel() {
+        const string = this.label
+        return string
+    }
+
+    /**
+     * Get score.
+     * @returns {String} Return the score.
+     */
+    _getScoreNumber() {
+        const string = `${this.score}` // "" to convert in string
+        return string
+    }
+
+    /**
+     * Get score's string.
+     * @returns {String} Returns label and score.
+     */
+    _getScore() {
+        const string = this.label + this.score
+        return string
+    }
+}
+
+Score.prototype.className = 'Score'
+Score.prototype.label = 'Score : '
+Score.prototype.score = 0
 
 export default Score

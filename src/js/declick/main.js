@@ -6,6 +6,11 @@ import TRuntime from '@/run/TRuntime'
 import TFrame from '@/ui/TFrame'
 
 require ('css/style.css')
+require ('css/hints.css')
+require ('css/prism.css')
+require ('css/split-pane.css')
+require ('css/wColorPicker.min.css')
+require ('css/wPaint.min.css')
 
 // Start the main app logic.
 function load() {

@@ -9,8 +9,7 @@
   },
   "scripts": {
     "install_declick": "npm install && grunt install_declick",
-    "dev": "webpack --mode development --module-bind js=babel-loader",
-    "server": "webpack-dev-server --content-base dist/ --config build/config.dev.js --allowed-hosts fcc44c0356ec48c391df95af4f538acf.vfs.cloud9.eu-west-1.amazonaws.com",
+    "server": "webpack-dev-server",
     "build:main": "babel-node build main"
   },
   "dependencies": {

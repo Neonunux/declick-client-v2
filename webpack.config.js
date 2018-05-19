@@ -81,14 +81,9 @@ const baseConfig = {
 }
 
 if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = 'production'
+  process.env.NODE_ENV = 'development'
 }
 
-const environmentSuffixes = {
-  'development': 'dev',
-  'production': 'prod',
-}
-
-const extendConfig = require(`./webpack.config.${environmentSuffixes[process.env.NODE_ENV]}.js`)
+const extendConfig = require(`./webpack.config.${process.env.NODE_ENV}.js`)
 
 module.exports = merge(baseConfig, extendConfig)

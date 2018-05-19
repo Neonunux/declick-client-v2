@@ -10,7 +10,7 @@
   "scripts": {
     "install_declick": "npm install && grunt install_declick",
     "dev": "webpack --mode development --module-bind js=babel-loader",
-    "server": "webpack-dev-server --config build/config.dev.js",
+    "server": "webpack-dev-server --content-base dist/ --config build/config.dev.js --allowed-hosts fcc44c0356ec48c391df95af4f538acf.vfs.cloud9.eu-west-1.amazonaws.com",
     "build:main": "babel-node build main"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "@babel/node": "^7.0.0-beta.46",
     "@babel/preset-env": "^7.0.0-beta.46",
     "babel-loader": "^8.0.0-beta.2",
+    "css-loader": "^0.28.11",
     "eslint": "^4.19.1",
     "grunt": "^0.4.5",
     "grunt-cleanempty": "^1.0.4",
@@ -34,9 +35,11 @@
     "html-webpack-plugin": "^3.2.0",
     "htmllint-loader": "^2.1.4",
     "raw-loader": "^0.5.1",
+    "style-loader": "^0.21.0",
     "url-loader": "^1.0.1",
     "webpack-cli": "^2.1.3",
     "webpack-config-options": "^1.0.2",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.4",
+    "webpack-merge": "^4.1.2"
   }
 }

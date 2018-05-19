@@ -5,6 +5,8 @@ import TEnvironment from '@/env/TEnvironment'
 import TRuntime from '@/run/TRuntime'
 import TFrame from '@/ui/TFrame'
 
+require ('css/style.css')
+
 // Start the main app logic.
 function load() {
     window.console.log('***********************')

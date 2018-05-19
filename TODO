@@ -9,3 +9,4 @@
 	this.clear, delete
  - TFrame
 	 - variable is named 'console'
+ - Remove T letter in TEnvironment, TProject, etc.

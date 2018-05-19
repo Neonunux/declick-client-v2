@@ -100,9 +100,12 @@ function TProject() {
      * Create a new Program for Project, and return it.
      * @returns {TProgram}
      */
-    this.createProgram = () => {
-        const program = new TProgram(programs)
-        const name = program.getName()
+    this.createProgram = (name, code) => {
+        const program = new TProgram(name || programs)
+        if (code) {
+            program.setCode(code)
+        }
+        name = program.getName()
         programs.push(name)
         programs = TUtils.sortArray(programs)
         editedPrograms[name] = program

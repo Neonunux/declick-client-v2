@@ -87,3 +87,63 @@ if (!process.env.NODE_ENV) {
 const extendConfig = require(`./webpack.config.${process.env.NODE_ENV}.js`)
 
 module.exports = merge(baseConfig, extendConfig)
+
+// cleanempty: {
+//   options: {
+//       files:false,
+//       folders:true
+//   },
+//   src: ['dist/js/declick/objects/**/*']
+
+/*
+ // Utility tasks
+    grunt.registerTask('set_dist_config', function() {
+        var declickConfig = grunt.file.readJSON("dist/resources/config.json");
+        declickConfig.optimized = true;
+        declickConfig["cache-version"] = grunt.config("cacheVersion");
+        if (declickConfig["analytics"] !== 'false') {
+            grunt.config("htmlbuild.dist.options.scripts.analytics", declickConfig["analytics"]);
+        }
+        grunt.file.write("dist/resources/config.json",JSON.stringify(declickConfig));
+    });
+
+    grunt.registerTask('get_objects_list', function() {
+        var structure = grunt.file.readJSON("src/js/declick/objects/objects.json");
+        var objectsList = [];
+        for (var entry in structure) {
+            objectsList.push("objects/"+structure[entry].path+"/"+entry);
+        }
+        grunt.config('objectsList',objectsList);
+        var objectsListTUI = objectsList.push('TUI');
+        grunt.config('objectsListTUI',objectsListTUI);
+    });
+
+    grunt.registerTask('merge_files', function() {
+        var structure = grunt.file.readJSON("src/js/declick/objects/objects.json");
+        structure.TObject = {path:'tobject'};
+        structure.TGraphicalObject = {path:'tgraphicalobject'};
+        structure.TObject3D = {path:'tobject3d'};
+        var messages = {};
+        var i18n = {};
+        for (var entry in structure) {
+            var path = "dist/js/declick/objects/"+structure[entry].path+"/resources/";
+            messages[entry] = grunt.file.readJSON(path+"messages.json");
+            i18n[entry] = grunt.file.readJSON(path+"i18n.json");
+            // delete files
+            grunt.file.delete(path+"messages.json");
+            grunt.file.delete(path+"i18n.json");
+        }
+        grunt.file.write("dist/js/declick/objects/messages.json", JSON.stringify(messages));
+        grunt.file.write("dist/js/declick/objects/i18n.json", JSON.stringify(i18n));
+    });
+
+    grunt.registerTask('set_cache_version', function() {
+        var configPath = "dist/resources/config.json";
+        if (grunt.file.exists(configPath)) {
+            var declickConfig = grunt.file.readJSON("dist/resources/config.json");
+            grunt.config('cacheVersion', declickConfig["cache-version"]+1);
+        } else {
+            grunt.config('cacheVersion', 0);
+        }
+    });
+*/

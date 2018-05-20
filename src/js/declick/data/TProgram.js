@@ -42,31 +42,31 @@ function TProgram(value) {
         if (newProgram) {
             // First create program
             TLink.createProgram(name, function(error) {
-                if (typeof error !== 'undefined') {
-                    // error: just forward it
-                    callback.call(this, error)
-                } else {
+                // if (typeof error !== 'undefined') {
+                //     // error: just forward it
+                //     callback.call(this, error)
+                // } else {
                     newProgram = false
                     TLink.saveProgram(name, code, function(error) {
-                        if (typeof error !== 'undefined') {
-                            // error: forward it
-                            callback.call(this, error)
-                        } else {
+                        // if (typeof error !== 'undefined') {
+                        //     // error: forward it
+                        //     callback.call(this, error)
+                        // } else {
                             modified = false
                             callback.call(this)
-                        }
+            //             }
                     })
-                }
+                // }
             })
         } else {
             TLink.saveProgram(name, code, function(error) {
-                if (typeof error !== 'undefined') {
-                    // error: forward it
-                    callback.call(this, error)
-                } else {
+            //     if (typeof error !== 'undefined') {
+            //         // error: forward it
+            //         callback.call(this, error)
+            //     } else {
                     modified = false
                     callback.call(this)
-                }
+            //     }
             })
         }
     }
@@ -163,27 +163,29 @@ function TProgram(value) {
     this.rename = (value, callback) => {
         if (!newProgram) {
             TLink.renameProgram(name, value, function(error) {
-                if (typeof error !== 'undefined') {
-                    TEnvironment.log('error detected')
-                    if (TEnvironment.isLogEnabled()) {
-                        window.console.debug(error)
-                    }
-                    callback.call(this, error)
-                } else {
+                // Disable errors for now as it prevents user from renaming resources offline.
+                
+                // if (typeof error !== 'undefined') {
+                //     TEnvironment.log('error detected')
+                //     if (TEnvironment.isLogEnabled()) {
+                //         window.console.debug(error)
+                //     }
+                //     callback.call(this, error)
+                // } else {
                     name = value
                     callback.call(this)
-                }
+                // }
             })
         } else {
             // New Program: we try to create the program
             TLink.createProgram(value, function(error) {
-                if (typeof error !== 'undefined') {
-                    callback.call(this, error)
-                } else {
+                // if (typeof error !== 'undefined') {
+                //     callback.call(this, error)
+                // } else {
                     name = value
                     newProgram = false
                     callback.call(this)
-                }
+                // }
             })
         }
     }

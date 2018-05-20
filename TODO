@@ -1,11 +1,19 @@
- - default text in editor to ease manual test
- - hot reload -> done !
  - bug on execute
  - remove jquery
- - same class declaration style && functional programming
+ - functional programming
+ - move TUI in declick-client
+ - svg icon
+ - cache version in webpack
+ - GAnalytics in webpack
+
+cosmethique
+ - same class declaration style and method => es6 style
+ - remove for
  - Screen/Mouse/Declick
 	 - remove call to TObject constructor
  - TUI
 	this.clear, delete
  - TFrame
 	 - variable is named 'console'
+ - Remove T letter in TEnvironment, TProject, etc.
+ 

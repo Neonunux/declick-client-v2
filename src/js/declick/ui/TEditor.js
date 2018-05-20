@@ -220,7 +220,10 @@ class TEditor extends TComponent {
         this.giveFocus = () => {
             aceEditor.focus()
         }
-
+        
+        this.getAceEditor = () => {
+            return aceEditor
+        }
         /**
          * Disable Editor.
          */
@@ -450,6 +453,10 @@ class TEditor extends TComponent {
                 return false
             },
             readOnly: true // false if this command should not apply in readOnly mode
+        }
+        
+        this.getAceEditor = () => {
+            return aceEditor
         }
     }
 }

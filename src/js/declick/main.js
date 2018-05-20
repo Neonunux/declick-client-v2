@@ -12,6 +12,8 @@ require ('css/split-pane.css')
 require ('css/wColorPicker.min.css')
 require ('css/wPaint.min.css')
 
+const autoload = require('./autoload').default
+
 // Start the main app logic.
 function load() {
     window.console.log('***********************')
@@ -39,6 +41,7 @@ function load() {
                         if (typeof window.parent !== 'undefined') {
                             window.parent.postMessage('init', '*')
                         }
+                        setTimeout(() => autoload())
                     })
                 })
             })

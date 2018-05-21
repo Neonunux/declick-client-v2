@@ -47,7 +47,10 @@ function load() {
                         if (typeof window.parent !== 'undefined') {
                             window.parent.postMessage('init', '*')
                         }
-                        TEnvironment.restore()
+                        setTimeout(()=>{
+                            TUI.restoreEditorContent()
+                            TUI.debugOnChange()
+                        })
                     })
                 })
             })

@@ -60,7 +60,7 @@ class TUI {
         this.getCanvas = () => canvas
         this.getCanvasCursorX = () => canvas.getCursorX()
         this.getCanvasCursorY = () => canvas.getCursorY()
-        this.hideConsole = function(hideLog) {
+        this.hideConsole = function (hideLog) {
             //TODO: check if hideLog is still used?
             if (typeof hideLog === 'undefined') {
                 hideLog = true
@@ -76,15 +76,14 @@ class TUI {
                 if (hideLog) {
                     frame.setSeparatorPosition(`${toolbar.getHeight()}px`)
                     frame.disableSeparator()
-                }
-                else {
+                } else {
                     frame.lowerSeparator(console.getHeight())
                 }
                 THints.setPage('preview')
                 consoleDisplayed = false
             }
         }
-        this.showConsole = function() {
+        this.showConsole = function () {
             if (!consoleDisplayed) {
                 this.hideHints()
                 toolbar.enableConsole()
@@ -95,8 +94,7 @@ class TUI {
                     //frame.raiseSeparator(console.getHeight());
                     log.restoreScroll()
                     frame.raiseSeparator(console.getHeight())
-                }
-                else {
+                } else {
                     log.show()
                     frame.enableSeparator()
                     frame.raiseSeparator(log.getHeight() + console.getHeight())
@@ -106,15 +104,14 @@ class TUI {
                 consoleDisplayed = true
             }
         }
-        this.toggleConsole = function() {
+        this.toggleConsole = function () {
             if (consoleDisplayed) {
                 this.hideConsole()
-            }
-            else {
+            } else {
                 this.showConsole()
             }
         }
-        this.enableDesignMode = function() {
+        this.enableDesignMode = function () {
             if (!designModeEnabled) {
                 this.hideHints()
                 TRuntime.freeze(true)
@@ -124,8 +121,7 @@ class TUI {
                 if (consoleDisplayed) {
                     // log already displayed, with console: hide console
                     this.hideConsole(false)
-                }
-                else {
+                } else {
                     // log not displayed: show it
                     log.show()
                     frame.enableSeparator()
@@ -136,7 +132,7 @@ class TUI {
                 designModeEnabled = true
             }
         }
-        this.disableDesignMode = function(hideLog) {
+        this.disableDesignMode = function (hideLog) {
             if (typeof hideLog === 'undefined') {
                 hideLog = true
             }
@@ -157,35 +153,33 @@ class TUI {
                 designModeEnabled = false
             }
         }
-        this.enableFloatingController = function() {
+        this.enableFloatingController = function () {
             this.hideHints()
             canvas.enableFloatingController()
             toolbar.enableFloatingController()
             floatingControllerEnabled = true
         }
-        this.disableFloatingController = function() {
+        this.disableFloatingController = function () {
             this.hideHints()
             canvas.disableFloatingController()
             toolbar.disableFloatingController()
             floatingControllerEnabled = false
         }
-        this.toggleDesignMode = function() {
+        this.toggleDesignMode = function () {
             if (designModeEnabled) {
                 this.disableDesignMode()
-            }
-            else {
+            } else {
                 this.enableDesignMode()
             }
         }
-        this.toggleFloatingController = function() {
+        this.toggleFloatingController = function () {
             if (floatingControllerEnabled) {
                 this.disableFloatingController()
-            }
-            else {
+            } else {
                 this.enableFloatingController()
             }
         }
-        this.enableEditor = function(updateServer) {
+        this.enableEditor = function (updateServer) {
             if (!editorEnabled) {
                 // hide console
                 this.hideConsole()
@@ -206,7 +200,7 @@ class TUI {
                 }
             }
         }
-        this.disableEditor = function(updateServer) {
+        this.disableEditor = function (updateServer) {
             if (editorEnabled) {
                 toolbar.disableEditor()
                 editor.hide()
@@ -224,15 +218,14 @@ class TUI {
                 TRuntime.start()
             }
         }
-        this.toggleEditor = function() {
+        this.toggleEditor = function () {
             if (editorEnabled) {
                 this.execute()
-            }
-            else {
+            } else {
                 this.enableEditor()
             }
         }
-        this.clear = function(confirm) {
+        this.clear = function (confirm) {
             let goOn = true
             if (typeof confirm !== 'undefined' && confirm) {
                 goOn = window.confirm(TEnvironment.getMessage('clear-confirm'))
@@ -249,8 +242,7 @@ class TUI {
         this.addLogMessage = text => {
             if (typeof log !== 'undefined') {
                 log.addMessage(text)
-            }
-            else {
+            } else {
                 TEnvironment.log(text)
             }
         }
@@ -262,8 +254,7 @@ class TUI {
         this.addLogError = error => {
             if (typeof log !== 'undefined') {
                 log.addError(error)
-            }
-            else {
+            } else {
                 TEnvironment.error(error)
             }
         }
@@ -292,7 +283,7 @@ class TUI {
                 return log.setLastRow()
             }
         }
-        this.execute = function() {
+        this.execute = function () {
             if (designModeEnabled) {
                 this.disableDesignMode()
             }
@@ -300,8 +291,7 @@ class TUI {
                 // execution from console
                 TRuntime.executeFrom(console)
                 console.clear()
-            }
-            else if (editorEnabled) {
+            } else if (editorEnabled) {
                 // execution from editor
                 this.clear(false)
                 this.disableEditor()
@@ -315,7 +305,7 @@ class TUI {
                 }
             }
         }
-        this.handleError = function(index) {
+        this.handleError = function (index) {
             const error = log.getError(index)
             if (error.getProgramName() === null) {
                 if (consoleDisplayed) {
@@ -323,15 +313,14 @@ class TUI {
                     console.setValue(error.getCode())
                     console.focus()
                 }
-            }
-            else {
+            } else {
                 // error from program
                 this.enableEditor()
                 this.editProgram(error.getProgramName())
                 editor.setError(error.getLines())
             }
         }
-        this.saveProgram = function() {
+        this.saveProgram = function () {
             const project = TEnvironment.getProject()
             editor.updateProgram()
             const program = editor.getProgram()
@@ -340,8 +329,7 @@ class TUI {
             project.saveProgram(program, error => {
                 if (typeof error !== 'undefined') {
                     self.addLogError(error)
-                }
-                else {
+                } else {
                     self.addLogMessage(TEnvironment.getMessage('program-saved', program.getName()))
                     self.updateProgramInfo(program)
                     self.setSaveAvailable(false)
@@ -350,7 +338,7 @@ class TUI {
                 sidebar.removeLoadingProgram(program.getName())
             }, editor.getSession())
         }
-        this.newProgram = function(name, code) {
+        this.newProgram = function (name, code) {
             const project = TEnvironment.getProject()
             const program = project.createProgram(name, code)
             project.setSession(program, editor.createSession(program))
@@ -360,7 +348,7 @@ class TUI {
             sidebar.displayPrograms()
             editor.giveFocus()
         }
-        this.editProgram = function(name) {
+        this.editProgram = function (name) {
             const project = TEnvironment.getProject()
             // save previous session if any
             const previousProgram = editor.getProgram()
@@ -374,8 +362,7 @@ class TUI {
                 project.editProgram(name, error => {
                     if (typeof error !== 'undefined') {
                         self.addLogError(error)
-                    }
-                    else {
+                    } else {
                         const newProgram = project.getEditedProgram(name)
                         project.setSession(newProgram, editor.createSession(newProgram))
                         editor.setProgram(newProgram)
@@ -385,8 +372,7 @@ class TUI {
                         editor.giveFocus()
                     }
                 })
-            }
-            else {
+            } else {
                 const newProgram = project.getEditedProgram(name)
                 editor.setProgram(newProgram)
                 editor.setSession(project.getSession(newProgram))
@@ -404,13 +390,12 @@ class TUI {
                 editor.setSession(project.getSession(program))
                 editor.giveFocus()
                 return true
-            }
-            else {
+            } else {
                 editor.disable()
                 return false
             }
         }
-        this.closeProgram = function(name) {
+        this.closeProgram = function (name) {
             const project = TEnvironment.getProject()
             let result = project.closeProgram(name)
             if (result) {
@@ -421,8 +406,7 @@ class TUI {
                     if (result) {
                         this.setSaveEnabled(true)
                         sidebar.setProgramsEditionEnabled(true)
-                    }
-                    else {
+                    } else {
                         this.setSaveAvailable(false)
                         this.setSaveEnabled(false)
                         sidebar.setProgramsEditionEnabled(false)
@@ -430,13 +414,12 @@ class TUI {
                 }
                 // update sidebar
                 this.updateSidebarPrograms()
-            }
-            else {
+            } else {
                 // close cancelled
                 editor.giveFocus()
             }
         }
-        this.renameProgram = function(oldName, newName) {
+        this.renameProgram = function (oldName, newName) {
             if (newName !== oldName) {
                 const project = TEnvironment.getProject()
                 sidebar.showRenamingProgram(oldName)
@@ -449,7 +432,7 @@ class TUI {
                 })
             }
         }
-        this.renameResource = function(name, newBaseName) {
+        this.renameResource = function (name, newBaseName) {
             const project = TEnvironment.getProject()
             const oldBaseName = project.getResourceBaseName(name)
             let newName = name
@@ -459,8 +442,7 @@ class TUI {
                 project.renameResource(name, newBaseName, name => {
                     if (name instanceof TError) {
                         self.addLogError(name)
-                    }
-                    else {
+                    } else {
                         newName = name
                     }
                     self.updateSidebarResources()
@@ -475,8 +457,7 @@ class TUI {
             if (value && TEnvironment.isProjectAvailable()) {
                 toolbar.setSaveEnabled(true)
                 editor.setSaveEnabled(true)
-            }
-            else {
+            } else {
                 toolbar.setSaveEnabled(false)
                 editor.setSaveEnabled(false)
             }
@@ -499,12 +480,11 @@ class TUI {
             programsDisplayed = true
             resourcesDisplayed = false
         }
-        this.togglePrograms = function() {
+        this.togglePrograms = function () {
             if (programsDisplayed) {
                 sidebar.close()
                 programsDisplayed = false
-            }
-            else {
+            } else {
                 this.displayPrograms()
             }
         }
@@ -514,16 +494,15 @@ class TUI {
                 programsDisplayed = false
             }
         }
-        this.toggleResources = function() {
+        this.toggleResources = function () {
             if (resourcesDisplayed) {
                 sidebar.close()
                 resourcesDisplayed = false
-            }
-            else {
+            } else {
                 this.displayResources()
             }
         }
-        this.delete = function() {
+        this.delete = function () {
             let goOn
             let name
             const self = this
@@ -540,14 +519,12 @@ class TUI {
                     project.deleteProgram(name, error => {
                         if (typeof error !== 'undefined') {
                             self.addLogError(error)
-                        }
-                        else {
+                        } else {
                             const result = nextProgram(name)
                             if (result) {
                                 self.setSaveEnabled(true)
                                 sidebar.setProgramsEditionEnabled(true)
-                            }
-                            else {
+                            } else {
                                 self.setSaveAvailable(false)
                                 self.setSaveEnabled(false)
                                 sidebar.setProgramsEditionEnabled(false)
@@ -559,8 +536,7 @@ class TUI {
                     })
                 }
                 editor.giveFocus()
-            }
-            else {
+            } else {
                 // Resource deletion
                 name = sidebar.getCurrentResourceName()
                 if (name !== '') {
@@ -582,9 +558,9 @@ class TUI {
             const name = TRuntime.getTObjectName(tObject)
             log.addObjectLocation(name, location)
         }
-        this.setResourceContent = function(name, data, callback) {
+        this.setResourceContent = function (name, data, callback) {
             const self = this
-            TEnvironment.getProject().setResourceContent(name, data, function(newName) {
+            TEnvironment.getProject().setResourceContent(name, data, function (newName) {
                 if (!(newName instanceof TError)) {
                     if (newName !== name) {
                         // name has changed: update sidebar
@@ -595,9 +571,9 @@ class TUI {
                 }
             })
         }
-        this.duplicateResource = function(name, callback) {
+        this.duplicateResource = function (name, callback) {
             const self = this
-            TEnvironment.getProject().duplicateResource(name, function(newName) {
+            TEnvironment.getProject().duplicateResource(name, function (newName) {
                 if (!(newName instanceof TError)) {
                     self.updateSidebarResources()
                     sidebar.selectResource(newName)
@@ -609,9 +585,9 @@ class TUI {
         this.newResource = () => {
             sidebar.createResource()
         }
-        this.createResource = function(name, width, height, callback) {
+        this.createResource = function (name, width, height, callback) {
             const self = this
-            TEnvironment.getProject().createResource(name, width, height, function(newName) {
+            TEnvironment.getProject().createResource(name, width, height, function (newName) {
                 if (!(newName instanceof TError)) {
                     self.updateSidebarResources()
                     sidebar.selectResource(newName)
@@ -620,7 +596,7 @@ class TUI {
                 callback.call(this, newName)
             })
         }
-        this.init = function(id) {
+        this.init = function (id) {
             this.clear()
             editor.disable()
             sidebar.load()
@@ -642,8 +618,20 @@ class TUI {
         this.disableWiki = () => {
             toolbar.setWikiClosed()
         }
-        this.getEditor = () => {
-            return editor
+        this.saveDebugContent = () => {
+            const program = editor.getProgram()
+            if (program.getName() === 'autoload') {
+                localStorage.setItem('autoload', editor.getValue())
+            }
+        }
+        this.debugOnChange = () => {
+            editor.getAceEditor().on('change', () => {
+                this.saveDebugContent()
+            })
+        }
+        this.restoreEditorContent = () => {
+            const code = localStorage.getItem('autoload')
+            this.newProgram('autoload', code)
         }
     }
 }

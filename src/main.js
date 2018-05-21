@@ -20,6 +20,17 @@ require('intro.js/themes/introjs-nazanin.css')
 require('intro.js/themes/introjs-royal.css')
 require('intro.js/introjs.css')
 
+// import Vue from 'vue'
+
+// import Ide from '@/components/ide/Ide.vue'
+
+// const targetNode = document.createElement('div')
+// targetNode.setAttribute('id', 'target')
+// document.body.appendChild(targetNode)
+// new Vue({
+//   render: h => h(Ide),
+// }).$mount('#target')
+
 // Start the main app logic.
 function load() {
     window.console.log('***********************')

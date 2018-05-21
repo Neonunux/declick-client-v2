@@ -18,6 +18,7 @@ const baseConfig = {
       '@': src('js', 'declick'),
       'ace': nodeModules('ace-builds', 'src-noconflict', 'ace'),
       'ace_modules': nodeModules('ace-builds', 'src-noconflict'),
+      'intro.js': nodeModules('intro.js'),
       'acorn': lib('acorn', 'acorn'),
       'css': src('css'),
       'quintus': lib('quintus-0.2.0', 'quintus-all'),
@@ -52,12 +53,12 @@ const baseConfig = {
       {
         test: /\.css$/,
         loader: 'style-loader',
-        include: [src('js'),src('css'), src('components')],
+        include: [src('js'), src('css'), src('components'),nodeModules('/')],
       },
       {
         test: /\.css$/,
         loader: 'css-loader',
-        include: [src('js'),src('css'), src('components')],
+        include: [src('js'), src('css'), src('components'),nodeModules('/')],
       },
     ],
   },

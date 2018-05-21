@@ -41,7 +41,13 @@ const baseConfig = {
     },
   },
   module: {
-    rules: [{
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        exclude: [nodeModules()]
+      },
+      {
         test: /\.(png|jpg|gif)$/,
         loader: 'url-loader',
         include: [src('assets', 'images'), src('objects'), public_()],
@@ -54,13 +60,13 @@ const baseConfig = {
       {
         test: /\.css$/,
         loader: 'style-loader',
-        include: [src(), src('assets', 'styles'), src('components'), nodeModules('/'), public_()],
+        include: [src(), src('assets', 'styles'), src('components'), nodeModules(), public_()],
         exclude: [src('libs')],
       },
       {
         test: /\.css$/,
         loader: 'css-loader',
-        include: [src(), src('assets', 'styles'), src('components'), nodeModules('/'), public_()],
+        include: [src(), src('assets', 'styles'), src('components'), nodeModules(), public_()],
         exclude: [src('libs')],
       },
     ],

@@ -4,18 +4,19 @@ const path = require('path')
 const merge = require('webpack-merge')
 
 const src = (...paths) => path.resolve(__dirname, 'src', ...paths)
-const lib = (...paths) => src(path.join('js', 'libs', ...paths))
+const public_ = (...paths) => path.resolve(__dirname, 'public', ...paths)
+const lib = (...paths) => src('libs', ...paths)
 const nodeModules = (...paths) => path.resolve(__dirname, 'node_modules', ...paths)
 
 const baseConfig = {
-  entry: src('js', 'declick', 'main.js'),
+  entry: src('main.js'),
   output: {
     path: path.join(__dirname, '..', 'dist'),
     filename: 'bundle.js',
   },
   resolve: {
     alias: {
-      '@': src('js', 'declick'),
+      '@': src(),
       'ace': nodeModules('ace-builds', 'src-noconflict', 'ace'),
       'ace_modules': nodeModules('ace-builds', 'src-noconflict'),
       'intro.js': nodeModules('intro.js'),
@@ -33,7 +34,7 @@ const baseConfig = {
       'wColorPicker': lib('wpaint-2.5.0', 'wColorPicker.min'),
       'wPaint': lib('wpaint-2.5.0', 'wPaint.min'),
       'wPaint.file': lib('wpaint-2.5.0', 'plugins', 'file', 'wPaint.menu.main.file.min'),
-      'wPaint.flip': src('js', 'declick', 'plugins', 'wPaint.menu.main.flip'),
+      'wPaint.flip': src('plugins', 'wPaint.menu.main.flip'),
       'wPaint.main': lib('wpaint-2.5.0', 'plugins', 'main', 'wPaint.menu.main.min'),
       'wPaint.shapes': lib('wpaint-2.5.0', 'plugins', 'shapes', 'wPaint.menu.main.shapes.min'),
       'wPaint.text': lib('wpaint-2.5.0', 'plugins', 'text', 'wPaint.menu.text.min'),
@@ -43,7 +44,7 @@ const baseConfig = {
     rules: [{
         test: /\.(png|jpg|gif)$/,
         loader: 'url-loader',
-        include: [src('images'), src('js', 'declick', 'objects')],
+        include: [src('assets', 'images'), src('objects'), public_()],
       },
       {
         test: /\.html$/,
@@ -53,12 +54,14 @@ const baseConfig = {
       {
         test: /\.css$/,
         loader: 'style-loader',
-        include: [src('js'), src('css'), src('components'),nodeModules('/')],
+        include: [src(), src('assets', 'styles'), src('components'), nodeModules('/'), public_()],
+        exclude: [src('libs')],
       },
       {
         test: /\.css$/,
         loader: 'css-loader',
-        include: [src('js'), src('css'), src('components'),nodeModules('/')],
+        include: [src(), src('assets', 'styles'), src('components'), nodeModules('/'), public_()],
+        exclude: [src('libs')],
       },
     ],
   },

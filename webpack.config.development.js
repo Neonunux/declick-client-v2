@@ -11,7 +11,7 @@ module.exports = {
   ],
   devServer: {
     contentBase: [
-      path.resolve(__dirname, '..', 'dist'),
+      path.resolve(__dirname, 'src', 'assets'),
     ],
     watchContentBase: true,
     hot: true,

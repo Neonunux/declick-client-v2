@@ -27,7 +27,7 @@ const TEnvironment = function () {
         'log': false,
         'error': true,
         'cache-version': 0,
-        'optimized':false
+        'optimized': false
     }
     this.debug = false
 
@@ -80,7 +80,7 @@ const TEnvironment = function () {
             if (event.keyCode === 13 && event.ctrlKey) {
                 TUI.toggleEditor()
             }
-        })        
+        })
     })
 
     /**
@@ -162,7 +162,7 @@ const TEnvironment = function () {
      * @returns {String} Returns the URL of the resource.
      */
     this.getResource = name => // return this.getBaseUrl() + "/resources/" + name;
-    `resources/${name}`
+        `resources/${name}`
 
     /**
      * Get resource entered in parameter of var project.

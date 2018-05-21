@@ -5,6 +5,12 @@
  - svg icon
  - cache version in webpack
  - GAnalytics in webpack
+ - plugin wPaint in separate repository
+ - update/remove dependencies tweaked
+ - remove static import
+ - PIXI
+ - typescript
+
 
 cosmethique
  - same class declaration style and method => es6 style

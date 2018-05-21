@@ -2,12 +2,11 @@
 
 This component is part of [Declick v2 platform](https://github.com/colombbus/declick-v2).
 
-
 ## Installation
-1. Install [node.js](https://nodejs.org/)
-2. Install [grunt](http://gruntjs.com)
-3. Run `npm run install_declick`
-   - On Win system, `npm` can stop install on `fsevents` can cause an error; `fsevents` is needed by `chokidar` on MacOs, himself needed by `webpack`. No needed on win. A dirty way to pass through is to delete this dependency on `package.json` of `chokidar` in your `node_modules`
+
+1. Install [yarn](https://yarnpkg.com/)
+2. Run `yarn` to install dependencies
+3. Run `yarn run build` to build project
 
 ## Configuration
 
@@ -30,25 +29,36 @@ Files located under src directory can be used for development.
 
 To get a compiled version for production, run:
 ```
-grunt build_declick
+yarn run build
 ```
-Built files are located under the "dist" directory
+Built files are located under the `dist` directory
+
+## Development
+
+Project uses webpack to compile, manage assets and create a development node server
+1. yarn run serve
+2. open `http://localhost:8080` in browser 
+3. create a program named `autoload` to keep code in it through reloadings
 
 ## External libraries
 
 Declick Clilent uses the following libraries:
 * [Acorn parser](https://github.com/ternjs/acorn)
-* [ACE Editor](https://ace.c9.io/)
-* [BabylonJS](http://babylonjs.com)
 * [intro.js](http://introjs.com/)
-* [jQuery](https://jquery.com)
 * [jQuery File Upload](https://blueimp.github.io/jQuery-File-Upload/)
 * [jQuery UI](https://jqueryui.com)
 * [Neil Fraser's JS Interpreter](https://github.com/NeilFraser/JS-Interpreter)
-* [JSChannel](https://github.com/mozilla/jschannel)
 * [France IOI PEM Task](https://github.com/France-ioi/pem-task)
-* [Prism](http://prismjs.com)
-* [Quintus](http://www.html5quintus.com)
-* [RequireJS](http://requirejs.org)
-* [JQuery split-pane plugin](https://github.com/shagstrom/split-pane)
 * [wPaint.js](http://wpaint.websanova.com)
+
+Will be removed
+* [Prism](http://prismjs.com)
+* [ACE Editor](https://ace.c9.io/)
+* [jQuery](https://jquery.com)
+* [JQuery split-pane plugin](https://github.com/shagstrom/split-pane)
+* [Quintus](http://www.html5quintus.com)
+* [JSChannel](https://github.com/mozilla/jschannel)
+
+Soon:
+* [three.js](https://threejs.org/)
+* [Monaco editor](https://github.com/Microsoft/monaco-editor)

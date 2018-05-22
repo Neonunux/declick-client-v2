@@ -699,7 +699,7 @@ textarea.tsidebar-rename {
 
 #ttoolbar-wiki:hover,
 #ttoolbar-wiki.active {
-    background-image:url('../images/wiki_on.png');
+    background-image:url('../images/wiki-hover.png');
 }
 
 
@@ -709,7 +709,7 @@ textarea.tsidebar-rename {
 
 #ttoolbar-hints:hover,
 #ttoolbar-hints.active {
-    background-image:url('../images/help_on.png');
+    background-image:url('../images/help-hover.png');
 }
 
 #ttoolbar-play {
@@ -718,7 +718,7 @@ textarea.tsidebar-rename {
 }
 
 #ttoolbar-play:hover {
-    background-image:url('../images/play_on.png');
+    background-image:url('../images/play-hover.png');
 }
 
 #ttoolbar-design-mode {
@@ -754,7 +754,7 @@ textarea.tsidebar-rename {
 }
 
 #ttoolbar-save.active{
-    background-image:url('../images/save_on.png');
+    background-image:url('../images/save-hover.png');
 }
 
 #ttoolbar-save:disabled {
@@ -858,7 +858,7 @@ textarea.tsidebar-rename {
 }
 
 #tconsole-play:hover {
-    background-image: url('../images/play_on.png');
+    background-image: url('../images/play-hover.png');
 }
 
 #tconsole-clear {

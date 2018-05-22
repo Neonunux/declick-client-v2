@@ -1,0 +1,6 @@
+@import functions
+
+@mixin image-button ($image)
+  background-image: url($image)
+  &:hover
+    background-image: url(add-file-modifier($image, '-hover'))

@@ -1,0 +1,32 @@
+@function str-to-list ($string)
+  $result: ()
+  @for $i from 1 through str-length($string)
+    $result: append($result, str-slice($string, $i, $i))
+  @return $result
+
+@function list-to-str ($list)
+  $result: ''
+  @each $elem in $list
+    $result: #{$result}#{$elem}
+  @return $result
+
+@function reverse ($list)
+  $result: ()
+  @for $i from length($list) through 1
+    $result: append($result, nth($list, $i))
+  @return $result
+
+@function str-reverse ($string)
+  @return list-to-str(reverse(str-to-list($string)))
+
+@function str-last-index ($string, $needle)
+  $reverse-index: str-index(str-reverse($string), $needle)
+  @if $reverse-index
+    @return str-length($string) - $reverse-index + 1
+  @return null
+
+@function add-file-modifier ($path, $modifier)
+  $index: str-last-index($path, '.')
+  @if $index
+    @return str-insert($path, $modifier, $index)
+  @return null

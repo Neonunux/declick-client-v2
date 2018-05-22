@@ -22,8 +22,10 @@ export default {
 <style lang="sass">
 .ide
   display: grid
+  box-sizing: border-box
   height: 100%
   width: 100%
+  padding: 9px
   grid-template-areas: 'editor resource-panel' 'main-bar resource-panel'
   grid-template-columns: 1fr auto
   grid-template-rows: 1fr auto

@@ -58,7 +58,7 @@ define(['ui/TComponent', 'TParser', 'ui/TLog', 'TEnvironment', 'TUtils', 'TRunti
                 name: "save",
                 bindKey: {win: "Ctrl-S", mac: "Command-S"},
                 exec: function(arg) {
-                    platform.validate("stay");
+                    // platform.validate("stay");
                 }
             });
 

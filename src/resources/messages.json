@@ -7,6 +7,7 @@
         "mode-editor":"Editeur",
         "button-execute":"Exécuter",
         "option-design-mode":"Mode Construction",
+        "option-floating-controller":"Manette flottante",
         "option-console":"Console",
         "option-clear":"Effacer",
         "option-save-program":"Enregistrer",
@@ -38,7 +39,7 @@
         "color-pourpre":"purple",
         "color-bleu canard":"teal",
         "color-outremer":"navy",
-        
+
         "color-beige":"beige",
         "color-violet":"blueviolet",
         "color-vert foncé":"darkgreen",
@@ -93,7 +94,7 @@
         "wpaint-rounded-square":"Carré arrondi",
         "wpaint-diamond":"Losange",
         "wpaint-circle":"Cercle",
-        "wpaint-pentagon":"Pentagone",         
+        "wpaint-pentagon":"Pentagone",
         "wpaint-hexagon":"Hexagone",
         "wpaint-horizontal":"Retourner horizontalement",
         "wpaint-vertical":"Retourner verticalement",

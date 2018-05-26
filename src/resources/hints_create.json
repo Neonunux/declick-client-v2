@@ -65,6 +65,13 @@
             "pages":["preview", "preview-console", "preview-design"]
         },
         {
+            "element": "#ttoolbar-floating-controller",
+            "hint": "Activer/Désactiver la manette flottante",
+            "hintPosition": "left",
+            "position": "left",
+            "pages":["preview"]
+        },
+        {
             "element": "#tconsole-text",
             "hint": "Ecrire une commande à exécuter directement",
             "hintPosition": "left",

@@ -9,6 +9,7 @@ define(['jquery', 'TRuntime', 'TEnvironment', 'ui/THints', 'TError'], function($
         var editorEnabled = false;
         var consoleDisplayed = true;
         var designModeEnabled = false;
+        var floatingControllerEnabled = false;
         var programsDisplayed = true;
         var resourcesDisplayed = false;
         var log;
@@ -168,11 +169,33 @@ define(['jquery', 'TRuntime', 'TEnvironment', 'ui/THints', 'TError'], function($
             }
         };
 
+        this.enableFloatingController = function () {
+            this.hideHints();
+            canvas.enableFloatingController();
+            toolbar.enableFloatingController();
+            floatingControllerEnabled = true;
+        };
+
+        this.disableFloatingController = function () {
+            this.hideHints();
+            canvas.disableFloatingController();
+            toolbar.disableFloatingController();
+            floatingControllerEnabled = false;
+        };
+
         this.toggleDesignMode = function() {
             if (designModeEnabled) {
                 this.disableDesignMode();
             } else {
                 this.enableDesignMode();
+            }
+        };
+
+        this.toggleFloatingController = function () {
+            if (floatingControllerEnabled) {
+                this.disableFloatingController();
+            } else {
+                this.enableFloatingController();
             }
         };
 

@@ -13,6 +13,12 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
         var solutionDisplayed = false;
         var slideDisplayed = false;
 
+        function validateExercise_ () {
+          if (typeof window.parent !== 'undefined') {
+              window.parent.postMessage('validateExercise', '*');
+          }
+        }
+
         TComponent.call(this, "TLearnFrame.html", function(component) {
             $text = component.find("#tlearnframe-text");
             $input = $text.find("#tlearnframe-text-input");
@@ -52,7 +58,8 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             $buttonNext = component.find(".ttoolbar-button-next");
             $buttonNext.prepend(TEnvironment.getMessage('button-next-step'));
             $buttonNext.click(function(e) {
-                platform.validate("nextOnly");
+              validateExercise_()
+                // platform.validate("nextOnly");
             });
 
             var $buttonClose = component.find(".ttoolbar-button-close");
@@ -65,7 +72,8 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             $buttonOk.click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                platform.validate("nextImmediate");
+                validateExercise_()
+                // platform.validate("nextImmediate");
             });
 
             $instructions = component.find("#tlearnframe-instructions");
@@ -118,7 +126,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             initSplitPane();
             // declare itself as log
             TRuntime.setLog(this);
-            window.platform.initWithTask(window.task);
+            // window.platform.initWithTask(window.task);
         };
 
         this.init = function() {
@@ -134,7 +142,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
         };
 
         this.update = function(id, slide, ok, callback) {
-            hideSuccess(); 
+            hideSuccess();
             if (slide) {
                 if (!initialized) {
                     this.init();
@@ -165,13 +173,13 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
                                 self.init();
                             }
                             self.loaded();
-                            window.platform.showView({task:{}}, function() {
-                                if (typeof callback !== 'undefined') {
+                            // window.platform.showView({task:{}}, function() {
+                            //     if (typeof callback !== 'undefined') {
                                     callback.call(self);
-                                }
-                            }, function() {
-                                window.console.error("error while sending show View to platform");
-                            });
+                            //     }
+                            // }, function() {
+                            //     window.console.error("error while sending show View to platform");
+                            // });
                         });
                 } /*else {
                     if (typeof callback !== 'undefined') {
@@ -247,7 +255,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
                         var next = true;
                         if (typeof output.next !== 'undefined') {
                             next = output.next;
-                        }                        
+                        }
                         context.validateExercise(message, next);
                     }
                     else if (output.result === 'failure')
@@ -302,7 +310,8 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
 
         this.validateExercise = function(message, next) {
             try {
-                platform.validate("stay");
+              // validateExercise_()
+                // platform.validate("stay");
             } catch (e) {
                 TEnvironment.error("Error validating exercise");
             }
@@ -352,7 +361,7 @@ define(['ui/TComponent', 'jquery', 'ui/TLearnCanvas', 'ui/TLearnEditor', 'TRunti
             if (next) {
                 $buttonNext.show();
             } else {
-                $buttonNext.hide();                
+                $buttonNext.hide();
             }
             $success.show();
         };

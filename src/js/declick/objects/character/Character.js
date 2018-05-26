@@ -455,7 +455,7 @@ define(['jquery', 'TEnvironment', 'TGraphicalObject', 'objects/sprite/Sprite', '
             this.p.autoAsset = true;
         },
         mayCatch: function (object) {
-            var id = object.getgObject().getId();
+            var id = object.getGObject().getId();
             if (typeof (this.catchableObjects[id]) === 'undefined') {
                 this.catchableObjects[id] = object;
             }
@@ -648,7 +648,7 @@ define(['jquery', 'TEnvironment', 'TGraphicalObject', 'objects/sprite/Sprite', '
                 //self.gObject.setLocation(currentLocation.x, currentLocation.y);
                 self.gObject.setDurations(data['durationMove'], data['durationPause']);
                 self.custom = false;
-            }, 
+            },
             function (error) {
                 throw new Error(TUtils.format(self.getMessage("unknown character"), name));
             }

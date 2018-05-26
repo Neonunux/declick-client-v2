@@ -310,7 +310,7 @@ body, html {
 }
 
 #tsidebar-switch-resources {
-    background-image:url('../images/resources.png');
+    background-image:url('../images/assets.png');
 }
 
 #tsidebar-switch-programs.active, #tsidebar-switch-resources.active {
@@ -318,11 +318,11 @@ body, html {
 }
 
 #tsidebar-switch-programs.active, #tsidebar-switch-programs:hover {
-    background-image:url('../images/programs_on.png');
+    background-image:url('../images/programs-hover.png');
 }
 
 #tsidebar-switch-resources.active, #tsidebar-switch-resources:hover {
-    background-image:url('../images/resources_on.png');
+    background-image:url('../images/assets-hover.png');
 }
 
 
@@ -376,7 +376,7 @@ body, html {
 
 #tsidebar-new-program:hover,
 #tsidebar-new-resource:hover{
-    background-image:url('../images/new_on.png');
+    background-image:url('../images/new-hover.png');
 }
 
 #tsidebar-delete-program,
@@ -386,12 +386,12 @@ body, html {
 
 #tsidebar-delete-program:hover,
 #tsidebar-delete-resource:hover {
-    background-image:url('../images/delete_on.png');
+    background-image:url('../images/delete-hover.png');
 }
 
 
 #tsidebar-delete-program:hover {
-    background-image:url('../images/delete_on.png');
+    background-image:url('../images/delete-hover.png');
 }
 
 #tsidebar-upload {

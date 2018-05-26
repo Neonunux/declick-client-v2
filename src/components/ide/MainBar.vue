@@ -13,7 +13,9 @@
 @import '~@/assets/styles/mixins'
 
 .main-bar
+  +items-hgap(9px)
   display: flex
+  padding: 9px
   align-items: center
   justify-items: center
   background: #ddd6dd
@@ -21,58 +23,15 @@
 .main-bar > *
   height: 36px
   width: 36px
-  margin: 9px
-  border: 0
-  cursor: pointer
-  outline: 0
 
-.main-bar
-  & > * + *
-    margin-left: 0
-
-/*
-             .-----.
-            /       `\
-          _|_         |
-         /   \        |
-         '==='        |
-         . ' .        |
-        . : ' .       |
-           '.         |
-       . '    .       |
-        .-"""-.       |
-       /  \___ \      |
-       |/`    \|      |
-       (  a  a )      |
-       |   _\ |       |
-       )\  =  /       |
-   _.-'  '---;        |
- /`           `-.     |
-|                \    |
-|    |   .  & .   \   |
-\    /      &   |  ;  |
-|   |           |  ;  |
-|   /\          /  |  |
-\   \ )   -:-  /\  \  |
- `.  `-.  -:-  | \  \_|
-   '-.  `-.    (  './\`\
-    / `'-. `\  |    \/_/
-    |    \  |  |      |
-    |    /'-\  /      |
-     \   \   | |      |
-      \   )_/\ |      |
-       \      \|      |
-        \      \      |
-         '.     |     |
-           /   /      |
-          /  .';      |
-        /`  /  |      |
-       /   /   |      |
- jgs  |  .' \  |      |
-      /  \  )  |      |
-      \   \ /  '-.._  |
-       '.ooO\__._.Ooo |
-*/
+//         ,~,
+//         )))Y
+//        ((((,\________________
+//        \)/( [_____________
+//        (   \  |  [_]   [_]
+//         )___\ |   |     |
+//         (| (\ |   |     |
+//  ejm    q`_ q`_  _|_   _|_
 
 .main-bar
   &__wiki

@@ -7,19 +7,21 @@
  - GAnalytics in webpack
  - plugin wPaint in separate repository
  - update/remove dependencies tweaked
+ - add listener for keyup 'delete' in programList.vue
  - remove static import
  - PIXI
  - typescript
-
+ - remove "nouveau" from new file
 
 cosmethique
+ - kill all tabulations
  - same class declaration style and method => es6 style
- - remove for
- - Screen/Mouse/Declick
-	 - remove call to TObject constructor
+ - remove for Screen/Mouse/Declick call to TObject constructor
  - TUI
 	this.clear, delete
  - TFrame
 	 - variable is named 'console'
  - Remove T letter in TEnvironment, TProject, etc.
- 
+ - env file to save allowed host
+ - eslint for vue -> webpack
+

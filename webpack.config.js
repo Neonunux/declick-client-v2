@@ -4,7 +4,6 @@ const path = require('path')
 const merge = require('webpack-merge')
 
 const src = (...paths) => path.resolve(__dirname, 'src', ...paths)
-const public_ = (...paths) => path.resolve(__dirname, 'public', ...paths)
 const lib = (...paths) => src('libs', ...paths)
 const nodeModules = (...paths) => path.resolve(__dirname, 'node_modules', ...paths)
 
@@ -41,16 +40,15 @@ const baseConfig = {
     },
   },
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.vue$/,
         loader: 'vue-loader',
         exclude: [nodeModules()]
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.(png|jpg|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
-        include: [src('assets', 'images'), src('objects'), public_()],
+        include: [src('assets', 'images'), src('objects'), nodeModules()],
       },
       {
         test: /\.html$/,
@@ -60,14 +58,22 @@ const baseConfig = {
       {
         test: /\.css$/,
         loader: 'style-loader',
-        include: [src(), src('assets', 'styles'), src('components'), nodeModules(), public_()],
+        include: [src(), src('assets', 'styles'), src('components'), nodeModules()],
         exclude: [src('libs')],
       },
       {
         test: /\.css$/,
         loader: 'css-loader',
-        include: [src(), src('assets', 'styles'), src('components'), nodeModules(), public_()],
+        include: [src(), src('assets', 'styles'), src('components'), nodeModules()],
         exclude: [src('libs')],
+      },
+      {
+        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        loader: 'url-loader',
+        query: {
+          limit: 10000,
+          name: src('assets', 'fonts', '[name].[hash:7].[ext]'),
+        },
       },
     ],
   },

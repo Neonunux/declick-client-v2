@@ -15,7 +15,7 @@ module.exports = {
     ],
     watchContentBase: true,
     hot: true,
-    public: 'localhost',
+    public: 'fcc44c0356ec48c391df95af4f538acf.vfs.cloud9.eu-west-1.amazonaws.com',
     allowedHosts: [
       'localhost',
       'fcc44c0356ec48c391df95af4f538acf.vfs.cloud9.eu-west-1.amazonaws.com',

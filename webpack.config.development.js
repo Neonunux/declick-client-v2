@@ -1,6 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
 
+require('dotenv').config()
+
 module.exports = {
   mode: 'development',
   optimization: {
@@ -15,10 +17,10 @@ module.exports = {
     ],
     watchContentBase: true,
     hot: true,
-    public: 'fcc44c0356ec48c391df95af4f538acf.vfs.cloud9.eu-west-1.amazonaws.com',
+    public: process.env.DEV_HOST,
     allowedHosts: [
       'localhost',
-      'fcc44c0356ec48c391df95af4f538acf.vfs.cloud9.eu-west-1.amazonaws.com',
+      process.env.ALLOWED_HOST
     ],
   },
 }

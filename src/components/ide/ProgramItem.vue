@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import 'font-awesome/css/font-awesome.css'
 import ClickOutside from 'vue-click-outside'
 
 export default {

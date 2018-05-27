@@ -1,41 +1,70 @@
 <template lang="pug">
 .ide
-  editor.ide__editor
-  main-bar.ide__main-bar
-  resource-panel.ide__resource-panel
+  transition(name='ide__help')
+    help.ide__help(v-show='helpVisible')
+  preview.ide__preview(v-show="view === 'preview'")
+  resource-manager.ide__resource-manager(
+    v-show="view === 'resource-manager'"
+    @toggle-help='toggleHelp'
+    :helpVisible='helpVisible'
+  )
 </template>
 
 <script>
-import Editor from '@/components/ide/Editor.vue'
-import MainBar from '@/components/ide/MainBar.vue'
-import ResourcePanel from '@/components/ide/ResourcePanel.vue'
+import Help from '@/components/ide/Help.vue'
+import Preview from '@/components/ide/preview/Preview.vue'
+import ResourceManager from '@/components/ide/resources/ResourceManager.vue'
 
 export default {
+  data () {
+    return {
+      view: 'resource-manager', // 'resource-manager' | 'preview'
+      helpVisible: false,
+      onKeyUp: null,
+    }
+  },
+  created () {
+    this.onKeyUp = event => {
+      if (event.ctrlKey && event.keyCode === 13) {
+        this.toggleView()
+      }
+    }
+    document.addEventListener('keyup', this.onKeyUp)
+  },
+  destroyed () {
+    document.removeEventListener('keyup', this.onKeyUp)
+  },
+  methods: {
+    toggleHelp () {
+      this.helpVisible = !this.helpVisible
+    },
+    toggleView () {
+      this.view = (this.view === 'resource-manager')
+        ? 'preview'
+        : 'resource-manager'
+    },
+  },
   components: {
-    Editor,
-    MainBar,
-    ResourcePanel,
+    Help,
+    Preview,
+    ResourceManager,
   },
 }
 </script>
 
 <style lang="sass">
 .ide
-  display: grid
-  box-sizing: border-box
   height: 100%
   width: 100%
-  padding: 9px
-  grid-template-areas: 'editor resource-panel' 'main-bar resource-panel'
-  grid-template-columns: 1fr auto
-  grid-template-rows: 1fr auto
+  display: grid
+  grid-template-areas: 'help content'
+  grid-template-columns: auto 1fr
+  grid-template-rows: 100%
 
-.ide__editor
-  grid-area: editor
+.ide__help
+  width: 350px
+  grid-area: help
 
-.ide__resource-panel
-  grid-area: resource-panel
-
-.ide__main-bar
-  grid-area: main-bar
+.ide__preview, .ide__resource-manager
+  grid-area: content
 </style>

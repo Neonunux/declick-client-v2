@@ -1,25 +1,23 @@
 <template lang="pug">
 .editor
-  .editor__disabled-message(v-show='isDisabledMessage')
-    p
-      | {{ disabledMessage }}
+  .editor__disabled-message(v-show='disabled') {{ disabledMessage }}
 </template>
 
 <script>
-import { EventBus } from '@/utils/EventBus'
-
 export default {
+  props: [
+    'programId'
+  ],
   data () {
     return {
       disabledMessage: 'Create a new program or open it to edit.',
-      isDisabledMessage: true
     }
   },
-  mounted(){
-    EventBus.$on('editor-set-state', editorState => {
-      this.isDisabledMessage = editorState
-    })
-  }
+  computed: {
+    disabled () {
+      return !this.programId
+    },
+  },
 }
 </script>
 
@@ -33,7 +31,7 @@ export default {
   display: flex
   align-items: center
   justify-content: center
+  font-size: .8em
   color: white
   opacity: 0.3
-  font-size: .8em
 </style>

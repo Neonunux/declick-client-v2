@@ -1,12 +1,21 @@
 <template lang="pug">
 .main-bar
-  button.main-bar__wiki(type='button')
+  button.main-bar__help(
+    @click="$emit('toggle-help')"
+    type='button'
+    :class="helpVisible ? 'main-bar__help--active': null"
+  )
   button.main-bar__hints(type='button')
   button.main-bar__play(type='button')
   button.main-bar__save(type='button')
 </template>
 
 <script>
+export default {
+  props: [
+    'helpVisible'
+  ],
+}
 </script>
 
 <style lang="sass">
@@ -34,8 +43,8 @@
 //  ejm    q`_ q`_  _|_   _|_
 
 .main-bar
-  &__wiki
-    +image-button('~@/assets/images/wiki.png')
+  &__help
+    +image-button('~@/assets/images/buoy.png')
   &__hints
     +image-button('~@/assets/images/help.png')
     margin-right: auto
@@ -44,4 +53,7 @@
   &__save
     +image-button('~@/assets/images/save.png')
     margin-left: auto
+
+.main-bar__help--active
+  background-image: url('~@/assets/images/buoy-hover.png')
 </style>

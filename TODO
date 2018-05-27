@@ -25,3 +25,5 @@ cosmethique
  - env file to save allowed host
  - eslint for vue -> webpack
 
+- add i18n
+- add store

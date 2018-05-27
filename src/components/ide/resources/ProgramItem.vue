@@ -4,16 +4,15 @@
   @click='onClick'
   :class="selectedClass"
 )
-  template(v-if='inputMode === false')
-    | {{ name }}
-  template(v-else)
-    input(
-      @keyup.enter='validateRename'
-      @keyup.esc='cancelRename'
-      v-model='inputValue'
-      ref='input'
-      type='text'
-    )
+  span(v-if='inputMode === false') {{ name }}
+  input(
+    v-else
+    v-model='inputValue'
+    @keyup.enter='endRename'
+    @keyup.esc='cancelRename'
+    ref='input'
+    type='text'
+  )
 </template>
 
 <script>
@@ -29,7 +28,7 @@ export default {
       inputMode: false,
       inputValue: null,
       selectedMode: null,
-      documentListener: null,
+      onKeyUp: null,
     }
   },
   computed: {
@@ -45,15 +44,15 @@ export default {
     },
   },
   created () {
-    this.documentListener = event => {
+    this.onKeyUp = event => {
       if (event.keyCode === 46) {
         this.onPressDelete()
       }
     }
-    document.addEventListener('keyup', this.documentListener)
+    document.addEventListener('keyup', this.onKeyUp)
   },
   destroyed () {
-    document.removeEventListener('keyup', this.documentListener)
+    document.removeEventListener('keyup', this.onKeyUp)
   },
   watch: {
     selected (value) {
@@ -72,7 +71,7 @@ export default {
     },
     onClickOutside () {
       if (this.inputMode) {
-        this.validateRename()
+        this.endRename()
       }
       if (this.selectedMode === 'active') {
         this.selectedMode = 'passive'
@@ -94,8 +93,10 @@ export default {
     cancelRename () {
       this.inputMode = false
     },
-    validateRename () {
-      this.$emit('rename', this.inputValue)
+    endRename () {
+      if (this.inputValue.length > 0) {
+        this.$emit('rename', this.inputValue)
+      }
       this.inputMode = false
     },
     destroy () {
@@ -115,9 +116,24 @@ export default {
   color: #480a2a
   padding: 10px 20px
   cursor: pointer
-  &--selected-passive, &:hover
+  &--selected-passive
     background: #ddd6dd
+  &--selected-active, &:hover
+    background: #f0f0f0
 
-.program-item.program-item--selected-active
-  background: white
+.program-item > span
+  display: inline-block
+  padding-bottom: 2px
+  user-select: none
+
+.program-item > input
+  margin-bottom: -1px
+  padding: 0
+  padding-bottom: 2px
+  border: none
+  border-bottom: 1px solid #a3a3a3
+  font-size: inherit
+  color: inherit
+  background: transparent
+  outline: 0
 </style>

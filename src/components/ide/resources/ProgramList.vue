@@ -16,13 +16,18 @@
 </template>
 
 <script>
-import { EventBus } from '@/utils/EventBus'
-import ProgramItem from '@/components/ide/ProgramItem.vue'
+import ProgramItem from '@/components/ide/resources/ProgramItem.vue'
 
 export default {
   data () {
     return {
-      programs: [],
+      programs: [
+        { id: 1, name: 'new 01' },
+        { id: 2, name: 'new 02' },
+        { id: 3, name: 'new 03' },
+        { id: 4, name: 'new 04' },
+        { id: 5, name: 'new 05' },
+      ],
       selectedId: null,
     }
   },
@@ -34,7 +39,6 @@ export default {
       this.programs.find(program => program.id === id).name = newName
     },
     createProgram () {
-      this.checkProgramCount()
       this.programs.push({
         id: this.generateId(),
         name: this.generateName(),
@@ -44,7 +48,6 @@ export default {
       this.destroyProgram(this.selectedId)
     },
     destroyProgram (id) {
-      this.checkProgramCount()
       this.programs = this.programs.filter(program => program.id !== id)
       if (this.selectedId === id) {
         this.selectedId = null
@@ -63,17 +66,6 @@ export default {
         i++
       }
       return i
-    },
-    checkProgramCount() {
-      this.$nextTick(() => {
-        const count = this.programs.length
-        if (count === 0) {
-          EventBus.$emit('editor-set-state', true)
-        }
-        else if (count === 1) {
-          EventBus.$emit('editor-set-state', false)
-        }
-      })
     },
   },
   computed: {

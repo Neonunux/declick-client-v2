@@ -4,24 +4,29 @@
     program-item(
       v-for='program in orderedPrograms'
       @select='select (program.id)'
-      @rename='name => rename (program.name, name)'
+      @rename='name => renameProgram(program.id, name)'
+      @destroy='destroyProgram(program.id)'
       :key='program.id'
       :name='program.name'
       :selected='selectedId === program.id'
     )
   .program-list__controls
     button.program-list__new(@click='createProgram' type='button')
-    button.program-list__delete(@click='destroyProgram' type='button')
+    button.program-list__delete(@click='destroySelectedProgram' type='button')
 </template>
 
 <script>
-import ProgramItem from '@/components/ide/ProgramItem.vue'
+import ProgramItem from '@/components/ide/resources/ProgramItem.vue'
 
 export default {
   data () {
     return {
       programs: [
-        { id: 1, name: 'new 1' },
+        { id: 1, name: 'new 01' },
+        { id: 2, name: 'new 02' },
+        { id: 3, name: 'new 03' },
+        { id: 4, name: 'new 04' },
+        { id: 5, name: 'new 05' },
       ],
       selectedId: null,
     }
@@ -30,8 +35,8 @@ export default {
     select (id) {
       this.selectedId = id
     },
-    rename (oldName, newName) {
-      this.programs.find(program => program.name === oldName).name = newName
+    renameProgram (id, newName) {
+      this.programs.find(program => program.id === id).name = newName
     },
     createProgram () {
       this.programs.push({
@@ -39,9 +44,14 @@ export default {
         name: this.generateName(),
       })
     },
-    destroyProgram () {
-      this.programs = this.programs.filter(({ id }) => id !== this.selectedId)
-      this.selectedId = null
+    destroySelectedProgram () {
+      this.destroyProgram(this.selectedId)
+    },
+    destroyProgram (id) {
+      this.programs = this.programs.filter(program => program.id !== id)
+      if (this.selectedId === id) {
+        this.selectedId = null
+      }
     },
     generateName () {
       let i = 1

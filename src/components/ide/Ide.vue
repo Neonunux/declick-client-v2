@@ -2,7 +2,11 @@
 .ide
   transition(name='ide__help')
     help.ide__help(v-show='helpVisible')
-  preview.ide__preview(v-show="view === 'preview'")
+  preview.ide__preview(
+    v-show="view === 'preview'" 
+    @toggle-help='toggleHelp'
+    :helpVisible='helpVisible'
+  )
   resource-manager.ide__resource-manager(
     v-show="view === 'resource-manager'"
     @toggle-help='toggleHelp'

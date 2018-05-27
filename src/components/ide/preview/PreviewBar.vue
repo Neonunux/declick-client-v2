@@ -1,10 +1,22 @@
 <template lang="pug">
 .preview-bar
-  button.preview-bar__wiki(type='button')
+  button.preview-bar__help(
+    @click="$emit('toggle-help')"
+    type='button' 
+    :class="helpVisible ? 'preview-bar__help--active': null"
+  )
   button.preview-bar__hints(type='button')
   button.preview-bar__design-mode(type='button')
   button.preview-bar__floating-controller(type='button')
 </template>
+
+<script>
+export default {
+  props: [
+    'helpVisible'
+  ],
+}
+</script>
 
 <style lang="sass">
 @import '~@/assets/styles/mixins'
@@ -22,7 +34,7 @@
   width: 36px
 
 .preview-bar
-  &__wiki
+  &__help
     +image-button('~@/assets/images/buoy.png')
   &__hints
     +image-button('~@/assets/images/help.png')
@@ -32,4 +44,7 @@
     margin-left: auto
   &__floating-controller
     +image-button('~@/assets/images/floating_controller.png')
+
+.preview-bar__help--active
+  background-image: url('~@/assets/images/buoy-hover.png')
 </style>

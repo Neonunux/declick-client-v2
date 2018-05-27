@@ -1,13 +1,19 @@
 <template lang="pug">
 .preview
 	canvas.preview__canvas
-	preview-bar
+	preview-bar(
+  	@toggle-help="$emit('toggle-help')"
+  	:helpVisible='helpVisible'
+	)
 </template>
 
 <script>
 import PreviewBar from '@/components/ide/preview/PreviewBar.vue'
 
 export default {
+  props: [
+    'helpVisible',
+  ],
   components: {
     PreviewBar,
   },

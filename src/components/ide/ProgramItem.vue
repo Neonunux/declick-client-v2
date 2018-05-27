@@ -1,8 +1,8 @@
 <template lang="pug">
 .program-item(
-  v-click-outside='cancelRename'
+  v-click-outside='onClickOutside'
   @click='onClick'
-  :class="selected ? 'program-item--selected' : null"
+  :class="selectedClass"
 )
   template(v-if='inputMode === false')
     | {{ name }}
@@ -28,14 +28,59 @@ export default {
     return {
       inputMode: false,
       inputValue: null,
+      selectedMode: null,
+      documentListener: null,
     }
+  },
+  computed: {
+    selectedClass () {
+      switch (this.selectedMode) {
+        case 'active':
+          return 'program-item--selected-active'
+        case 'passive':
+          return 'program-item--selected-passive'
+        default:
+          return null
+      }
+    },
+  },
+  created () {
+    this.documentListener = event => {
+      if (event.keyCode === 46) {
+        this.onPressDelete()
+      }
+    }
+    document.addEventListener('keyup', this.documentListener)
+  },
+  destroyed () {
+    document.removeEventListener('keyup', this.documentListener)
+  },
+  watch: {
+    selected (value) {
+      this.selectedMode = value ? 'active' : null
+    },
   },
   methods: {
     onClick () {
-      if (this.selected) {
+      if (this.selectedMode === 'active' && !this.inputMode) {
         this.startRename()
-      } else {
+      } else if (this.selectedMode === 'passive') {
+        this.selectedMode = 'active'
+      } else if (!this.selected) {
         this.select()
+      }
+    },
+    onClickOutside () {
+      if (this.inputMode) {
+        this.validateRename()
+      }
+      if (this.selectedMode === 'active') {
+        this.selectedMode = 'passive'
+      }
+    },
+    onPressDelete () {
+      if (!this.inputMode && this.selectedMode === 'active') {
+        this.destroy()
       }
     },
     select () {
@@ -53,6 +98,9 @@ export default {
       this.$emit('rename', this.inputValue)
       this.inputMode = false
     },
+    destroy () {
+      this.$emit('destroy')
+    },
   },
   directives: {
     ClickOutside,
@@ -67,9 +115,9 @@ export default {
   color: #480a2a
   padding: 10px 20px
   cursor: pointer
-  &:hover
+  &--selected-passive, &:hover
     background: #ddd6dd
 
-.program-item.program-item--selected
+.program-item.program-item--selected-active
   background: white
 </style>

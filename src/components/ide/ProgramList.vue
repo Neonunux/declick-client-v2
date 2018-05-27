@@ -4,25 +4,25 @@
     program-item(
       v-for='program in orderedPrograms'
       @select='select (program.id)'
-      @rename='name => rename (program.name, name)'
+      @rename='name => renameProgram(program.id, name)'
+      @destroy='destroyProgram(program.id)'
       :key='program.id'
       :name='program.name'
       :selected='selectedId === program.id'
     )
   .program-list__controls
     button.program-list__new(@click='createProgram' type='button')
-    button.program-list__delete(@click='destroyProgram' type='button')
+    button.program-list__delete(@click='destroySelectedProgram' type='button')
 </template>
 
 <script>
+import { EventBus } from '@/utils/EventBus'
 import ProgramItem from '@/components/ide/ProgramItem.vue'
 
 export default {
   data () {
     return {
-      programs: [
-        { id: 1, name: 'new 1' },
-      ],
+      programs: [],
       selectedId: null,
     }
   },
@@ -30,18 +30,25 @@ export default {
     select (id) {
       this.selectedId = id
     },
-    rename (oldName, newName) {
-      this.programs.find(program => program.name === oldName).name = newName
+    renameProgram (id, newName) {
+      this.programs.find(program => program.id === id).name = newName
     },
     createProgram () {
+      this.checkProgramCount()
       this.programs.push({
         id: this.generateId(),
         name: this.generateName(),
       })
     },
-    destroyProgram () {
-      this.programs = this.programs.filter(({ id }) => id !== this.selectedId)
-      this.selectedId = null
+    destroySelectedProgram () {
+      this.destroyProgram(this.selectedId)
+    },
+    destroyProgram (id) {
+      this.checkProgramCount()
+      this.programs = this.programs.filter(program => program.id !== id)
+      if (this.selectedId === id) {
+        this.selectedId = null
+      }
     },
     generateName () {
       let i = 1
@@ -56,6 +63,17 @@ export default {
         i++
       }
       return i
+    },
+    checkProgramCount() {
+      this.$nextTick(() => {
+        const count = this.programs.length
+        if (count === 0) {
+          EventBus.$emit('editor-set-state', true)
+        }
+        else if (count === 1) {
+          EventBus.$emit('editor-set-state', false)
+        }
+      })
     },
   },
   computed: {

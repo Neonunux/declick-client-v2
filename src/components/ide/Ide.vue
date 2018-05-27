@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import Help from '@/components/ide/Help.vue'
 import Preview from '@/components/ide/preview/Preview.vue'
 import ResourceManager from '@/components/ide/resources/ResourceManager.vue'
+import Help from './Help.vue'
 
 export default {
   data () {

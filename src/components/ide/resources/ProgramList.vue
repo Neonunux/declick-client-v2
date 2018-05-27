@@ -16,17 +16,17 @@
 </template>
 
 <script>
-import ProgramItem from '@/components/ide/resources/ProgramItem.vue'
+import ProgramItem from './ProgramItem.vue'
 
 export default {
   data () {
     return {
       programs: [
-        { id: 1, name: 'new 01' },
-        { id: 2, name: 'new 02' },
-        { id: 3, name: 'new 03' },
-        { id: 4, name: 'new 04' },
-        { id: 5, name: 'new 05' },
+        { id: 1, name: 'new 1' },
+        { id: 2, name: 'new 2' },
+        { id: 3, name: 'new 3' },
+        { id: 4, name: 'new 4' },
+        { id: 5, name: 'new 5' },
       ],
       selectedId: null,
     }

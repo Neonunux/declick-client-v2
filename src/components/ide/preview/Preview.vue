@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import PreviewBar from '@/components/ide/preview/PreviewBar.vue'
+import PreviewBar from './PreviewBar.vue'
 
 export default {
   props: [

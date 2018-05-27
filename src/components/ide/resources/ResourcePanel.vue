@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import AssetList from '@/components/ide/resources/AssetList.vue'
-import ProgramList from '@/components/ide/resources/ProgramList.vue'
+import AssetList from './AssetList.vue'
+import ProgramList from './ProgramList.vue'
 
 export default {
   data () {

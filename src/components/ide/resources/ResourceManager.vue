@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import MainBar from '@/components/ide/resources/MainBar.vue'
-import ResourcePanel from '@/components/ide/resources/ResourcePanel.vue'
-import TextEditor from '@/components/ide/resources/TextEditor.vue'
+import MainBar from './MainBar.vue'
+import ResourcePanel from './ResourcePanel.vue'
+import TextEditor from './TextEditor.vue'
 
 export default {
   props: [

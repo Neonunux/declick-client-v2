@@ -1,0 +1,12 @@
+{
+  "message": {
+    "editor": {
+      "no-program-opened": "Ouvrir ou créer un programme pour commencer l'édition."
+    }
+  },
+  "pattern": {
+    "program": {
+      "name": "nouveau {index}"
+    }
+  }
+}

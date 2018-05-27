@@ -23,12 +23,14 @@
 import Vue from 'vue'
 
 import Ide from '@/components/ide/Ide.vue'
+import i18n from './i18n'
 
 const targetNode = document.createElement('div')
 targetNode.setAttribute('id', 'application')
 document.body.appendChild(targetNode)
 new Vue({
   render: h => h(Ide),
+  i18n,
 }).$mount('#application')
 
 // Start the main app logic.

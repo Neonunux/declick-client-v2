@@ -16,20 +16,19 @@
 </template>
 
 <script>
+import range from 'lodash.range'
+
 import ProgramItem from './ProgramItem.vue'
 
 export default {
   data () {
     return {
-      programs: [
-        { id: 1, name: 'new 1' },
-        { id: 2, name: 'new 2' },
-        { id: 3, name: 'new 3' },
-        { id: 4, name: 'new 4' },
-        { id: 5, name: 'new 5' },
-      ],
+      programs: [],
       selectedId: null,
     }
+  },
+  created () {
+    range(0, 5).forEach(() => this.createProgram())
   },
   methods: {
     select (id) {
@@ -55,10 +54,11 @@ export default {
     },
     generateName () {
       let i = 1
-      while (this.programs.some(({ name }) => name === `new ${i}`)) {
+      const name = index => this.$t('pattern.program.name', { index })
+      while (this.programs.some((program) => program.name === name(i))) {
         i++
       }
-      return `new ${i}`
+      return name(i)
     },
     generateId () {
       let i = 1

@@ -25,11 +25,11 @@ import Vue from 'vue'
 import Ide from '@/components/ide/Ide.vue'
 
 const targetNode = document.createElement('div')
-targetNode.setAttribute('id', 'target')
+targetNode.setAttribute('id', 'application')
 document.body.appendChild(targetNode)
 new Vue({
   render: h => h(Ide),
-}).$mount('#target')
+}).$mount('#application')
 
 // Start the main app logic.
 // function load() {

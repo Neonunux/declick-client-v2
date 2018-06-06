@@ -23,9 +23,9 @@ function TRuntime() {
     let self
     const baseClasses = ['TObject', 'TGraphicalObject']
     const baseClasses3D = ['TObject3D']
-
+    
     let Api
-
+    
     this.load = function (callback) {
 
         // link interpreter to errorHandler
@@ -40,6 +40,7 @@ function TRuntime() {
         TParser.setRepeatKeyword(TEnvironment.getMessage('repeat-keyword'))
 
         Api = require('@/objects/index')
+
         loadBaseClasses(TEnvironment.getLanguage(), () => {
             TEnvironment.log('* Retrieving list of translated objects')
             // find objects and translate them
@@ -73,38 +74,38 @@ function TRuntime() {
             TEnvironment.log(`adding base object ${objectName}`)
             const aClass = Api[objectName]
             // require([objectName], function(aClass) {
-            TI18n.internationalize(aClass, false, language, () => {
-                classesToLoad--
-                if (classesToLoad === 0 && typeof callback !== 'undefined') {
-                    callback.call(self)
-                }
-            })
-            // });
+                TI18n.internationalize(aClass.default, false, language, () => {
+                    classesToLoad--
+                    if (classesToLoad === 0 && typeof callback !== 'undefined') {
+                        callback.call(self)
+                    }
+                })
+                // });
+            }
         }
-    }
-
-    var loadClasses = (classes, language, callback) => {
-        const is3DSupported = TEnvironment.is3DSupported()
-        let classesToLoad = Object.keys(classes).length
-        $.each(classes, (key, val) => {
-            let addObject = true
-            if (typeof val.conditions !== 'undefined') {
-                // object rely on conditions
-                for (let i = 0; i < val.conditions.length; i++) {
-                    const condition = val.conditions[i]
-                    switch (condition) {
-                        case '3d':
+        
+        var loadClasses = (classes, language, callback) => {
+            const is3DSupported = TEnvironment.is3DSupported()
+            let classesToLoad = Object.keys(classes).length
+            $.each(classes, (key, val) => {
+                let addObject = true
+                if (typeof val.conditions !== 'undefined') {
+                    // object rely on conditions
+                    for (let i = 0; i < val.conditions.length; i++) {
+                        const condition = val.conditions[i]
+                        switch (condition) {
+                            case '3d':
                             if (!is3DSupported) {
                                 console.log(`skipping addition of object ${key}: 3D not supported`)
                                 addObject = false
                             }
                             break
+                        }
                     }
                 }
-            }
-            if (addObject) {
-                const lib = `objects/${val.path}/${key}`
-                if (typeof val.translations[language] !== 'undefined') {
+                if (addObject) {
+                    const lib = `objects/${val.path}/${key}`
+                    if (typeof val.translations[language] !== 'undefined') {
                     TEnvironment.log(`adding ${lib}`)
                     const translatedName = val.translations[language]
                     let parents
@@ -119,18 +120,18 @@ function TRuntime() {
                     } else {
                         instance = val.instance
                     }
-
+                    
                     // require([lib], function(aClass) {
-                    const aClass = Api[key]
-                    // set Object path
-                    let aConstructor = aClass
-                    if (instance) {
-                        // in case class is in fact an instance (e.g. special object declick),
-                        // get its constructor
-                        aConstructor = aClass.constructor
-                    }
-                    aConstructor.prototype.objectPath = val.path
-                    TI18n.internationalize(aConstructor, parents, language, () => {
+                        const aClass = Api[key]
+                        // set Object path
+                        let aConstructor = aClass
+                        if (instance) {
+                            // in case class is in fact an instance (e.g. special object declick),
+                            // get its constructor
+                            aConstructor = aClass.constructor
+                        }
+                        aConstructor.prototype.objectPath = val.path
+                        TI18n.internationalize(aConstructor, parents, language, () => {
                         TEnvironment.log(`Declaring translated object '${translatedName}'`)
                         if (instance) {
                             interpreter.addInstance(aClass, translatedName)

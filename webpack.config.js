@@ -1,11 +1,37 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const path = require('path')
 const merge = require('webpack-merge')
+const fs = require('fs')
 
 const src = (...paths) => path.resolve(__dirname, 'src', ...paths)
 const lib = (...paths) => src('libs', ...paths)
+const dist = (...paths) => path.resolve(__dirname, 'dist', ...paths)
 const nodeModules = (...paths) => path.resolve(__dirname, 'node_modules', ...paths)
+
+// get_objects_list
+let structure = require('./src/objects/objects.json')
+// const objectsList = Object.keys(structure)
+//   .map(entry => `objects/${structure[entry].path}/${entry}`)
+
+let messages = {}
+let i18n = {}
+
+// merge_files
+structure.TObject = {  path: 'tobject' }
+structure.TGraphicalObject = {  path: 'tgraphicalobject' }
+// structure.TObject3D = {  path: 'tobject3d' }
+
+const objectsList = Object.keys(structure).map(entry => {
+  const objectPath = `./src/objects/${structure[entry].path}/resources/`
+  messages[entry] = require(`${objectPath}messages.json`)
+  i18n[entry] = require(`${objectPath}i18n.json`)
+  fs.unlink(dist(objectPath, 'messages.json') , (error) => {})
+  fs.unlink(dist(objectPath, 'i18n.json') , (error) => {})
+})
+fs.writeFile(dist('messages.json'), JSON.stringify(messages), () => {})
+fs.writeFile(dist('i18n.json'), JSON.stringify(i18n), () => {})
 
 const baseConfig = {
   entry: src('main.js'),
@@ -48,7 +74,7 @@ const baseConfig = {
       {
         test: /\.(png|jpg|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
-        include: [src('assets', 'images'), src('objects'), nodeModules()],
+        include: [src('assets', 'images'), src('objects'), nodeModules(), dist(), dist('images')],
       },
       {
         test: /\.html$/,
@@ -58,13 +84,13 @@ const baseConfig = {
       {
         test: /\.css$/,
         loader: 'style-loader',
-        include: [src(), src('assets', 'styles'), src('components'), nodeModules()],
+        include: [src(), src('assets', 'styles'), src('components'), nodeModules(), dist(), dist('styles')],
         exclude: [src('libs')],
       },
       {
         test: /\.css$/,
         loader: 'css-loader',
-        include: [src(), src('assets', 'styles'), src('components'), nodeModules()],
+        include: [src(), src('assets', 'styles'), src('components'), nodeModules(), dist()],
         exclude: [src('libs')],
       },
       {
@@ -72,7 +98,7 @@ const baseConfig = {
         loader: 'url-loader',
         query: {
           limit: 10000,
-          name: src('assets', 'fonts', '[name].[hash:7].[ext]'),
+          name: src('assets', 'fonts', '[name].[hash:7].[ext]',dist()),
         },
       },
     ],
@@ -87,6 +113,16 @@ const baseConfig = {
       template: src('index.html'),
       filename: 'index.html',
     }),
+    new CopyWebpackPlugin([
+      { from: './src/objects/', to:'objects'},
+      { from: './src/assets/styles',to: 'styles'},
+      { from: './src/assets/images', to: 'images'},
+      { from: './src/assets/fonts', to: 'fonts'},
+      { from: 'src/components', to: 'components'},
+      { from: 'src/resources', to: 'resources'},
+      { from: 'dist/messages.json',to:'resources/messages.json'},
+      { from: 'dist/i18n.json',to:'resources/i18n.json'},
+    ]),
   ],
   optimization: {
     minimize: false,

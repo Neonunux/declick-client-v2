@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import staticImports from './static-imports'
+// import staticImports from './static-imports'
 
 const TResource = function() {
     let cacheEnabled = false
@@ -71,14 +71,10 @@ const TResource = function() {
             }
         }
         const self = this
-        /*
         $.ajax({
-            dataType: "json",
+            dataType: 'json',
             url: name,
             success: function(data) {
-        */
-        // console.log(name)
-        const data = staticImports[name]
         if (!data) {
             console.error('TResource.get: not found with arguments:')
             console.error(arguments)
@@ -103,18 +99,16 @@ const TResource = function() {
                     }
                 }
                 callback.call(this, value)
-        /*
             },
             error: function(data, status, error) {
                 if (typeof errorCallback !== 'undefined') {
-                    errorCallback.call(this, error);
+                    errorCallback.call(this, error)
                 } else {
-                    self.error("Error loading resource '"+name+"'");
-                    callback.call(this, {});
+                    self.error(`Error loading resource '${name}'`)
+                    callback.call(this, {})
                 }
             }
-        });
-        */
+        })
     }
 
 
@@ -137,13 +131,10 @@ const TResource = function() {
                 return
             }
         }
-        /*
         $.ajax({
-            dataType: "text",
+            dataType: 'text',
             url: name,
             success: function(data) {
-        */
-        const data = staticImports[name]
         if (!data) {
             console.error('TResource.getPlain: not found with arguments:')
             console.error(arguments)
@@ -157,18 +148,16 @@ const TResource = function() {
 
                 }
                 callback.call(this, data)
-        /*
             },
             error: function(data, status, error) {
                 if (typeof errorCallback !== 'undefined') {
-                    errorCallback.call(this, error);
+                    errorCallback.call(this, error)
                 } else {
-                    this.error("Error loading resource '"+name+"'");
-                    callback.call(this, "");
+                    this.error(`Error loading resource ${name}`)
+                    callback.call(this, '')
                 }
             }
-        });
-        */
+        })
     }
 
     this.setLog = value => {

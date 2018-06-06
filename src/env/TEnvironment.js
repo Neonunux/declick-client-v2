@@ -127,7 +127,7 @@ const TEnvironment = function () {
      * @returns {String}
      */
     this.getObjectsUrl = function () {
-        return `${this.getBaseUrl()}/js/declick/objects`
+        return `${this.getBaseUrl()}/src/objects`
     }
 
     /**
@@ -161,8 +161,7 @@ const TEnvironment = function () {
      * @param {String} name
      * @returns {String} Returns the URL of the resource.
      */
-    this.getResource = name => // return this.getBaseUrl() + "/resources/" + name;
-        `resources/${name}`
+    this.getResource =  (name) => this.getBaseUrl() + `/resources/${name}`
 
     /**
      * Get resource entered in parameter of var project.

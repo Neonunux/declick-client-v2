@@ -694,12 +694,12 @@ textarea.tsidebar-rename {
 }
 
 #ttoolbar-wiki {
-    background-image:url('../images/wiki.png');
+    background-image:url('../images/buoy.png');
 }
 
 #ttoolbar-wiki:hover,
 #ttoolbar-wiki.active {
-    background-image:url('../images/wiki-hover.png');
+    background-image:url('../images/buoy-hover.png');
 }
 
 
@@ -722,12 +722,12 @@ textarea.tsidebar-rename {
 }
 
 #ttoolbar-design-mode {
-    background-image:url('../images/design_mode.png');
+    background-image:url('../images/crane.png');
 }
 
 #ttoolbar-design-mode:hover,
 #ttoolbar-design-mode.active {
-    background-image:url('../images/design_mode_on.png');
+    background-image:url('../images/crane-hover.png');
 }
 
 #ttoolbar-floating-controller {
@@ -736,7 +736,7 @@ textarea.tsidebar-rename {
 
 #ttoolbar-floating-controller:hover,
 #ttoolbar-floating-controller.active {
-    background-image:url('../images/floating_controller_on.png');
+    background-image:url('../images/floating_controller-hover.png');
 }
 
 #ttoolbar-console {
